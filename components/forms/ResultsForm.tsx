@@ -84,7 +84,7 @@ export default function ResultsForm({ onCityChange, onResultsUpdate, onCityFilte
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div>
           <label 
             htmlFor="url" 
@@ -128,18 +128,18 @@ export default function ResultsForm({ onCityChange, onResultsUpdate, onCityFilte
             Скалолазы из этого города будут подсвечены
           </p>
         </div>
-      </div>
-      <div className="flex items-center space-x-2 mt-4">
-        <input
-          type="checkbox"
-          id="cityFilter"
-          checked={isCityFilterEnabled}
-          onChange={handleCityFilterToggle}
-          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-        />
-        <label htmlFor="cityFilter" className="text-sm text-gray-700">
-          Показывать только скалолазов из города
-        </label>
+        <div>
+          <label htmlFor="cityFilter" className="block text-sm font-medium text-gray-700 mb-2">
+            Только из города
+          </label>
+          <input
+            type="checkbox"
+            id="cityFilter"
+            checked={isCityFilterEnabled}
+            onChange={handleCityFilterToggle}
+            className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-2  ml-2"
+          />
+        </div>
       </div>
     </div>
   )

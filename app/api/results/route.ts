@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`https://c-f-r.ru/live/${urlCode}/index.html`)
+    const response = await fetch(`https://c-f-r.ru/live/${urlCode}/index.html`, { cache: 'no-store' })
     
     if (!response.ok) {
       return NextResponse.json(

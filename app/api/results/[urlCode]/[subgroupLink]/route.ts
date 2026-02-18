@@ -10,6 +10,7 @@ export async function GET(
     const response = await fetch(
       `https://c-f-r.ru/live/${urlCode}/${subgroupLink}`,
       {
+        cache: 'no-store',
         headers: {
           'User-Agent': 'Next.js API Client',
         },
