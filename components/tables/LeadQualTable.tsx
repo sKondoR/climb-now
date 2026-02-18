@@ -28,8 +28,8 @@ export default function LeadQualTable({
       return results.filter((result, index) => index===0 || isCityMatch(result.command, selectedCity))
     }
 
-    const filteredResults: Results = filterResultsByCity(results)
-    const climbedCount = results.filter((result) => 
+    const filteredResults: Results = filterResultsByCity(results as Results)
+    const climbedCount = results.filter((result: Results[number]) => 
       'score' in result ? result.score !== '' : result.score1 !== ''
     ).length;
 

@@ -1,4 +1,4 @@
-import { SubGroupData } from '@/types'
+import { SubGroupData, Results } from '@/types'
 import { useState, useEffect } from 'react'
 
 interface UseResultsOptions {
@@ -7,7 +7,7 @@ interface UseResultsOptions {
 }
 
 interface UseResultsState {
-  results: any[]
+  results: Results
   isLead: boolean | null
   isQualResult: boolean | null
   isLoading: boolean
@@ -46,7 +46,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
   // Auto-refresh results every 30 seconds
   useEffect(() => {
       loadResults()
-  }, [urlCode, subgroupLink, state.isQualResult])
+  }, [urlCode, subgroupLink])
 
   return { ...state, loadResults }
 }
