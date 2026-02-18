@@ -84,13 +84,15 @@ export const parseResultTable = (html: string): Result[] => {
     const cells = findElementsByTag(row, 'td');
     if (cells.length < 5) return;
     
-    const rank = parseInt(getTextContent(cells[0]) || '');
+    const rank = getTextContent(cells[0]) || '';
+    const stRank = getTextContent(cells[2]) || '';
     const name = getTextContent(cells[3]) || '-';
-    const command = getTextContent(cells[4]) || '-';
-    const score = parseFloat(getTextContent(cells[5]) || '');
+    const command = getTextContent(cells[4]) || '';
+    const score = getTextContent(cells[5]) || '';
     
     results.push({
       rank,
+      stRank,
       name,
       command,
       score,

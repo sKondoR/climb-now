@@ -17,12 +17,12 @@ export interface Qualification {
   link: string
   results: Result[]
 }
-
 export interface Result {
-  rank: number
+  rank: string
+  stRank: string
   name: string
   command: string
-  score: number
+  score: string
 }
 
 export interface GroupUpdate {

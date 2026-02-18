@@ -106,7 +106,8 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
           <table className="w-full">
             <thead>
               <tr className="border-b">
-                <th className="text-left px-4 py-2 w-12">#</th>
+                <th className="text-left px-4 py-2 w-12">Место</th>
+                <th className="text-left px-4 py-2 w-12">ст.#</th>
                 <th className="text-left px-4 py-2">Имя</th>
                 <th className="text-left px-4 py-2">Команда</th>
                 <th className="text-left px-4 py-2 w-24">Результат</th>
@@ -132,14 +133,16 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
                 </tr>
               )}
               
-              {results.map((result: Result) => (
+              {results.map((result: Result, index: number) => (
                 <tr
                   key={result.name}
-                  className={`border-b hover:bg-gray-50 transition-colors ${
-                    isCityMatch(result.command) ? 'bg-blue-50 border-blue-200' : ''
+                  className={`border-b transition-colors ${
+                    isCityMatch(result.command) ? 'bg-green-300 border-blue-200' : ''
                   }`}
                 >
                   <td className="px-4 py-2 text-center font-medium">{result.rank}</td>
+                  <td className="px-4 py-2 text-center font-medium">{result.stRank}</td>
+                  <td className="px-4 py-2 text-center font-medium">{index + 1}</td>
                   <td className="px-4 py-2">
                     <span className="font-medium">
                       {result.name}
