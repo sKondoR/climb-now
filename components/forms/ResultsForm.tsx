@@ -8,11 +8,13 @@ import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
 interface ResultsFormProps {
   onCityChange: (city: string) => void
   onResultsUpdate: (data: ApiResponse | null) => void
+  onCityFilterToggle: (enabled: boolean) => void
 }
 
-export default function ResultsForm({ onCityChange, onResultsUpdate }: ResultsFormProps) {
+export default function ResultsForm({ onCityChange, onResultsUpdate, onCityFilterToggle }: ResultsFormProps) {
   const [url, setUrl] = useState(DEFAULT_URL_CODE)
   const [city, setCity] = useState(DEFAULT_CITY)
+  const [isCityFilterEnabled, setIsCityFilterEnabled] = useState(false)
 
   // Debounced fetch для URL
   const debouncedFetch = useDebouncedCallback(
@@ -54,6 +56,14 @@ export default function ResultsForm({ onCityChange, onResultsUpdate }: ResultsFo
     [debouncedCityFetch]
   )
 
+  const handleCityFilterToggle = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const isEnabled = e.target.checked
+      setIsCityFilterEnabled(isEnabled)
+      onCityFilterToggle(isEnabled)
+    },
+    [onCityFilterToggle]
+  )
   // Автофокус на поле URL
   useEffect(() => {
     const urlInput = document.getElementById('url') as HTMLInputElement
@@ -118,6 +128,18 @@ export default function ResultsForm({ onCityChange, onResultsUpdate }: ResultsFo
             Скалолазы из этого города будут подсвечены
           </p>
         </div>
+      </div>
+      <div className="flex items-center space-x-2 mt-4">
+        <input
+          type="checkbox"
+          id="cityFilter"
+          checked={isCityFilterEnabled}
+          onChange={handleCityFilterToggle}
+          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        />
+        <label htmlFor="cityFilter" className="text-sm text-gray-700">
+          Показывать только скалолазов из города
+        </label>
       </div>
     </div>
   )

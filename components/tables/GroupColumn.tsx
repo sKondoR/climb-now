@@ -6,6 +6,7 @@ interface GroupColumnProps {
   group: Group
   selectedCity: string,
   urlCode: string
+  isCityFilterEnabled: boolean
 }
 
 interface QualificationResults {
@@ -16,7 +17,7 @@ interface QualificationResults {
   }
 }
 
-export default function GroupColumn({ group, selectedCity, urlCode }: GroupColumnProps) {
+export default function GroupColumn({ group, selectedCity, urlCode, isCityFilterEnabled }: GroupColumnProps) {
   const [activeTab, setActiveTab] = useState<string>(
     group.subgroups.length > 0 ? group.subgroups[0].id : '0'
   )
@@ -30,6 +31,13 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
   const [qualificationResults, setQualificationResults] = useState<QualificationResults>({})
   const isCityMatch = (city: string) => {
     return selectedCity && city.toLowerCase() === selectedCity.toLowerCase()
+  }
+
+  const filterResultsByCity = (results: Result[]) => {
+    if (!isCityFilterEnabled || !selectedCity) {
+      return results
+    }
+    return results.filter((result, index) => index===0 || isCityMatch(result.command))
   }
 
   const tabs = group.subgroups.map(subgroup => ({
@@ -90,6 +98,7 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
     if (!qualification) return null;
     const currentResults = qualificationResults[qualification.id]
     const results = currentResults?.results || qualification.results
+    const filteredResults = filterResultsByCity(results)
     
     // Use subgroup title instead of qualification title to ensure consistency
     const displayTitle = group.subgroups.find(s => s.id === qualification.id)?.title || qualification.title
@@ -99,7 +108,7 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
           {displayTitle}
           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {results.length} пролезло
+            {filteredResults.length} пролезло
           </span>
         </h3>
         <div className="overflow-x-auto">
@@ -133,7 +142,7 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
                 </tr>
               )}
               
-              {results.map((result: Result) => (
+              {filteredResults.map((result: Result) => (
                 <tr
                   key={result.name}
                   className={`border-b transition-colors ${
@@ -161,7 +170,7 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
               ))}
               
               {/* Сообщение если нет результатов */}
-              {results.length === 0 && !currentResults?.isLoading && !currentResults?.error && (
+              {filteredResults.length === 0 && !currentResults?.isLoading && !currentResults?.error && (
                 <tr className="border-b">
                   <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
                     Результаты пока не доступны
@@ -173,13 +182,13 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
         </div>
         
         {/* Статистика */}
-        {results.length > 0 && (
+        {filteredResults.length > 0 && (
           <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
             <div>
-              Лучший: {results[0].name}
+              Лучший: {filteredResults[0].name}
             </div>
             <div>
-              Всего: {results.length} скалолазов
+              Всего: {filteredResults.length} скалолазов
             </div>
           </div>
         )}

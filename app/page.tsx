@@ -11,6 +11,7 @@ export default function HomePage() {
   const [groups, setGroups] = useState<ApiResponse | null>(null)
   const [selectedCity, setSelectedCity] = useState(DEFAULT_CITY)
   const [urlCode, setUrlCode] = useState(DEFAULT_URL_CODE)
+  const [isCityFilterEnabled, setIsCityFilterEnabled] = useState(false)
 
   // Автоматическое обновление данных
   useEffect(() => {
@@ -31,6 +32,10 @@ export default function HomePage() {
     if (data) {
       setUrlCode(data.url)
     }
+  }
+
+  const handleCityFilterToggle = (enabled: boolean) => {
+    setIsCityFilterEnabled(enabled)
   }
 
   return (
@@ -55,21 +60,23 @@ export default function HomePage() {
           <ResultsForm 
             onCityChange={setSelectedCity}
             onResultsUpdate={handleResultsUpdate}
+            onCityFilterToggle={handleCityFilterToggle}
           />
         </div>
       </section>
 
       {/* Results Section */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {groups && groups.groups.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-sm">
             {groups.groups.map((group) => (
-              <GroupColumn 
-                key={group.id}
-                group={group}
-                selectedCity={selectedCity}
-                urlCode={urlCode}
-              />
+            <GroupColumn 
+              key={group.id}
+              group={group}
+              selectedCity={selectedCity}
+              urlCode={urlCode}
+              isCityFilterEnabled={isCityFilterEnabled}
+            />
             ))}
           </div>
         ) : (
