@@ -4,7 +4,8 @@ import { parseResultTable } from '@/lib/parsers'
 
 interface GroupColumnProps {
   group: Group
-  selectedCity: string
+  selectedCity: string,
+  urlCode: string
 }
 
 interface QualificationResults {
@@ -15,10 +16,9 @@ interface QualificationResults {
   }
 }
 
-export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
-  // Initialize activeTab with first subgroup id if available, otherwise default to 'qualification1'
+export default function GroupColumn({ group, selectedCity, urlCode }: GroupColumnProps) {
   const [activeTab, setActiveTab] = useState<string>(
-    group.subgroups.length > 0 ? group.subgroups[0].id : 'qualification1'
+    group.subgroups.length > 0 ? group.subgroups[0].id : '0'
   )
 
   // Sync activeTab with available subgroups
@@ -37,43 +37,41 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
     label: subgroup.title
   }))
 
-  const loadResults = async (qualification: Qualification) => {
-    console.log('loadResults start ', qualification)
-    if (!qualification.id || !qualification.id.includes('qualification')) return
+  const loadResults = async (subgroup: Qualification) => {
+    if (!subgroup.link) return
     
     setQualificationResults(prev => ({
       ...prev,
-      [qualification.id]: { results: [], isLoading: true, error: null }
+      [subgroup.id]: { results: [], isLoading: true, error: null }
     }))
-    
     try {
-      const response = await fetch(`https://c-f-r.ru/live/${group.id}/${qualification.id}.html`)
-      
+      console.log('loadResults ', subgroup.link);
+      const response = await fetch(`/api/results/${urlCode}/${subgroup.link}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
       
       const html = await response.text()
       const results = parseResultTable(html)
+
+      console.log('loadResults end ', subgroup.link, results)
       
       setQualificationResults(prev => ({
         ...prev,
-        [qualification.id]: { results, isLoading: false, error: null }
+        [subgroup.id]: { results, isLoading: false, error: null }
       }))
       
     } catch (error) {
       setQualificationResults(prev => ({
         ...prev,
-        [qualification.id]: { results: [], isLoading: false, error: error instanceof Error ? error.message : 'Unknown error' }
+        [subgroup.id]: { results: [], isLoading: false, error: error instanceof Error ? error.message : 'Unknown error' }
       }))
     }
   }
 
   // Load results for current active tab
   useEffect(() => {
-
     const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
-    console.log('loadResults ', currentSubgroup?.id);
     if (currentSubgroup) {
       loadResults(currentSubgroup)
     }

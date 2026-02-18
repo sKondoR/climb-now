@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import ResultsForm from '@/components/forms/ResultsForm'
 import GroupColumn from '@/components/tables/GroupColumn'
 import { ApiResponse } from '@/types'
-import { fetchResults, updateAllGroupTables } from '@/lib/api'
+import { fetchResults } from '@/lib/api'
 import { UPDATE_INTERVAL } from '@/lib/constants'
 
 export default function HomePage() {
@@ -30,7 +30,6 @@ export default function HomePage() {
     setGroups(data);
     if (data) {
       setUrlCode(data.url)
-      updateAllGroupTables(data.groups)
     }
   }
 
@@ -69,6 +68,7 @@ export default function HomePage() {
                 key={group.id}
                 group={group}
                 selectedCity={selectedCity}
+                urlCode={urlCode}
               />
             ))}
           </div>

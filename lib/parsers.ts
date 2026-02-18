@@ -24,7 +24,7 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
         currentGroup.subgroups.push({
           id: `subgroup-${index}`,
           title,
-          link: 'aaaa',
+          link: findElementsByTag(element, 'a')[0].attrs.find((a: any) => a.name === 'href').value || '',
           results: []
         });
       } else if (hasClass(element, 'g_title')) {
@@ -84,10 +84,10 @@ export const parseResultTable = (html: string): Result[] => {
     const cells = findElementsByTag(row, 'td');
     if (cells.length < 5) return;
     
-    const rank = parseInt(getTextContent(cells[0]) || '0');
-    const name = getTextContent(cells[1]) || '';
-    const command = getTextContent(cells[2]) || '';
-    const score = parseFloat(getTextContent(cells[3]) || '0');
+    const rank = parseInt(getTextContent(cells[0]) || '-');
+    const name = getTextContent(cells[3]) || '-';
+    const command = getTextContent(cells[4]) || '-';
+    const score = parseFloat(getTextContent(cells[5]) || '');
     
     results.push({
       rank,
