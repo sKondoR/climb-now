@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { ApiResponse } from '@/types/api'
 import { fetchResults } from '@/lib/api'
-import { parseResultTable } from '@/lib/parsers'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
 
 interface ResultsFormProps {
