@@ -1,6 +1,8 @@
 import { Group, Qualification, Result } from '@/types'
 import { useState, useEffect } from 'react'
 import { parseResultTable } from '@/lib/parsers'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 
 interface GroupColumnProps {
   group: Group
@@ -193,17 +195,15 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
             {group.title}
           </h2>
           <div className="flex items-center space-x-2">
-            <button
+            <FontAwesomeIcon icon={faRefresh} 
+              className="cursor-pointer px-3 py-1 text-sm text-blue-600 rounded hover:text-blue-800 transition-colors"
               onClick={() => {
                 const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
                 if (currentSubgroup) {
                   loadResults(currentSubgroup)
                 }
               }}
-              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-            >
-              Обновить
-            </button>
+            />
           </div>
         </div>
         
