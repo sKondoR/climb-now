@@ -36,14 +36,14 @@ export default function LeadQualTable({
     const config = isQualResult ? leadQualResultsConfig : leadQualConfig;
 
     return (
-      <div className="mt-4">
+      <div className="mt-4 relative">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
           {subGroup.title}
           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {climbedCount} / {results.length} пролезло
           </span>
         </h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto relative">
           <table className="w-full">
             <thead>
               <tr className="border-b">
@@ -55,25 +55,6 @@ export default function LeadQualTable({
               </tr>
             </thead>
             <tbody>
-              {isLoading && (
-                <tr className="border-b">
-                  <td colSpan={config.length} className="px-4 py-4 text-center">
-                    <div className="flex items-center justify-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                      <span className="text-gray-600">Загрузка результатов...</span>
-                    </div>
-                  </td>
-                </tr>
-              )}
-              
-              {error && (
-                <tr className="border-b">
-                  <td colSpan={config.length} className="px-4 py-4 text-center text-red-500">
-                    Ошибка загрузки: {error}
-                  </td>
-                </tr>
-              )}
-              
               {filteredResults.map((result, index) => (
                 <tr
                   key={`${result.name}-${index}`}
@@ -102,6 +83,26 @@ export default function LeadQualTable({
               )}
             </tbody>
           </table>
+          
+          {/* Оверлей для загрузки */}
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/30 flex items-center justify-center">
+              <div className="flex items-center justify-center space-x-2">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <span className="text-white text-lg font-medium">Загрузка результатов...</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Оверлей для ошибки */}
+          {error && (
+            <div className="absolute inset-0 bg-red-500 bg-opacity-80 flex items-center justify-center">
+              <div className="text-white text-center">
+                <h3 className="text-lg font-semibold mb-2">Ошибка загрузки</h3>
+                <p className="text-white">{error}</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
