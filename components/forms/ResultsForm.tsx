@@ -70,7 +70,7 @@ export default function ResultsForm({ onCityChange, onResultsUpdate }: ResultsFo
         onResultsUpdate(null)
       })
     }
-  }, [url, city, onResultsUpdate])
+  }, [])
 
   return (
     <div className="space-y-4">

@@ -48,12 +48,11 @@ export const parseResultTable = (html: string): Result[] => {
 }
 
 export const updateAllGroupTables = (groups: Group[]): void => {
-  console.log('data.groups: ', groups);
+  console.log('updateAllGroupTables groups: ', groups);
   groups.forEach(group => {
     // Логика обновления таблиц групп
     // В реальной реализации здесь 
     // будет логика обновления данных в таблицах
-    console.log('Updating group table:', group.title)
     
     // Пример обновления данных в таблице
     // В реальной приложении здесь 

@@ -11,6 +11,7 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
     const document = parseFragment(html);
     const groups: Group[] = [];
     
+    console.log('here');
     // Найдем все элементы с классом g_title
     const groupElements = findElementsByClass(document, 'g_title');
     
@@ -46,6 +47,7 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
 };
 
 const parseQualification = (link: any, title: string): Qualification => {
+  console.log('link: ', link);
   if (!link) {
     return {
       id: title.toLowerCase().replace(/\s+/g, '-'),

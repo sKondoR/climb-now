@@ -28,7 +28,6 @@ export default function HomePage() {
 
   const handleResultsUpdate = (data: ApiResponse | null) => {
     setGroups(data);
-    console.log('data', data);
     if (data) {
       setUrlCode(data.url)
       updateAllGroupTables(data.groups)
