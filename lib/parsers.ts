@@ -56,27 +56,6 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
   }
 };
 
-const parseQualification = (link: any, title: string): Qualification => {
-  if (!link || !link.attrs) {
-    return {
-      id: title.toLowerCase().replace(/\s+/g, '-'),
-      title,
-      link: '',
-      results: []
-    };
-  }
-  
-  const href = link.attrs?.find((a: any) => a.name === 'href')?.value || '';
-  const results: Result[] = [];
-  
-  return {
-    id: href.replace(/\.html$/, ''),
-    link: href,
-    title,
-    results
-  };
-};
-
 export const parseResultTable = (html: string): Result[] => {
   const document = parseFragment(html);
   const rows = findElementsByTag(document, 'tr');
@@ -104,23 +83,6 @@ export const parseResultTable = (html: string): Result[] => {
   });
   
   return results;
-};
-
-// Вспомогательные функции для работы с parse5
-const findElementsByClass = (node: any, className: string): any[] => {
-  const result: any[] = [];
-  
-  const traverse = (node: any) => {
-    if (node.attrs && node.attrs.some((attr: any) => attr.name === 'class' && attr.value.includes(className))) {
-      result.push(node);
-    }
-    if (node.childNodes) {
-      node.childNodes.forEach((child: any) => traverse(child));
-    }
-  };
-  
-  traverse(node);
-  return result;
 };
 
 const findElementsByTag = (node: any, tagName: string): any[] => {
