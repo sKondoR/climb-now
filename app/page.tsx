@@ -5,12 +5,12 @@ import ResultsForm from '@/components/forms/ResultsForm'
 import GroupColumn from '@/components/tables/GroupColumn'
 import { ApiResponse } from '@/types'
 import { fetchResults } from '@/lib/api'
-import { UPDATE_INTERVAL } from '@/lib/constants'
+import { DEFAULT_CITY, DEFAULT_URL_CODE, UPDATE_INTERVAL } from '@/lib/constants'
 
 export default function HomePage() {
   const [groups, setGroups] = useState<ApiResponse | null>(null)
-  const [selectedCity, setSelectedCity] = useState('')
-  const [urlCode, setUrlCode] = useState('2602vrn')
+  const [selectedCity, setSelectedCity] = useState(DEFAULT_CITY)
+  const [urlCode, setUrlCode] = useState(DEFAULT_URL_CODE)
 
   // Автоматическое обновление данных
   useEffect(() => {

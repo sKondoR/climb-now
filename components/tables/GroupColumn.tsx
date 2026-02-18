@@ -45,7 +45,6 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
       [subgroup.id]: { results: [], isLoading: true, error: null }
     }))
     try {
-      console.log('loadResults ', subgroup.link);
       const response = await fetch(`/api/results/${urlCode}/${subgroup.link}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
@@ -53,8 +52,6 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
       
       const html = await response.text()
       const results = parseResultTable(html)
-
-      console.log('loadResults end ', subgroup.link, results)
       
       setQualificationResults(prev => ({
         ...prev,
@@ -216,7 +213,6 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
             <button
               key={tab.id}
               onClick={() => {
-                console.log('click');
                 setActiveTab(tab.id)
               }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
