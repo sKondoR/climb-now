@@ -5,7 +5,6 @@ import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 export async function GET(request: NextRequest) {
   const urlCode = request.nextUrl.searchParams.get('urlCode')
   
-  console.log('> ', `${EXTERNAL_API_BASE_URL}${urlCode}/index.html`);
   if (!urlCode) {
     return NextResponse.json(
       { error: 'Missing urlCode parameter' },

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { parseResultTable } from '@/lib/parsers'
+import { parseResultsTable } from '@/lib/parsers'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 
 export async function GET(request: NextRequest) {
@@ -32,8 +32,8 @@ export async function GET(request: NextRequest) {
     }
 
     const html = await response.text()
-    const parsedResults = parseResultTable(html)
-    return NextResponse.json(parsedResults)
+    const parsed = parseResultsTable(html)
+    return NextResponse.json(parsed)
   } catch (error) {
     console.error('Error fetching results:', error)
     return NextResponse.json(

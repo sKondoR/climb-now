@@ -1,5 +1,5 @@
 import { parse } from 'parse5';
-import { ApiResponse, Group, Qualification, Result } from '@/types';
+import { ApiResponse, Group, QualItem, QualResultItem, SubGroupData, Results } from '@/types';
 
 const parseFragment = (html: string) => {
   const document = parse(html, { sourceCodeLocationInfo: true });
@@ -56,10 +56,30 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
   }
 };
 
-export const parseResultTable = (html: string): Result[] => {
+export const parseResultsTable = (html: string): SubGroupData => {
   const document = parseFragment(html);
+  const documentTitle = getTextContent(findElementsByTag(document, 'h1')[0]).toLowerCase();
+  const isLead = documentTitle.includes('трудность');
+  const isQualResult = documentTitle.includes('квалификация сводный');
+
+  console.log('> ', documentTitle);
+  const result = {
+    isLead,
+    isQualResult,
+    data: [] as Results,
+  }
+  if (isLead && isQualResult) {
+    result.data = parseQualSummaryResults(document);
+  }
+  if (isLead) {
+    result.data = parseQualResults(document);
+  }
+  return result;
+};
+
+export const parseQualResults = (document: any): QualItem[] => {
   const rows = findElementsByTag(document, 'tr');
-  const results: Result[] = [];
+  const results: QualItem[] = [];
   
   rows.forEach((row, index) => {
     if (index === 0) return; // Пропускаем заголовок
@@ -84,6 +104,43 @@ export const parseResultTable = (html: string): Result[] => {
   
   return results;
 };
+
+export const parseQualSummaryResults = (document: any): QualResultItem[] => {
+  const rows = findElementsByTag(document, 'tr');
+  const results: QualResultItem[] = [];
+  
+  rows.forEach((row, index) => {
+    if (index === 0) return; // Пропускаем заголовок
+    
+    const cells = findElementsByTag(row, 'td');
+    if (cells.length < 5) return;
+    
+    const rank = getTextContent(cells[0]) || '';
+    const name = getTextContent(cells[2]) || '-';
+    const score1 = getTextContent(cells[3]) || '';
+    const command = getTextContent(cells[4]) || '';
+    const mark1 = getTextContent(cells[5]) || '';
+    const score2 = getTextContent(cells[6]) || '';
+    const mark2 = getTextContent(cells[7]) || '';
+    const mark = getTextContent(cells[8]) || '';
+    
+    results.push({
+      rank,
+      name,
+      command,
+      score1,
+      mark1,
+      score2,
+      mark2,
+      mark,
+    });
+  });
+  
+  return results;
+};
+
+
+
 
 const findElementsByTag = (node: any, tagName: string): any[] => {
   const result: any[] = [];
