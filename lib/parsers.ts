@@ -11,27 +11,33 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
     const document = parseFragment(html);
     const groups: Group[] = [];
     
-    console.log('here');
-    // Найдем все элементы с классом g_title
-    const groupElements = findElementsByClass(document, 'g_title');
+   
+    // Найдем все ссылки на квалификации
+    const elements = findElementsByTag(document, 'div').filter(el => hasClass(el, 'g_title') || hasClass(el, 'p_l'));
     
-    groupElements.forEach((groupEl, index) => {
-      const title = getTextContent(groupEl) || `Группа ${index + 1}`;
+    let currentGroup: Group | null = null;
+    elements.forEach((element, index) => {
+      const title = getTextContent(element) || `Группа ${index + 1}`;
       
-      // Найдем ссылки на квалификации
-      const links = findElementsByClass(groupEl, 'p_l a');
-      const qualification1 = parseQualification(links[0], 'Квалификация 1');
-      const qualification2 = parseQualification(links[1], 'Квалификация 2');
-      const final = parseQualification(links[2], 'Квалификация сводный');
-      
-      groups.push({
-        id: `group-${index}`,
-        title,
-        isOnline: hasClass(groupEl, 'l_run'),
-        qualification1,
-        qualification2,
-        qualificationResult: final
-      });
+
+      if (hasClass(element, 'p_l') && currentGroup?.subgroups) {
+        currentGroup.subgroups.push({
+          id: `subgroup-${index}`,
+          title,
+          link: 'aaaa',
+          results: []
+        });
+      } else if (hasClass(element, 'g_title')) {
+        if (currentGroup) {
+          groups.push(currentGroup);
+        }
+        currentGroup = {
+          id: `group-${index}`,
+          title,
+          isOnline: hasClass(element, 'l_run'),
+          subgroups: []
+        }
+      }
     });
     
     return {
@@ -47,8 +53,7 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
 };
 
 const parseQualification = (link: any, title: string): Qualification => {
-  console.log('link: ', link);
-  if (!link) {
+  if (!link || !link.attrs) {
     return {
       id: title.toLowerCase().replace(/\s+/g, '-'),
       title,

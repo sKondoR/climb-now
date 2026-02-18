@@ -16,19 +16,29 @@ interface QualificationResults {
 }
 
 export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
-  const [activeTab, setActiveTab] = useState<'qualification1' | 'qualification2' | 'qualificationResult'>('qualification1')
+  // Initialize activeTab with first subgroup id if available, otherwise default to 'qualification1'
+  const [activeTab, setActiveTab] = useState<string>(
+    group.subgroups.length > 0 ? group.subgroups[0].id : 'qualification1'
+  )
+
+  // Sync activeTab with available subgroups
+  useEffect(() => {
+    if (group.subgroups.length > 0 && !group.subgroups.find(s => s.id === activeTab)) {
+      setActiveTab(group.subgroups[0].id)
+    }
+  }, [group.subgroups, activeTab])
   const [qualificationResults, setQualificationResults] = useState<QualificationResults>({})
   const isCityMatch = (city: string) => {
     return city.toLowerCase().includes(selectedCity.toLowerCase())
   }
 
-  const tabs = [
-    { id: 'qualification1', label: group.qualification1.title },
-    { id: 'qualification2', label: group.qualification2.title },
-    { id: 'qualificationResult', label: group.qualificationResult.title }
-  ]
+  const tabs = group.subgroups.map(subgroup => ({
+    id: subgroup.id,
+    label: subgroup.title
+  }))
 
   const loadResults = async (qualification: Qualification) => {
+    console.log('loadResults start ', qualification)
     if (!qualification.id || !qualification.id.includes('qualification')) return
     
     setQualificationResults(prev => ({
@@ -59,32 +69,40 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
     }
   }
 
+  // Load results for current active tab
   useEffect(() => {
-    const currentQualification = activeTab === 'qualification1' ? group.qualification1 :
-                              activeTab === 'qualification2' ? group.qualification2 :
-                              group.qualificationResult
-    loadResults(currentQualification)
-  }, [activeTab, group])
 
+    const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
+    console.log('loadResults ', currentSubgroup?.id);
+    if (currentSubgroup) {
+      loadResults(currentSubgroup)
+    }
+  }, [activeTab])
+
+  // Auto-refresh results every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
-      const currentQualification = activeTab === 'qualification1' ? group.qualification1 :
-                                activeTab === 'qualification2' ? group.qualification2 :
-                                group.qualificationResult
-      loadResults(currentQualification)
+      const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
+      if (currentSubgroup) {
+        loadResults(currentSubgroup)
+      }
     }, 30000)
     
     return () => clearInterval(interval)
   }, [activeTab, group])
 
-  const renderTable = (qualification: Qualification) => {
+  const renderTable = (qualification: Qualification | undefined) => {
+    if (!qualification) return null;
     const currentResults = qualificationResults[qualification.id]
     const results = currentResults?.results || qualification.results
+    
+    // Use subgroup title instead of qualification title to ensure consistency
+    const displayTitle = group.subgroups.find(s => s.id === qualification.id)?.title || qualification.title
     
     return (
       <div className="mt-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
-          {qualification.title}
+          {displayTitle}
           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
             {results.length} пролезло
           </span>
@@ -180,15 +198,13 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
             {group.title}
           </h2>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-500">
-              {group.qualification1.results.length + 
-               group.qualification2.results.length + 
-               group.qualificationResult.results.length} всего
-            </span>
             <button
-              onClick={() => loadResults(activeTab === 'qualification1' ? group.qualification1 :
-                                        activeTab === 'qualification2' ? group.qualification2 :
-                                        group.qualificationResult)}
+              onClick={() => {
+                const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
+                if (currentSubgroup) {
+                  loadResults(currentSubgroup)
+                }
+              }}
               className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
             >
               Обновить
@@ -198,10 +214,13 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
         
         {/* Табы */}
         <div className="flex space-x-1 mb-4">
-          {tabs.map(tab => (
+          {tabs.map((tab, index) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as 'qualification1' | 'qualification2' | 'qualificationResult')}
+              onClick={() => {
+                console.log('click');
+                setActiveTab(tab.id)
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-blue-600 text-white'
@@ -214,9 +233,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
         </div>
         
         {/* Контент табов */}
-        {activeTab === 'qualification1' && renderTable(group.qualification1)}
-        {activeTab === 'qualification2' && renderTable(group.qualification2)}
-        {activeTab === 'qualificationResult' && renderTable(group.qualificationResult)}
+        {renderTable(group.subgroups.find(subgroup => subgroup.id === activeTab))}
       </div>
     </div>
   )

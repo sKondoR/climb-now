@@ -8,9 +8,7 @@ export interface Group {
   id: string
   title: string
   isOnline: boolean
-  qualification1: Qualification
-  qualification2: Qualification
-  qualificationResult: Qualification
+  subgroups: Qualification[]
 }
 
 export interface Qualification {
