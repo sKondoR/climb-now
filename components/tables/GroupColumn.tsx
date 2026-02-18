@@ -29,7 +29,7 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
   }, [group.subgroups, activeTab])
   const [qualificationResults, setQualificationResults] = useState<QualificationResults>({})
   const isCityMatch = (city: string) => {
-    return city.toLowerCase().includes(selectedCity.toLowerCase())
+    return selectedCity && city.toLowerCase() === selectedCity.toLowerCase()
   }
 
   const tabs = group.subgroups.map(subgroup => ({
@@ -116,7 +116,7 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
             <tbody>
               {currentResults?.isLoading && (
                 <tr className="border-b">
-                  <td colSpan={4} className="px-4 py-4 text-center">
+                  <td colSpan={5} className="px-4 py-4 text-center">
                     <div className="flex items-center justify-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                       <span className="text-gray-600">Загрузка результатов...</span>
@@ -127,13 +127,13 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
               
               {currentResults?.error && (
                 <tr className="border-b">
-                  <td colSpan={4} className="px-4 py-4 text-center text-red-500">
+                  <td colSpan={5} className="px-4 py-4 text-center text-red-500">
                     Ошибка загрузки: {currentResults.error}
                   </td>
                 </tr>
               )}
               
-              {results.map((result: Result, index: number) => (
+              {results.map((result: Result) => (
                 <tr
                   key={result.name}
                   className={`border-b transition-colors ${
@@ -142,7 +142,6 @@ export default function GroupColumn({ group, selectedCity, urlCode }: GroupColum
                 >
                   <td className="px-4 py-2 text-center font-medium">{result.rank}</td>
                   <td className="px-4 py-2 text-center font-medium">{result.stRank}</td>
-                  <td className="px-4 py-2 text-center font-medium">{index + 1}</td>
                   <td className="px-4 py-2">
                     <span className="font-medium">
                       {result.name}
