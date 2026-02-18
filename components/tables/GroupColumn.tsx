@@ -99,6 +99,7 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
     const currentResults = qualificationResults[qualification.id]
     const results = currentResults?.results || qualification.results
     const filteredResults = filterResultsByCity(results)
+    const climbedCount = results.filter(result => result.score !== '').length;
     
     // Use subgroup title instead of qualification title to ensure consistency
     const displayTitle = group.subgroups.find(s => s.id === qualification.id)?.title || qualification.title
@@ -108,7 +109,7 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
           {displayTitle}
           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {filteredResults.length} пролезло
+            {climbedCount} / {results.length} пролезло
           </span>
         </h3>
         <div className="overflow-x-auto">
