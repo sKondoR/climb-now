@@ -60,7 +60,17 @@ export default function ResultsForm({ onCityChange, onResultsUpdate }: ResultsFo
     if (urlInput) {
       urlInput.focus()
     }
-  }, [])
+    
+    // Начальный запрос если url и city не пустые
+    if (url.trim() && city.trim()) {
+      fetchResults(url).then(data => {
+        onResultsUpdate(data)
+      }).catch(error => {
+        console.error('Error fetching initial results:', error)
+        onResultsUpdate(null)
+      })
+    }
+  }, [url, city, onResultsUpdate])
 
   return (
     <div className="space-y-4">
