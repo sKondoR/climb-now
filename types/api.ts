@@ -27,9 +27,9 @@ export interface QualItem {
   command: string
   score: string
 }
+
 export interface QualResultItem {
   rank: string
-  stRank?: string // toDo: removes
   name: string
   command: string
   score1: string

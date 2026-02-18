@@ -1,3 +1,4 @@
+import { SubGroupData } from '@/types'
 import { useState, useEffect } from 'react'
 
 interface UseResultsOptions {
@@ -7,6 +8,8 @@ interface UseResultsOptions {
 
 interface UseResultsState {
   results: any[]
+  isLead: boolean | null
+  isQualResult: boolean | null
   isLoading: boolean
   error: string | null
 }
@@ -14,6 +17,8 @@ interface UseResultsState {
 export default function useResults({ urlCode, subgroupLink }: UseResultsOptions) {
   const [state, setState] = useState<UseResultsState>({
     results: [],
+    isLead: null,
+    isQualResult: null,
     isLoading: false,
     error: null
   })
@@ -27,8 +32,8 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
-      const { data: results } = await response.json()
-      setState({ results, isLoading: false, error: null })
+      const { data: results, isLead, isQualResult }: SubGroupData = await response.json()
+      setState({ results, isLead, isQualResult, isLoading: false, error: null })
     } catch (error) {
       setState(prev => ({
         ...prev,
@@ -41,7 +46,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
   // Auto-refresh results every 30 seconds
   useEffect(() => {
       loadResults()
-  }, [urlCode, subgroupLink])
+  }, [urlCode, subgroupLink, state.isQualResult])
 
   return { ...state, loadResults }
 }
