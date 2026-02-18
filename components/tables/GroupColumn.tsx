@@ -55,14 +55,11 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
       [subgroup.id]: { results: [], isLoading: true, error: null }
     }))
     try {
-      const response = await fetch(`/api/results/${urlCode}/${subgroup.link}`)
+      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroup.link}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
-      
-      const html = await response.text()
-      const results = parseResultTable(html)
-      
+      const results = await response.json()      
       setQualificationResults(prev => ({
         ...prev,
         [subgroup.id]: { results, isLoading: false, error: null }
