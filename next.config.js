@@ -15,7 +15,7 @@ const nextConfig = {
         headers: [
           {
             key: 'X-Timeout',
-            value: '100',
+            value: '300',
           },
         ],
       },

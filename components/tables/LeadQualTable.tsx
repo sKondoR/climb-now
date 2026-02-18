@@ -107,24 +107,3 @@ export default function LeadQualTable({
       </div>
     )
   }
-
-
-//   <td className="px-4 py-2 text-center font-medium">{result.rank}</td>
-// <td className="px-4 py-2 text-center font-medium">{result.stRank}</td>
-// <td className="px-4 py-2">
-//   <span className="font-medium">
-//     {result.name}
-//   </span>
-// </td>
-// <td className="px-4 py-2">
-//   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs ${
-//     isCityMatch(result.command, selectedCity)
-//       ? 'bg-blue-100 text-blue-800' 
-//       : 'bg-gray-100 text-gray-800'
-//   }`}>
-//     {result.command}
-//   </span>
-// </td>
-// <td className="px-4 py-2 text-center">{
-//   'score' in result ? result.score : result.score1
-// }</td>
