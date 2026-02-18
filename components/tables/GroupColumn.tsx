@@ -1,4 +1,4 @@
-import { Group, Subgroup, SubgroupResults } from '@/types'
+import { Group } from '@/types'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
@@ -22,58 +22,11 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
       setActiveTab(group.subgroups[0].id)
     }
   }, [group.subgroups, activeTab])
-  const [subgroupResults, setSubgroupResults] = useState<SubgroupResults>({})
 
   const tabs = group.subgroups.map(subgroup => ({
     id: subgroup.id,
     label: subgroup.title
   }))
-
-  const loadResults = async (subgroup: Subgroup) => {
-    if (!subgroup.link) return
-    
-    setSubgroupResults(prev => ({
-      ...prev,
-      [subgroup.id]: { results: [], isLoading: true, error: null }
-    }))
-    try {
-      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroup.link}`)
-      if (!response.ok) {
-        throw new Error(`Failed to fetch results: ${response.statusText}`)
-      }
-      const { data: results } = await response.json()      
-      setSubgroupResults(prev => ({
-        ...prev,
-        [subgroup.id]: { results, isLoading: false, error: null }
-      }))
-      
-    } catch (error) {
-      setSubgroupResults(prev => ({
-        ...prev,
-        [subgroup.id]: { results: [], isLoading: false, error: error instanceof Error ? error.message : 'Unknown error' }
-      }))
-    }
-  }
-
-  // Load results for current active tab
-  useEffect(() => {
-    const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
-    if (currentSubgroup) {
-      loadResults(currentSubgroup)
-    }
-  }, [activeTab])
-
-  // Auto-refresh results every 30 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
-      if (currentSubgroup) {
-        loadResults(currentSubgroup)
-      }
-    }, 30000)
-    
-    return () => clearInterval(interval)
-  }, [activeTab, group])
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
@@ -88,7 +41,6 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
               onClick={() => {
                 const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
                 if (currentSubgroup) {
-                  loadResults(currentSubgroup)
                 }
               }}
             />
@@ -117,7 +69,7 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
         {/* Контент табов */}
         <LeadQualTable
           subGroup={group.subgroups.find(s => s.id === activeTab)}
-          subgroupResults={subgroupResults}
+          urlCode={urlCode}
           isCityFilterEnabled={isCityFilterEnabled}
           selectedCity={selectedCity}
         />

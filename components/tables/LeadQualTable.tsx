@@ -1,31 +1,36 @@
 import { isCityMatch } from '@/lib/isCityMatch';
 import { Subgroup, Results, SubgroupResults } from '@/types'
+import useResults from '@/lib/hooks/useResults'
 
 export default function LeadQualTable({
   subGroup,
-  subgroupResults,
+  urlCode,
   isCityFilterEnabled,
   selectedCity,
 }: {
   subGroup: Subgroup | undefined,
-  subgroupResults: SubgroupResults,
+  urlCode: string,
   isCityFilterEnabled: boolean,
   selectedCity: string,
 }) {
     if (!subGroup) return null;
-    const currentResults = subgroupResults[subGroup.id]
-    const results = currentResults?.results || subGroup.results
-    if (!results) return null;
-
-  const filterResultsByCity = (results: Results) => {
-    if (!isCityFilterEnabled || !selectedCity) {
-      return results
+    
+    const { results, isLoading, error } = useResults({
+      urlCode,
+      subgroupLink: subGroup.link
+    })
+    
+    const filterResultsByCity = (results: Results) => {
+      if (!isCityFilterEnabled || !selectedCity) {
+        return results
+      }
+      return results.filter((result, index) => index===0 || isCityMatch(result.command, selectedCity))
     }
-    return results.filter((result, index) => index===0 || isCityMatch(result.command, selectedCity))
-  }
 
     const filteredResults: Results = filterResultsByCity(results)
-    const climbedCount = results.filter((result) => result.score !== '').length;
+    const climbedCount = results.filter((result) => 
+      'score' in result ? result.score !== '' : result.score1 !== ''
+    ).length;
 
     return (
       <div className="mt-4">
@@ -47,7 +52,7 @@ export default function LeadQualTable({
               </tr>
             </thead>
             <tbody>
-              {currentResults?.isLoading && (
+              {isLoading && (
                 <tr className="border-b">
                   <td colSpan={5} className="px-4 py-4 text-center">
                     <div className="flex items-center justify-center space-x-2">
@@ -58,10 +63,10 @@ export default function LeadQualTable({
                 </tr>
               )}
               
-              {currentResults?.error && (
+              {error && (
                 <tr className="border-b">
                   <td colSpan={5} className="px-4 py-4 text-center text-red-500">
-                    Ошибка загрузки: {currentResults.error}
+                    Ошибка загрузки: {error}
                   </td>
                 </tr>
               )}
@@ -89,12 +94,14 @@ export default function LeadQualTable({
                       {result.command}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-center">{result.score}</td>
+                  <td className="px-4 py-2 text-center">{
+                    'score' in result ? result.score : result.score1
+                  }</td>
                 </tr>
               ))}
               
               {/* Сообщение если нет результатов */}
-              {filteredResults.length === 0 && !currentResults?.isLoading && !currentResults?.error && (
+              {filteredResults.length === 0 && !isLoading && !error && (
                 <tr className="border-b">
                   <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
                     Результаты пока не доступны
