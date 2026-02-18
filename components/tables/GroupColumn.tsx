@@ -16,7 +16,7 @@ interface QualificationResults {
 }
 
 export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
-  const [activeTab, setActiveTab] = useState<'qualification1' | 'qualification2' | 'final'>('qualification1')
+  const [activeTab, setActiveTab] = useState<'qualification1' | 'qualification2' | 'qualificationResult'>('qualification1')
   const [qualificationResults, setQualificationResults] = useState<QualificationResults>({})
   const isCityMatch = (city: string) => {
     return city.toLowerCase().includes(selectedCity.toLowerCase())
@@ -25,7 +25,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
   const tabs = [
     { id: 'qualification1', label: group.qualification1.title },
     { id: 'qualification2', label: group.qualification2.title },
-    { id: 'final', label: group.final.title }
+    { id: 'qualificationResult', label: group.qualificationResult.title }
   ]
 
   const loadResults = async (qualification: Qualification) => {
@@ -37,7 +37,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
     }))
     
     try {
-      const response = await fetch(`https://c-f-r.ru/live/${group.link}/${qualification.id}.html`)
+      const response = await fetch(`https://c-f-r.ru/live/${group.id}/${qualification.id}.html`)
       
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
@@ -62,7 +62,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
   useEffect(() => {
     const currentQualification = activeTab === 'qualification1' ? group.qualification1 :
                               activeTab === 'qualification2' ? group.qualification2 :
-                              group.final
+                              group.qualificationResult
     loadResults(currentQualification)
   }, [activeTab, group])
 
@@ -70,7 +70,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
     const interval = setInterval(() => {
       const currentQualification = activeTab === 'qualification1' ? group.qualification1 :
                                 activeTab === 'qualification2' ? group.qualification2 :
-                                group.final
+                                group.qualificationResult
       loadResults(currentQualification)
     }, 30000)
     
@@ -123,7 +123,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
                 <tr
                   key={result.name}
                   className={`border-b hover:bg-gray-50 transition-colors ${
-                    isCityMatch(result.city) ? 'bg-blue-50 border-blue-200' : ''
+                    isCityMatch(result.command) ? 'bg-blue-50 border-blue-200' : ''
                   }`}
                 >
                   <td className="px-4 py-2 text-center font-medium">{result.rank}</td>
@@ -134,14 +134,14 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
                   </td>
                   <td className="px-4 py-2">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs ${
-                      isCityMatch(result.city) 
+                      isCityMatch(result.command) 
                         ? 'bg-blue-100 text-blue-800' 
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {result.city}
+                      {result.command}
                     </span>
                   </td>
-                  <td className="px-4 py-2 text-center">{result.points}</td>
+                  <td className="px-4 py-2 text-center">{result.score}</td>
                 </tr>
               ))}
               
@@ -183,12 +183,12 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
             <span className="text-sm text-gray-500">
               {group.qualification1.results.length + 
                group.qualification2.results.length + 
-               group.final.results.length} всего
+               group.qualificationResult.results.length} всего
             </span>
             <button
               onClick={() => loadResults(activeTab === 'qualification1' ? group.qualification1 :
                                         activeTab === 'qualification2' ? group.qualification2 :
-                                        group.final)}
+                                        group.qualificationResult)}
               className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
             >
               Обновить
@@ -201,7 +201,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
           {tabs.map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as 'qualification1' | 'qualification2' | 'final')}
+              onClick={() => setActiveTab(tab.id as 'qualification1' | 'qualification2' | 'qualificationResult')}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeTab === tab.id
                   ? 'bg-blue-600 text-white'
@@ -216,7 +216,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
         {/* Контент табов */}
         {activeTab === 'qualification1' && renderTable(group.qualification1)}
         {activeTab === 'qualification2' && renderTable(group.qualification2)}
-        {activeTab === 'final' && renderTable(group.final)}
+        {activeTab === 'qualificationResult' && renderTable(group.qualificationResult)}
       </div>
     </div>
   )

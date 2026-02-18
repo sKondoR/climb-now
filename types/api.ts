@@ -7,25 +7,24 @@ export interface ApiResponse {
 export interface Group {
   id: string
   title: string
-  link: string
   isOnline: boolean
   qualification1: Qualification
   qualification2: Qualification
-  final: Qualification
+  qualificationResult: Qualification
 }
 
 export interface Qualification {
   id: string
   title: string
+  link: string
   results: Result[]
 }
 
 export interface Result {
   rank: number
   name: string
-  city: string
-  points: number
-  attempts: string
+  command: string
+  score: number
 }
 
 export interface GroupUpdate {
@@ -33,5 +32,5 @@ export interface GroupUpdate {
   title: string
   qualification1: Qualification
   qualification2: Qualification
-  final: Qualification
+  qualificationResult: Qualification
 }

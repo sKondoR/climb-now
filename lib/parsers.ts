@@ -1,5 +1,5 @@
 import { parse } from 'parse5';
-import { ApiResponse, Group, Qualification, Result } from '@/types/api';
+import { ApiResponse, Group, Qualification, Result } from '@/types';
 
 const parseFragment = (html: string) => {
   const document = parse(html, { sourceCodeLocationInfo: true });
@@ -26,11 +26,10 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
       groups.push({
         id: `group-${index}`,
         title,
-        link: links[0]?.attrs?.find(a => a.name === 'href')?.value || '',
         isOnline: hasClass(groupEl, 'l_run'),
         qualification1,
         qualification2,
-        final
+        qualificationResult: final
       });
     });
     
@@ -51,15 +50,17 @@ const parseQualification = (link: any, title: string): Qualification => {
     return {
       id: title.toLowerCase().replace(/\s+/g, '-'),
       title,
+      link: '',
       results: []
     };
   }
   
-  const href = link.attrs?.find(a => a.name === 'href')?.value || '';
+  const href = link.attrs?.find((a: any) => a.name === 'href')?.value || '';
   const results: Result[] = [];
   
   return {
     id: href.replace(/\.html$/, ''),
+    link: href,
     title,
     results
   };
@@ -78,16 +79,14 @@ export const parseResultTable = (html: string): Result[] => {
     
     const rank = parseInt(getTextContent(cells[0]) || '0');
     const name = getTextContent(cells[1]) || '';
-    const city = getTextContent(cells[2]) || '';
-    const points = parseFloat(getTextContent(cells[3]) || '0');
-    const attempts = getTextContent(cells[4]) || '';
+    const command = getTextContent(cells[2]) || '';
+    const score = parseFloat(getTextContent(cells[3]) || '0');
     
     results.push({
       rank,
       name,
-      city,
-      points,
-      attempts
+      command,
+      score,
     });
   });
   

@@ -18,70 +18,6 @@ export const fetchResults = async (urlCode: string): Promise<ApiResponse | null>
   }
 }
 
-const parseResults = (html: string, urlCode: string): ApiResponse | null => {
-  try {
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(html, 'text/html')
-    
-    // Парсинг групп
-    const groupElements = doc.querySelectorAll('.g_title')
-    const groups: Group[] = []
-    
-    groupElements.forEach((groupEl, index) => {
-      const title = groupEl.textContent?.trim() || `Группа ${index + 1}`
-      
-      // Парсинг ссылок на квалификации
-      const links = groupEl.nextElementSibling?.querySelectorAll('.p_l a') || []
-      const qualification1 = parseQualification(links[0], 'Квалификация 1')
-      const qualification2 = parseQualification(links[1], 'Квалификация 2')
-      const final = parseQualification(links[2], 'Квалификация сводный')
-      
-      groups.push({
-        id: `group-${index}`,
-        title,
-        link: links[0]?.getAttribute('href') || '',
-        isOnline: groupEl.classList.contains('l_run'),
-        qualification1,
-        qualification2,
-        final
-      })
-    })
-    
-    return {
-      groups,
-      url: urlCode,
-      city: ''
-    }
-    
-  } catch (error) {
-    console.error('Error parsing HTML:', error)
-    return null
-  }
-}
-
-const parseQualification = (link: Element | null, title: string): Qualification => {
-  if (!link) {
-    return {
-      id: title.toLowerCase().replace(/\s+/g, '-'),
-      title,
-      results: []
-    }
-  }
-  
-  const href = link.getAttribute('href') || ''
-  const results: Result[] = []
-  
-  // Заглушка для парсинга результатов
-  // В реальности здесь будет логика парсинга таблицы результатов
-  // Например, fetch(`https://c-f-r.ru/live/${urlCode}/${href}`)
-  
-  return {
-    id: href.replace(/\.html$/, ''),
-    title,
-    results
-  }
-}
-
 export const parseResultTable = (html: string): Result[] => {
   const parser = new DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
@@ -97,16 +33,14 @@ export const parseResultTable = (html: string): Result[] => {
     
     const rank = parseInt(cells[0].textContent?.trim() || '0')
     const name = cells[1].textContent?.trim() || ''
-    const city = cells[2].textContent?.trim() || ''
-    const points = parseFloat(cells[3].textContent?.trim() || '0')
-    const attempts = cells[4].textContent?.trim() || ''
+    const command = cells[2].textContent?.trim() || ''
+    const score = parseFloat(cells[3].textContent?.trim() || '0')
     
     results.push({
       rank,
       name,
-      city,
-      points,
-      attempts
+      command,
+      score,
     })
   })
   
@@ -131,7 +65,7 @@ export const updateAllGroupTables = (groups: Group[]): void => {
       title: group.title,
       qualification1: group.qualification1,
       qualification2: group.qualification2,
-      final: group.final
+      qualificationResult: group.qualificationResult
     }
     
     // Отправка данных на сервер для обновления
