@@ -12,7 +12,15 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`https://c-f-r.ru/live/${urlCode}/index.html`, { cache: 'no-store' })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10000)
+    
+    const response = await fetch(`https://c-f-r.ru/live/${urlCode}/index.html`, {
+      cache: 'no-store',
+      signal: controller.signal
+    })
+    
+    clearTimeout(timeout)
     
     if (!response.ok) {
       return NextResponse.json(

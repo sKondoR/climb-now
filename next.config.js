@@ -8,6 +8,19 @@ const nextConfig = {
     };
     return config;
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Timeout',
+            value: '100',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

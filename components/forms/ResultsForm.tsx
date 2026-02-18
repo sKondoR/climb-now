@@ -1,8 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { ApiResponse } from '@/types/api'
-import { fetchResults } from '@/lib/api'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
+import { fetchResults } from '@/lib/api'
 
 interface ResultsFormProps {
   onCityChange: (city: string) => void

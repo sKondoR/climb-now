@@ -7,6 +7,9 @@ export async function GET(
   try {
     const { urlCode, subgroupLink } = params
     
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 10000)
+    
     const response = await fetch(
       `https://c-f-r.ru/live/${urlCode}/${subgroupLink}`,
       {
@@ -14,8 +17,11 @@ export async function GET(
         headers: {
           'User-Agent': 'Next.js API Client',
         },
+        signal: controller.signal
       }
     )
+    
+    clearTimeout(timeout)
 
     if (!response.ok) {
       return NextResponse.json(
