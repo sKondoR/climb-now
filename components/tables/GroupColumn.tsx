@@ -181,18 +181,6 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
             </tbody>
           </table>
         </div>
-        
-        {/* Статистика */}
-        {filteredResults.length > 0 && (
-          <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
-            <div>
-              Лучший: {filteredResults[0].name}
-            </div>
-            <div>
-              Всего: {filteredResults.length} скалолазов
-            </div>
-          </div>
-        )}
       </div>
     )
   }

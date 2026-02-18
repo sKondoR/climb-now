@@ -39,6 +39,10 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
         }
       }
     });
+    if (currentGroup) {
+      groups.push(currentGroup);
+      currentGroup = null;
+    }
     
     return {
       groups,
