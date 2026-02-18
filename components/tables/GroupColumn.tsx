@@ -1,4 +1,5 @@
 import { Group, Qualification, Result } from '@/types'
+import { useState } from 'react'
 
 interface GroupColumnProps {
   group: Group
@@ -6,9 +7,16 @@ interface GroupColumnProps {
 }
 
 export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
+  const [activeTab, setActiveTab] = useState<'qualification1' | 'qualification2' | 'final'>('qualification1')
   const isCityMatch = (city: string) => {
     return city.toLowerCase().includes(selectedCity.toLowerCase())
   }
+
+  const tabs = [
+    { id: 'qualification1', label: group.qualification1.title },
+    { id: 'qualification2', label: group.qualification2.title },
+    { id: 'final', label: group.final.title }
+  ]
 
   const renderTable = (qualification: Qualification) => {
     return (
@@ -99,9 +107,27 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
           </div>
         </div>
         
-        {renderTable(group.qualification1)}
-        {renderTable(group.qualification2)}
-        {renderTable(group.final)}
+        {/* Табы */}
+        <div className="flex space-x-1 mb-4">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as 'qualification1' | 'qualification2' | 'final')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        
+        {/* Контент табов */}
+        {activeTab === 'qualification1' && renderTable(group.qualification1)}
+        {activeTab === 'qualification2' && renderTable(group.qualification2)}
+        {activeTab === 'final' && renderTable(group.final)}
       </div>
     </div>
   )
