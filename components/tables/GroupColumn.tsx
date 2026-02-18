@@ -1,13 +1,23 @@
 import { Group, Qualification, Result } from '@/types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { parseResultTable } from '@/lib/parsers'
 
 interface GroupColumnProps {
   group: Group
   selectedCity: string
 }
 
+interface QualificationResults {
+  [key: string]: {
+    results: Result[]
+    isLoading: boolean
+    error: string | null
+  }
+}
+
 export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
   const [activeTab, setActiveTab] = useState<'qualification1' | 'qualification2' | 'final'>('qualification1')
+  const [qualificationResults, setQualificationResults] = useState<QualificationResults>({})
   const isCityMatch = (city: string) => {
     return city.toLowerCase().includes(selectedCity.toLowerCase())
   }
@@ -18,13 +28,65 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
     { id: 'final', label: group.final.title }
   ]
 
+  const loadResults = async (qualification: Qualification) => {
+    if (!qualification.id || !qualification.id.includes('qualification')) return
+    
+    setQualificationResults(prev => ({
+      ...prev,
+      [qualification.id]: { results: [], isLoading: true, error: null }
+    }))
+    
+    try {
+      const response = await fetch(`https://c-f-r.ru/live/${group.link}/${qualification.id}.html`)
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch results: ${response.statusText}`)
+      }
+      
+      const html = await response.text()
+      const results = parseResultTable(html)
+      
+      setQualificationResults(prev => ({
+        ...prev,
+        [qualification.id]: { results, isLoading: false, error: null }
+      }))
+      
+    } catch (error) {
+      setQualificationResults(prev => ({
+        ...prev,
+        [qualification.id]: { results: [], isLoading: false, error: error instanceof Error ? error.message : 'Unknown error' }
+      }))
+    }
+  }
+
+  useEffect(() => {
+    const currentQualification = activeTab === 'qualification1' ? group.qualification1 :
+                              activeTab === 'qualification2' ? group.qualification2 :
+                              group.final
+    loadResults(currentQualification)
+  }, [activeTab, group])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentQualification = activeTab === 'qualification1' ? group.qualification1 :
+                                activeTab === 'qualification2' ? group.qualification2 :
+                                group.final
+      loadResults(currentQualification)
+    }, 30000)
+    
+    return () => clearInterval(interval)
+  }, [activeTab, group])
+
   const renderTable = (qualification: Qualification) => {
+    const currentResults = qualificationResults[qualification.id]
+    const results = currentResults?.results || qualification.results
+    
     return (
       <div className="mt-4">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
           {qualification.title}
           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {qualification.results.length} пролезло
+            {results.length} пролезло
           </span>
         </h3>
         <div className="overflow-x-auto">
@@ -38,7 +100,26 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
               </tr>
             </thead>
             <tbody>
-              {qualification.results.map((result: Result) => (
+              {currentResults?.isLoading && (
+                <tr className="border-b">
+                  <td colSpan={4} className="px-4 py-4 text-center">
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                      <span className="text-gray-600">Загрузка результатов...</span>
+                    </div>
+                  </td>
+                </tr>
+              )}
+              
+              {currentResults?.error && (
+                <tr className="border-b">
+                  <td colSpan={4} className="px-4 py-4 text-center text-red-500">
+                    Ошибка загрузки: {currentResults.error}
+                  </td>
+                </tr>
+              )}
+              
+              {results.map((result: Result) => (
                 <tr
                   key={result.name}
                   className={`border-b hover:bg-gray-50 transition-colors ${
@@ -65,7 +146,7 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
               ))}
               
               {/* Сообщение если нет результатов */}
-              {qualification.results.length === 0 && (
+              {results.length === 0 && !currentResults?.isLoading && !currentResults?.error && (
                 <tr className="border-b">
                   <td colSpan={4} className="px-4 py-4 text-center text-gray-500">
                     Результаты пока не доступны
@@ -77,13 +158,13 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
         </div>
         
         {/* Статистика */}
-        {qualification.results.length > 0 && (
+        {results.length > 0 && (
           <div className="mt-3 flex items-center justify-between text-sm text-gray-600">
             <div>
-              Лучший: {qualification.results[0].name}
+              Лучший: {results[0].name}
             </div>
             <div>
-              Всего: {qualification.results.length} скалолазов
+              Всего: {results.length} скалолазов
             </div>
           </div>
         )}
@@ -104,6 +185,14 @@ export default function GroupColumn({ group, selectedCity }: GroupColumnProps) {
                group.qualification2.results.length + 
                group.final.results.length} всего
             </span>
+            <button
+              onClick={() => loadResults(activeTab === 'qualification1' ? group.qualification1 :
+                                        activeTab === 'qualification2' ? group.qualification2 :
+                                        group.final)}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+            >
+              Обновить
+            </button>
           </div>
         </div>
         
