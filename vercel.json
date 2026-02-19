@@ -24,8 +24,15 @@
         {
           "key": "Cache-Control",
           "value": "no-cache"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
         }
       ]
     }
-  ]
+  ],
+  "env": {
+    "API_TIMEOUT": "60000"
+  }
 }

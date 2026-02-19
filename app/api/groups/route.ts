@@ -1,15 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { parseResults } from '@/lib/parsers'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
+import { ApiError, handleApiError } from '@/lib/errorHandler'
 
 export async function GET(request: NextRequest) {
   const urlCode = request.nextUrl.searchParams.get('urlCode')
   
   if (!urlCode) {
-    return NextResponse.json(
-      { error: 'Missing urlCode parameter' },
-      { status: 400 }
-    )
+    throw new ApiError('Missing urlCode parameter', 400)
   }
 
   try {
@@ -37,10 +35,7 @@ export async function GET(request: NextRequest) {
       clearTimeout(timeoutId)
       
       if (!response.ok) {
-        return NextResponse.json(
-          { error: `Failed to fetch results from external API: ${response.statusText}` },
-          { status: response.status }
-        )
+        throw new ApiError(`Failed to fetch results from external API: ${response.statusText}`, response.status)
       }
 
       const html = await response.text()
@@ -49,27 +44,9 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(parsedResults)
     } catch (error) {
       clearTimeout(timeoutId)
-      // Handle network errors specifically
-      if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch failed')) {
-        console.error('Network error while fetching external results:', error)
-        return NextResponse.json(
-          { error: 'External API connection failed. Please try again later.' },
-          { status: 502 }
-        )
-      }
       throw error
     }
   } catch (error) {
-    console.error('Error fetching external results:', error)
-    if (error instanceof Error && error.name === 'AbortError') {
-      return NextResponse.json(
-        { error: 'Request timed out. Please try again later.' },
-        { status: 504 }
-      )
-    }
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return handleApiError(error)
   }
 }

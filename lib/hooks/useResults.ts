@@ -40,11 +40,20 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     } catch (error) {
       // Логируем ошибку для диагностики
       console.error('Error in loadResults:', error)
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }))
+      // Проверяем, является ли ошибка таймаутом
+      if (error instanceof Error && error.name === 'AbortError') {
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: 'Request timeout. Please try again later.'
+        }))
+      } else {
+        setState(prev => ({
+          ...prev,
+          isLoading: false,
+          error: error instanceof Error ? error.message : 'Unknown error'
+        }))
+      }
     }
   }
 

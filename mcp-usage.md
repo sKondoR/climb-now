@@ -17,6 +17,7 @@
 
 ## для запуска Serena MCP Server (Символьная Навигация)
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+uv cache clean
 uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context ide --project .
 
 ## для запуска Context7 MCP Server (Документация Библиотек)

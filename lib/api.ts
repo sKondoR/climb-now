@@ -35,8 +35,12 @@ export const fetchResults = async (urlCode: string): Promise<ApiResponse | null>
   }
   
   // Обрабатываем специфические ошибки
-  if (lastError && lastError.name === 'AbortError') {
-    console.error('Fetch request timed out for urlCode:', urlCode)
+  if (lastError) {
+    if (lastError.name === 'AbortError') {
+      console.error('Fetch request timed out for urlCode:', urlCode)
+    } else if (lastError.name === 'TypeError' && lastError.message.includes('fetch failed')) {
+      console.error('Network error occurred for urlCode:', urlCode, lastError.message)
+    }
   }
   return null
 }
