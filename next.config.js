@@ -8,6 +8,7 @@ const nextConfig = {
     };
     return config;
   },
+   staticPageGenerationTimeout: 120,
   async headers() {
     return [
       {
