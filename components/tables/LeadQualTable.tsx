@@ -57,7 +57,7 @@ export default function LeadQualTable({
             <thead>
               <tr className="border-b">
                 {config.map((col) => (
-                  <th key={col.id} className={`text-left px-4 py-2 ${col.name === NAME_COL ? '' : 'w-6'}`}>
+                  <th key={col.id} className={`text-left px-2 py-1 ${col.name === NAME_COL ? '' : 'w-4'}`}>
                     {col.name}
                   </th>
                 ))}
@@ -72,7 +72,7 @@ export default function LeadQualTable({
                   {config.map((col) => {
                     const value = result[col.prop as keyof typeof result];
                     return (
-                      <td key={col.id} className="px-4 py-2 text-left font-medium">
+                      <td key={col.id} className="px-2 py-1 text-left font-medium">
                         {value}
                       </td>
                     );
@@ -83,7 +83,7 @@ export default function LeadQualTable({
               {/* Сообщение если нет результатов */}
               {filteredResults.length === 0 && !isLoading && !error && (
                 <tr className="border-b">
-                  <td colSpan={config.length} className="px-4 py-4 text-center text-gray-500">
+                  <td colSpan={config.length} className="px-2 py-1 text-center text-gray-500">
                     Результаты пока не доступны
                   </td>
                 </tr>

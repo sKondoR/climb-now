@@ -32,7 +32,7 @@ export default function HomePage() {
      {/* Form Section */}
       <header className="bg-white py-5 border-b border-b-gray-300">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-around items-center">
+          <div className="flex flex-wrap justify-around items-center">
             <div>
               <div className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500  bg-clip-text text-transparent">
                 ClimbNow

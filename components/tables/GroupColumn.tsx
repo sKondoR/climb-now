@@ -41,14 +41,14 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
         </div>
         
         {/* Табы */}
-        <div className="flex space-x-1 mb-4">
+        <div className="flex flex-wrap space-x-1 mb-3">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => {
                 setActiveTab(tab.id)
               }}
-              className={`flex border-2 px-4 py-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
+              className={`flex border-2 px-4 py-1 mb-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
                 activeTab === tab.id
                   ? 'border-blue-600'
                   : 'border-gray-100'

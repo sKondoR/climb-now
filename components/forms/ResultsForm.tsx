@@ -70,7 +70,7 @@ export default function ResultsForm({ onCityChange, onResultsUpdate, onCityFilte
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="flex flex-wrap">
         <div>
           <label 
             htmlFor="url" 
