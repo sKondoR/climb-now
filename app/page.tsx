@@ -5,15 +5,17 @@ import ResultsForm from '@/components/forms/ResultsForm'
 import { AllData } from '@/types'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
 import PageContent from '@/components/PageContent'
+import DisciplineTabs from '@/components/DisciplineTabs'
 
 export default function HomePage() {
   const [data, setData] = useState<AllData | null>(null)
   const [selectedCity, setSelectedCity] = useState(DEFAULT_CITY)
   const [urlCode, setUrlCode] = useState(DEFAULT_URL_CODE)
   const [isCityFilterEnabled, setIsCityFilterEnabled] = useState(false)
+  const [activeTab, setActiveTab] = useState<number>(0)
 
   const handleResultsUpdate = (newData: AllData | null) => {
-    setData(newData);
+    setData(newData)
     if (newData) {
       setUrlCode(newData.url)
     }
@@ -54,10 +56,16 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-            
+
+          
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <DisciplineTabs
+          disciplines={data?.data}
+          setActiveTab={setActiveTab}
+          activeTab={activeTab}
+        />
         <PageContent
-          discipline={data?.data[0]}
+          discipline={data?.data[activeTab]}
           selectedCity={selectedCity}
           urlCode={urlCode}
           isCityFilterEnabled={isCityFilterEnabled}
