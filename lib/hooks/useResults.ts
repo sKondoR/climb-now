@@ -29,7 +29,6 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
 
   const loadResults = async () => {
     if (!subgroupLink) return
-    console.log('here');
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     try {
       const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`)

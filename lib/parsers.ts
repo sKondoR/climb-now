@@ -102,7 +102,6 @@ export const parseResultsTable = (html: string): SubGroupData => {
   if (isBoulder && isFinal) {
     result.data = parseBoulderFinal(document);
   }
-  console.log('>>>> ', isBoulder, result.data);
   return result;
 };
 

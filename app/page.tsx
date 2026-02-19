@@ -25,8 +25,6 @@ export default function HomePage() {
     setIsCityFilterEnabled(enabled)
   }
 
-  console.log('data: ', data);
-
   return (
     <div className="min-h-screen bg-gray-50">
      {/* Form Section */}
