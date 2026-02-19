@@ -1,0 +1,16 @@
+meta:
+  environment: node
+  toolchain:
+    name: npm
+    version: 20
+build:
+  artifacts:
+    '*': /app
+  commands:
+    - npm ci
+    - npm run build
+run:
+  script: npm start
+  ports:
+    - port: 3000
+      http: true
