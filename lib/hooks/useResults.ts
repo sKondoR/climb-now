@@ -30,10 +30,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     try {
-      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`, {
-        // Добавляем таймаут для запроса к API
-        signal: AbortSignal.timeout(1000)
-      })
+      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }

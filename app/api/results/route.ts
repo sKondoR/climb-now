@@ -12,6 +12,8 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    // Add random delay between 50-150ms to avoid rate limiting
+    await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
     const response = await fetch(`${EXTERNAL_API_BASE_URL}${urlCode}/${subgroup}.html`, {
       cache: 'no-store',
       headers: {
