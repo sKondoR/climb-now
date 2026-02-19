@@ -43,25 +43,29 @@ export default function HomePage() {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="text-2xl font-bold text-gray-900">
-              ClimbNow
-            </div>
-            <div className="text-sm text-gray-500">
-              Real-time Climbing Results
-            </div>
-          </div>
+          
         </div>
       </header>
 
       {/* Form Section */}
       <section className="bg-white py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ResultsForm 
-            onCityChange={setSelectedCity}
-            onResultsUpdate={handleResultsUpdate}
-            onCityFilterToggle={handleCityFilterToggle}
-          />
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-around items-center">
+            <div>
+              <div className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500  bg-clip-text text-transparent">
+                ClimbNow
+              </div>
+              <div className="text text-gray-500">
+                Real-time Climbing Results
+              </div>
+            </div>
+            <ResultsForm 
+              onCityChange={setSelectedCity}
+              onResultsUpdate={handleResultsUpdate}
+              onCityFilterToggle={handleCityFilterToggle}
+            />
+          </div>
+
         </div>
       </section>
 

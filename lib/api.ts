@@ -9,7 +9,7 @@ export const fetchResults = async (urlCode: string): Promise<ApiResponse | null>
       console.log(`Fetching results for urlCode: ${urlCode} (attempt ${i + 1})`)
       const response = await fetch(`/api/groups?urlCode=${urlCode}`, {
         // Добавляем таймаут для самого внешнего запроса
-        signal: AbortSignal.timeout(60000)
+        signal: AbortSignal.timeout(1000)
       })
       
       if (!response.ok) {

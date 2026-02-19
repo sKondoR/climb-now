@@ -30,7 +30,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     try {
       const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`, {
         // Добавляем таймаут для запроса к API
-        signal: AbortSignal.timeout(30000)
+        signal: AbortSignal.timeout(1000)
       })
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
@@ -59,14 +59,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
 
   // Auto-refresh results every 30 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      loadResults()
-    }, 30000)
-    
-    // Load immediately on mount
-    loadResults()
-    
-    return () => clearInterval(interval)
+    loadResults();
   }, [urlCode, subgroupLink])
 
   return { ...state, loadResults }
