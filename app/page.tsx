@@ -33,7 +33,7 @@ export default function HomePage() {
       </header>
 
       {/* Form Section */}
-      <section className="bg-white py-8">
+      <section className="bg-white py-5 border-b border-b-gray-300">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-around items-center">
             <div>

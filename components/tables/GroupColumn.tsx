@@ -2,6 +2,7 @@ import { Group } from '@/types'
 import { useState, useEffect } from 'react'
 import LeadQualTable from './LeadQualTable'
 import StatusIcon from '../StatusIcon'
+import { STATUSES } from '@/lib/constants'
 
 interface GroupColumnProps {
   group: Group
@@ -11,9 +12,11 @@ interface GroupColumnProps {
 }
 
 export default function GroupColumn({ group, selectedCity, urlCode, isCityFilterEnabled }: GroupColumnProps) {
-  const [activeTab, setActiveTab] = useState<string>(
-    group.subgroups.length > 0 ? group.subgroups[0].id : '0'
-  )
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (group.subgroups.length === 0) return '0';
+    const onlineSubgroup = group.subgroups.find(s => s.status === STATUSES.ONLINE);
+    return onlineSubgroup ? onlineSubgroup.id : group.subgroups[group.subgroups.length - 1].id;
+  })
 
   // Sync activeTab with available subgroups
   useEffect(() => {
