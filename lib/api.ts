@@ -1,6 +1,6 @@
-import { ApiResponse } from '@/types'
+import { AllData } from '@/types'
 
-export const fetchResults = async (urlCode: string): Promise<ApiResponse | null> => {
+export const fetchResults = async (urlCode: string): Promise<AllData | null> => {
   let lastError: Error | null = null;
   
 
@@ -14,7 +14,7 @@ export const fetchResults = async (urlCode: string): Promise<ApiResponse | null>
       
       const data = await response.json();
       console.log(`Successfully fetched results for urlCode: ${urlCode}`)
-      return data as ApiResponse
+      return data as AllData
       
     } catch (error) {
       lastError = error as Error;

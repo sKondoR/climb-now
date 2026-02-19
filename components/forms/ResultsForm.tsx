@@ -1,12 +1,12 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { ApiResponse } from '@/types/api'
+import { AllData } from '@/types/api'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
 import { fetchResults } from '@/lib/api'
 
 interface ResultsFormProps {
   onCityChange: (city: string) => void
-  onResultsUpdate: (data: ApiResponse | null) => void
+  onResultsUpdate: (data: AllData | null) => void
   onCityFilterToggle: (enabled: boolean) => void
 }
 

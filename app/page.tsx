@@ -3,25 +3,27 @@
 import { useState } from 'react'
 import ResultsForm from '@/components/forms/ResultsForm'
 import GroupColumn from '@/components/tables/GroupColumn'
-import { ApiResponse } from '@/types'
+import { AllData } from '@/types'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
 
 export default function HomePage() {
-  const [groups, setGroups] = useState<ApiResponse | null>(null)
+  const [data, setData] = useState<AllData | null>(null)
   const [selectedCity, setSelectedCity] = useState(DEFAULT_CITY)
   const [urlCode, setUrlCode] = useState(DEFAULT_URL_CODE)
   const [isCityFilterEnabled, setIsCityFilterEnabled] = useState(false)
 
-  const handleResultsUpdate = (data: ApiResponse | null) => {
-    setGroups(data);
-    if (data) {
-      setUrlCode(data.url)
+  const handleResultsUpdate = (newData: AllData | null) => {
+    setData(newData);
+    if (newData) {
+      setUrlCode(newData.url)
     }
   }
 
   const handleCityFilterToggle = (enabled: boolean) => {
     setIsCityFilterEnabled(enabled)
   }
+
+  console.log('data: ', data);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -53,12 +55,12 @@ export default function HomePage() {
 
         </div>
       </section>
-
+            
       {/* Results Section */}
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {groups && groups.groups.length > 0 ? (
+        {data && data?.data[0]?.groups.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-sm">
-            {groups.groups.map((group) => (
+            {data?.data[0]?.groups.map((group) => (
             <GroupColumn 
               key={group.id}
               group={group}

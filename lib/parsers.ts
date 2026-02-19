@@ -1,57 +1,68 @@
 import { parse } from 'parse5';
-import { ApiResponse, Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem } from '@/types';
+import { AllData, Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, LeadResultsItem } from '@/types';
 import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig } from '@/components/tables/configs';
-import { STATUSES } from './constants';
+import { DISCIPLINES, STATUSES } from './constants';
 
 const parseFragment = (html: string) => {
   const document = parse(html, { sourceCodeLocationInfo: true });
   return document;
 };
 
-export const parseResults = (html: string, urlCode: string): ApiResponse | null => {
+export const parseResults = (html: string, urlCode: string): AllData | null => {
   try {
-    const document = parseFragment(html);
-    const groups: Group[] = [];
-    
+    const document = parseFragment(html);   
    
-    // Найдем все ссылки на квалификации
-    const elements = findElementsByTag(document, 'div').filter(el => hasClass(el, 'g_title') || hasClass(el, 'p_l'));
-    
-    let currentGroup: Group | null = null;
-    elements.forEach((element, index) => {
-      const title = getTextContent(element) || `Группа ${index + 1}`;
+    const disciplines = getDisciplines(document);
+    const disciplineColumns = findElementsByTag(document, 'td');
 
-      if (hasClass(element, 'p_l') && currentGroup?.subgroups) {
-        const linkEl = findElementsByTag(element, 'a')[0]
-        const statusEl = findElementsByTag(linkEl, 'div')[0]
-        const statusClass = statusEl?.attrs.find((a: any) => a.name === 'class').value;
-        currentGroup.subgroups.push({
-          id: `subgroup-${index}`,
-          title,
-          link: linkEl?.attrs.find((a: any) => a.name === 'href').value.replace('.html', '') || '',
-          status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_run' ? STATUSES.ONLINE : STATUSES.PENDING),
-          results: []
-        });
-      } else if (hasClass(element, 'g_title')) {
-        if (currentGroup) {
-          groups.push(currentGroup)
+    const data = [] as Discipline[];
+
+    disciplines.forEach((discipline, index) => {
+      const groups: Group[] = [];
+      const column = disciplineColumns[index];
+
+      const elements = findElementsByTag(column, 'div').filter(el => hasClass(el, 'g_title') || hasClass(el, 'p_l'));
+      let currentGroup: Group | null = null;
+      elements.forEach((element, index) => {
+        const title = getTextContent(element) || `Группа ${index + 1}`;
+
+        if (hasClass(element, 'p_l') && currentGroup?.subgroups) {
+          const linkEl = findElementsByTag(element, 'a')[0]
+          const statusEl = findElementsByTag(linkEl, 'div')[0]
+          const statusClass = statusEl?.attrs.find((a: any) => a.name === 'class').value;
+          currentGroup.subgroups.push({
+            id: `subgroup-${index}`,
+            title,
+            link: linkEl?.attrs.find((a: any) => a.name === 'href').value.replace('.html', '') || '',
+            status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_run' ? STATUSES.ONLINE : STATUSES.PENDING),
+            results: []
+          });
+        } else if (hasClass(element, 'g_title')) {
+          if (currentGroup) {
+            groups.push(currentGroup)
+          }
+          currentGroup = {
+            id: `group-${index}`,
+            title,
+            isOnline: hasClass(element, 'l_run'),
+            subgroups: []
+          }
         }
-        currentGroup = {
-          id: `group-${index}`,
-          title,
-          isOnline: hasClass(element, 'l_run'),
-          subgroups: []
-        }
+      });
+      if (currentGroup) {
+        groups.push(currentGroup);
+        currentGroup = null;
       }
+      data.push({
+        discipline,
+        groups,
+      });
     });
-    if (currentGroup) {
-      groups.push(currentGroup);
-      currentGroup = null;
-    }
     
-    console.log('groups', groups.length)
+    
+    
     return {
-      groups,
+      data,
       url: urlCode,
     };
     
@@ -171,3 +182,15 @@ const hasClass = (node: any, className: string): boolean => {
   const classAttr = node.attrs.find((attr: any) => attr.name === 'class');
   return classAttr?.value?.includes(className) || false;
 };
+
+const getDisciplines = (document: any) => {
+  return findElementsByTag(document, 'th').map(th => {
+    let current = '';
+    Object.values(DISCIPLINES).forEach((value) => {
+      if(getTextContent(th).toLowerCase().includes(value.toLowerCase())) {
+        current = value
+      }
+    })
+    return current || getTextContent(th).toLowerCase();
+  });
+}
