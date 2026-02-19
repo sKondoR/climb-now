@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => {
       controller.abort()
-    }, 3000)
+    }, 300)
     
     // Ensure timeout is cleared even if there's an error
     try {
