@@ -8,11 +8,11 @@
   },
   "functions": {
     "src/app/api/groups/route.ts": {
-      "maxDuration": 900,
+      "maxDuration": 300,
       "memory": 2048
     },
     "src/app/api/results/route.ts": {
-      "maxDuration": 900,
+      "maxDuration": 300,
       "memory": 2048
     }
   },
