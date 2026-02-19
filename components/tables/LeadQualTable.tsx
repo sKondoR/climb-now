@@ -1,7 +1,7 @@
 import { isCityMatch } from '@/lib/isCityMatch';
 import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
-import { leadQualConfig, leadQualResultsConfig } from './configs';
+import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,7 +18,7 @@ export default function LeadQualTable({
 }) {
     if (!subGroup) return null;
     
-    const { results, isLead, isQualResult, isLoading, error } = useResults({
+    const { results, isLead, isFinal, isQualResult, isLoading, error } = useResults({
       urlCode,
       subgroupLink: subGroup.link
     })
@@ -35,7 +35,7 @@ export default function LeadQualTable({
       'score' in result ? result.score !== '' : result.score1 !== ''
     ).length;
 
-    const config = isQualResult ? leadQualResultsConfig : leadQualConfig;
+    const config = isFinal ? leadFinalsConfig : (isQualResult ? leadQualResultsConfig : leadQualConfig);
 
     return (
       <div className="mt-4 relative">

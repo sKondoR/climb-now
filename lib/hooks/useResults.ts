@@ -10,6 +10,7 @@ interface UseResultsState {
   results: Results
   isLead: boolean | null
   isQualResult: boolean | null
+  isFinal: boolean | null
   isLoading: boolean
   error: string | null
 }
@@ -19,6 +20,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     results: [],
     isLead: null,
     isQualResult: null,
+    isFinal: null,
     isLoading: false,
     error: null
   })
@@ -35,8 +37,8 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
-      const { data: results, isLead, isQualResult }: SubGroupData = await response.json()
-      setState({ results, isLead, isQualResult, isLoading: false, error: null })
+      const { data: results, isLead, isQualResult, isFinal }: SubGroupData = await response.json()
+      setState({ results, isLead, isQualResult, isFinal, isLoading: false, error: null })
     } catch (error) {
       // Логируем ошибку для диагностики
       console.error('Error in loadResults:', error)

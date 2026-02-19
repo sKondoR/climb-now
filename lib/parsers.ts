@@ -1,6 +1,6 @@
 import { parse } from 'parse5';
-import { ApiResponse, Group, QualItem, QualResultItem, SubGroupData, Results } from '@/types';
-import { leadQualConfig, leadQualResultsConfig } from '@/components/tables/configs';
+import { ApiResponse, Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem } from '@/types';
+import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig } from '@/components/tables/configs';
 import { STATUSES } from './constants';
 
 const parseFragment = (html: string) => {
@@ -65,24 +65,29 @@ export const parseResultsTable = (html: string): SubGroupData => {
   const documentTitle = getTextContent(findElementsByTag(document, 'h1')[0]).toLowerCase();
   const isLead = documentTitle.includes('трудность');
   const isQualResult = documentTitle.includes('сводный');
+  const isFinal = documentTitle.includes('финал');
 
   const result = {
     isLead,
     isQualResult,
+    isFinal,
     data: [] as Results,
   }
-  if (isLead && isQualResult) {
+  if (isLead && isQualResult && !isFinal) {
     result.data = parseLeadQualResults(document);
   }
-  if (isLead && !isQualResult) {
+  if (isLead && !isQualResult && !isFinal) {
     result.data = parseLeadQual(document);
+  }
+  if (isLead && isFinal) {
+    result.data = parseLeadFinalsResults(document);
   }
   return result;
 };
 
-export const parseLeadQual = (document: any): QualItem[] => {
+export const parseLeadQual = (document: any): LeadQualItem[] => {
   const rows = findElementsByTag(document, 'tr');
-  const results: QualItem[] = [];
+  const results: LeadQualItem[] = [];
   
   const config = leadQualConfig;
   rows.forEach((row, index) => {
@@ -90,16 +95,16 @@ export const parseLeadQual = (document: any): QualItem[] => {
     
     const cells = findElementsByTag(row, 'td');
     if (cells.length < config.length) return;
-    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as QualItem;  
+    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as LeadQualItem;  
     results.push(data);
   });
   
   return results;
 };
 
-export const parseLeadQualResults = (document: any): QualResultItem[] => {
+export const parseLeadQualResults = (document: any): LeadQualResultItem[] => {
     const rows = findElementsByTag(document, 'tr');
-  const results: QualResultItem[] = [];
+  const results: LeadQualResultItem[] = [];
   
   const config = leadQualResultsConfig;
   rows.forEach((row, index) => {
@@ -107,14 +112,27 @@ export const parseLeadQualResults = (document: any): QualResultItem[] => {
     
     const cells = findElementsByTag(row, 'td');
     if (cells.length < config.length) return;
-    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as QualResultItem;  
+    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as LeadQualResultItem;  
     results.push(data);
   });
   return results;
 };
 
-
-
+export const parseLeadFinalsResults = (document: any): LeadFinalsItem[] => {
+    const rows = findElementsByTag(document, 'tr');
+  const results: LeadFinalsItem[] = [];
+  
+  const config = leadFinalsConfig;
+  rows.forEach((row, index) => {
+    if (index === 0) return;
+    
+    const cells = findElementsByTag(row, 'td');
+    if (cells.length < config.length) return;
+    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as LeadFinalsItem;  
+    results.push(data);
+  });
+  return results;
+};
 
 const findElementsByTag = (node: any, tagName: string): any[] => {
   const result: any[] = [];

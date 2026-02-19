@@ -14,9 +14,9 @@ export interface Subgroup {
   status: Status
   results: Results
 }
-export type Results = (QualItem | QualResultItem)[]
+export type Results = (LeadQualItem | LeadQualResultItem)[]
 
-export interface QualItem {
+export interface LeadQualItem {
   rank: string
   stRank: string
   name: string
@@ -24,7 +24,7 @@ export interface QualItem {
   score: string
 }
 
-export interface QualResultItem {
+export interface LeadQualResultItem {
   rank: string
   name: string
   command: string
@@ -35,6 +35,14 @@ export interface QualResultItem {
   mark: string
 }
 
+export interface LeadFinalsItem {
+  rank: string
+  stRank: string
+  name: string
+  command: string
+  qRank: string
+  score: string
+}
 export interface SubgroupResults {
   [key: string]: {
     results: Results
@@ -46,6 +54,7 @@ export interface SubgroupResults {
 export interface SubGroupData {
   isLead: boolean
   isQualResult: boolean
+  isFinal: boolean
   data: Results
 }
 
