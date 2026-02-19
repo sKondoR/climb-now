@@ -48,7 +48,6 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
     return {
       groups,
       url: urlCode,
-      city: ''
     };
     
   } catch (error) {

@@ -1,7 +1,6 @@
 export interface ApiResponse {
   groups: Group[]
   url: string
-  city: string
 }
 
 export interface Group {
