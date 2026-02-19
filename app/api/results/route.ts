@@ -49,6 +49,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(parsed)
     } catch (error) {
       clearTimeout(timeoutId)
+      // Handle network errors specifically
+      if (error instanceof Error && error.name === 'TypeError' && error.message.includes('fetch failed')) {
+        console.error('Network error while fetching results:', error)
+        return NextResponse.json(
+          { error: 'External API connection failed. Please try again later.' },
+          { status: 502 }
+        )
+      }
       throw error
     }
   } catch (error) {

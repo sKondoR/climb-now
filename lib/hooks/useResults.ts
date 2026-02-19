@@ -28,13 +28,18 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     try {
-      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`)
+      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`, {
+        // Добавляем таймаут для запроса к API
+        signal: AbortSignal.timeout(30000)
+      })
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
       const { data: results, isLead, isQualResult }: SubGroupData = await response.json()
       setState({ results, isLead, isQualResult, isLoading: false, error: null })
     } catch (error) {
+      // Логируем ошибку для диагностики
+      console.error('Error in loadResults:', error)
       setState(prev => ({
         ...prev,
         isLoading: false,
