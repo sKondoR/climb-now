@@ -1,31 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import ResultsForm from '@/components/forms/ResultsForm'
 import GroupColumn from '@/components/tables/GroupColumn'
 import { ApiResponse } from '@/types'
-import { fetchResults } from '@/lib/api'
-import { DEFAULT_CITY, DEFAULT_URL_CODE, UPDATE_INTERVAL } from '@/lib/constants'
+import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
 
 export default function HomePage() {
   const [groups, setGroups] = useState<ApiResponse | null>(null)
   const [selectedCity, setSelectedCity] = useState(DEFAULT_CITY)
   const [urlCode, setUrlCode] = useState(DEFAULT_URL_CODE)
   const [isCityFilterEnabled, setIsCityFilterEnabled] = useState(false)
-
-  // Автоматическое обновление данных
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetchResults(urlCode)
-        .then(data => {
-          if (data) {
-            setGroups(data)
-          }
-        })
-    }, UPDATE_INTERVAL)
-
-    return () => clearInterval(interval)
-  }, [urlCode])
 
   const handleResultsUpdate = (data: ApiResponse | null) => {
     setGroups(data);

@@ -64,21 +64,8 @@ export default function ResultsForm({ onCityChange, onResultsUpdate, onCityFilte
     [onCityFilterToggle]
   )
   // Автофокус на поле URL
-  useEffect(() => {
-    const urlInput = document.getElementById('url') as HTMLInputElement
-    if (urlInput) {
-      urlInput.focus()
-    }
-    
-    // Начальный запрос если url и city не пустые
-    if (url.trim() && city.trim()) {
-      fetchResults(url).then(data => {
-        onResultsUpdate(data)
-      }).catch(error => {
-        console.error('Error fetching initial results:', error)
-        onResultsUpdate(null)
-      })
-    }
+  useEffect(() => {  
+    debouncedFetch(url)
   }, [])
 
   return (

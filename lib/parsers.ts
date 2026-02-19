@@ -49,6 +49,7 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
       currentGroup = null;
     }
     
+    console.log('groups', groups.length)
     return {
       groups,
       url: urlCode,
