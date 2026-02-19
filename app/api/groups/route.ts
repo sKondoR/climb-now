@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import axios from 'axios'
 import { parseResults } from '@/lib/parsers'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'
@@ -20,9 +21,8 @@ export async function GET(request: NextRequest) {
     
     // Ensure timeout is cleared even if there's an error
     try {
-      const response = await fetch(`${EXTERNAL_API_BASE_URL}${urlCode}/index.html`, {
-        cache: 'no-store',
-        signal: controller.signal,
+      const response = await axios.get(`${EXTERNAL_API_BASE_URL}${urlCode}/index.html`, {
+        timeout: 10000,
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -31,16 +31,16 @@ export async function GET(request: NextRequest) {
           'Referer': 'https://c-f-r.ru/',
           'Connection': 'keep-alive'
         },
-        redirect: 'follow'
+        maxRedirects: 10
       })
       
       clearTimeout(timeoutId)
       
-      if (!response.ok) {
+      if (response.status >= 400) {
         throw new ApiError(`Failed to fetch results from external API: ${response.statusText}`, response.status)
       }
 
-      const html = await response.text()
+      const html = response.data
       const parsedResults = parseResults(html, urlCode)
 
       return NextResponse.json(parsedResults)
