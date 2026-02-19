@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import ResultsForm from '@/components/forms/ResultsForm'
-import GroupColumn from '@/components/tables/GroupColumn'
 import { AllData } from '@/types'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
+import PageContent from '@/components/PageContent'
 
 export default function HomePage() {
   const [data, setData] = useState<AllData | null>(null)
@@ -52,34 +52,16 @@ export default function HomePage() {
               onCityFilterToggle={handleCityFilterToggle}
             />
           </div>
-
         </div>
       </section>
             
-      {/* Results Section */}
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {data && data?.data[0]?.groups.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-sm">
-            {data?.data[0]?.groups.map((group) => (
-            <GroupColumn 
-              key={group.id}
-              group={group}
-              selectedCity={selectedCity}
-              urlCode={urlCode}
-              isCityFilterEnabled={isCityFilterEnabled}
-            />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-2xl font-semibold text-gray-600 mb-4">
-              Добро пожаловать в ClimbNow!
-            </div>
-            <div className="text-gray-500 max-w-md mx-auto">
-              Введите код соревнований и город для отображения результатов
-            </div>
-          </div>
-        )}
+        <PageContent
+          discipline={data?.data[0]}
+          selectedCity={selectedCity}
+          urlCode={urlCode}
+          isCityFilterEnabled={isCityFilterEnabled}
+        />
       </main>
     </div>
   )
