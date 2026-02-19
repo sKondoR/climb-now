@@ -6,10 +6,7 @@ export const fetchResults = async (urlCode: string): Promise<ApiResponse | null>
 
     try {
       console.log(`Fetching results for urlCode: ${urlCode}`)
-      const response = await fetch(`/api/groups?urlCode=${urlCode}`, {
-        // Добавляем таймаут для самого внешнего запроса
-        signal: AbortSignal.timeout(1000)
-      })
+      const response = await fetch(`/api/groups?urlCode=${urlCode}`)
       
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
