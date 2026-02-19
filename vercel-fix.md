@@ -17,3 +17,8 @@ dns.setDefaultResultOrder('ipv4first');
 Откат со встроенного fetch (undici) на старый node-fetch:
 Некоторые разработчики отмечают, что проблема решается отключением экспериментального fetch и возвратом к старой реализации HTTP.
 Для этого также используйте переменную окружения NODE_OPTIONS, но с другим значением: --no-experimental-fetch. Это заставит Node.js использовать http/https модули вместо undici .
+
+3) next.config.js:
+
+const dns = require('dns');
+dns.setDefaultResultOrder('ipv4first');
