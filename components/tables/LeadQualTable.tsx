@@ -1,10 +1,9 @@
-import { isCityMatch } from '@/lib/isCityMatch';
 import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { getRowClasses, getTableConfig } from './utils';
+import { getRowClasses, getTableConfig, isCityMatch } from './utils';
 
 
 export default function LeadQualTable({

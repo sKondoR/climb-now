@@ -22,10 +22,10 @@ export default function DisciplineTabs({
               onClick={() => {
                 setActiveTab(index)
               }}
-              className={`border-2 px-4 py-1 rounded-lg text-lg font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-blue-700 hover:text-white ${
+              className={`px-4 py-1 rounded-lg text-lg font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-blue-700 hover:text-white ${
                 activeTab === index
-                  ? 'border-blue-500 bg-blue-500 text-white'
-                  : 'border-gray-100'
+                  ? 'bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 text-white'
+                  : ''
               }`}
             >
               {discipline}

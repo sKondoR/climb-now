@@ -1,6 +1,9 @@
 import { LeadResultsItem } from '@/types'
 import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig } from './configs'
-import { isCityMatch } from '@/lib/isCityMatch'
+
+export const isCityMatch = (city: string, selectedCity: string) => {
+    return selectedCity && city.toLowerCase() === selectedCity.toLowerCase()
+}
 
 interface getConfigProps {
     isLead: boolean
