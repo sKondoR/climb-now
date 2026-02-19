@@ -63,7 +63,7 @@ export default function ResultsForm({ onCityChange, onResultsUpdate, onCityFilte
     },
     [onCityFilterToggle]
   )
-  // Автофокус на поле URL
+
   useEffect(() => {  
     debouncedFetch(url)
   }, [])
