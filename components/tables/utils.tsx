@@ -1,5 +1,11 @@
 import { LeadResultsItem } from '@/types'
-import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig } from './configs'
+import {
+    leadFinalsConfig,
+    leadQualConfig,
+    leadQualResultsConfig,
+    boulderQualConfig,
+    boulderFinalsConfig,
+} from './configs'
 
 export const isCityMatch = (city: string, selectedCity: string) => {
     return selectedCity && city.toLowerCase() === selectedCity.toLowerCase()
@@ -7,15 +13,19 @@ export const isCityMatch = (city: string, selectedCity: string) => {
 
 interface getConfigProps {
     isLead: boolean
+    isBoulder: boolean
     isQualResult: boolean
     isFinal: boolean
 }
-export function getTableConfig({ isFinal, isQualResult, isLead }: getConfigProps) { 
+export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: getConfigProps) { 
     if (isLead) {
         if (isFinal) {
             return leadFinalsConfig;
         }
         return isQualResult ? leadQualResultsConfig : leadQualConfig;
+    }
+    if (isBoulder) {
+        return (isFinal) ? boulderFinalsConfig : boulderQualConfig;
     }
     return leadQualConfig;
 }

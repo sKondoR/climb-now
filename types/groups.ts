@@ -53,8 +53,25 @@ export interface SubgroupResults {
   }
 }
 
+export interface BoulderQualItem {
+  rank: string
+  stRank: string
+  name: string
+  command: string
+  score: string
+}
+
+export interface BoulderFinalItem {
+  rank: string
+  stRank: string
+  name: string
+  command: string
+  score: string
+}
+
 export interface SubGroupData {
   isLead: boolean
+  isBoulder: boolean
   isQualResult: boolean
   isFinal: boolean
   data: Results

@@ -1,5 +1,5 @@
 import { parse } from 'parse5';
-import { AllData, Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, LeadResultsItem } from '@/types';
+import { AllData, Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, LeadResultsItem, BoulderQualItem, BoulderFinalItem } from '@/types';
 import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig } from '@/components/tables/configs';
 import { DISCIPLINES, STATUSES } from './constants';
 
@@ -76,11 +76,13 @@ export const parseResultsTable = (html: string): SubGroupData => {
   const document = parseFragment(html);
   const documentTitle = getTextContent(findElementsByTag(document, 'h1')[0]).toLowerCase();
   const isLead = documentTitle.includes('трудность');
+  const isBoulder = documentTitle.includes('боулдеринг');
   const isQualResult = documentTitle.includes('сводный');
   const isFinal = documentTitle.includes('финал');
 
   const result = {
     isLead,
+    isBoulder,
     isQualResult,
     isFinal,
     data: [] as Results,
@@ -94,57 +96,53 @@ export const parseResultsTable = (html: string): SubGroupData => {
   if (isLead && isFinal) {
     result.data = parseLeadFinalsResults(document);
   }
+  if (isBoulder && !isFinal) {
+    result.data = parseBoulderQual(document);
+  }
+  if (isBoulder && isFinal) {
+    result.data = parseBoulderFinal(document);
+  }
+  console.log('>>>> ', isBoulder, result.data);
   return result;
 };
 
-export const parseLeadQual = (document: any): LeadQualItem[] => {
+export const parseTable = <T>(document: any, config: any): T[] => {
   const rows = findElementsByTag(document, 'tr');
-  const results: LeadQualItem[] = [];
+  const results: T[] = [];
   
-  const config = leadQualConfig;
-  rows.forEach((row, index) => {
+  rows.forEach((row: any, index: number) => {
     if (index === 0) return; // Пропускаем заголовок
     
     const cells = findElementsByTag(row, 'td');
     if (cells.length < config.length) return;
-    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as LeadQualItem;  
+    const data = config.reduce((acc: any, key: any, i: number) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as T;  
     results.push(data);
   });
   
   return results;
+};
+
+export const parseLeadQual = (document: any): LeadQualItem[] => {
+  return parseTable<LeadQualItem>(document, leadQualConfig);
 };
 
 export const parseLeadQualResults = (document: any): LeadQualResultItem[] => {
-    const rows = findElementsByTag(document, 'tr');
-  const results: LeadQualResultItem[] = [];
-  
-  const config = leadQualResultsConfig;
-  rows.forEach((row, index) => {
-    if (index === 0) return;
-    
-    const cells = findElementsByTag(row, 'td');
-    if (cells.length < config.length) return;
-    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as LeadQualResultItem;  
-    results.push(data);
-  });
-  return results;
+  return parseTable<LeadQualResultItem>(document, leadQualResultsConfig);
 };
 
 export const parseLeadFinalsResults = (document: any): LeadFinalsItem[] => {
-    const rows = findElementsByTag(document, 'tr');
-  const results: LeadFinalsItem[] = [];
-  
-  const config = leadFinalsConfig;
-  rows.forEach((row, index) => {
-    if (index === 0) return;
-    
-    const cells = findElementsByTag(row, 'td');
-    if (cells.length < config.length) return;
-    const data = config.reduce((acc, key, i) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as LeadFinalsItem;  
-    results.push(data);
-  });
-  return results;
+  return parseTable<LeadFinalsItem>(document, leadFinalsConfig);
 };
+
+export const parseBoulderQual = (document: any): BoulderQualItem[] => {
+  return parseTable<BoulderQualItem>(document, leadQualConfig);
+};
+
+export const parseBoulderFinal = (document: any): BoulderFinalItem[] => {
+  return parseTable<BoulderFinalItem>(document, leadQualConfig);
+};
+
+
 
 const findElementsByTag = (node: any, tagName: string): any[] => {
   const result: any[] = [];

@@ -1,8 +1,8 @@
 import { Group } from '@/types'
 import { useState, useEffect } from 'react'
-import LeadQualTable from './LeadQualTable'
 import StatusIcon from '../StatusIcon'
 import { STATUSES } from '@/lib/constants'
+import Table from './Table'
 
 interface GroupColumnProps {
   group: Group
@@ -48,7 +48,7 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
               onClick={() => {
                 setActiveTab(tab.id)
               }}
-              className={`flex border-2 px-4 py-1 mb-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
+              className={`flex border-2 px-2 py-1 mb-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
                 activeTab === tab.id
                   ? 'border-blue-600'
                   : 'border-gray-100'
@@ -61,7 +61,7 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
         </div>
         
         {/* Контент табов */}
-        <LeadQualTable
+        <Table
           subGroup={group.subgroups.find(s => s.id === activeTab)}
           urlCode={urlCode}
           isCityFilterEnabled={isCityFilterEnabled}

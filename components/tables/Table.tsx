@@ -6,7 +6,7 @@ import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { getRowClasses, getTableConfig, isCityMatch } from './utils';
 
 
-export default function LeadQualTable({
+export default function Table({
   subGroup,
   urlCode,
   isCityFilterEnabled,
@@ -19,7 +19,7 @@ export default function LeadQualTable({
 }) {
     if (!subGroup) return null;
     
-    const { results, isLead, isFinal, isQualResult, isLoading, error, loadResults } = useResults({
+    const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, loadResults } = useResults({
       urlCode,
       subgroupLink: subGroup.link
     })
@@ -36,7 +36,7 @@ export default function LeadQualTable({
       'score' in result ? result.score !== '' : result.score1 !== ''
     ).length
 
-    const config = getTableConfig({ isFinal, isQualResult, isLead })
+    const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder })
 
     return (
       <div className="mt-4 relative">

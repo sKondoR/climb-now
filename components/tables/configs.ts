@@ -2,29 +2,54 @@
 export const NAME_COL = 'имя';
 
 export const leadQualConfig = [
-    { id: 'lq-1', name: 'место', prop: 'rank', parserId: 0 },
-    { id: 'lq-2', name: 'ст.#', prop: 'stRank', parserId: 2 },
-    { id: 'lq-3', name: NAME_COL, prop: 'name', parserId: 3 },
-    { id: 'lq-4', name: 'команда', prop: 'command', parserId: 4 },
-    { id: 'lq-5', name: 'результат', prop: 'score', parserId: 5 },
-]
+    { name: 'место', prop: 'rank', parserId: 0 },
+    { name: 'ст.#', prop: 'stRank', parserId: 2 },
+    { name: NAME_COL, prop: 'name', parserId: 3 },
+    { name: 'команда', prop: 'command', parserId: 4 },
+    { name: 'результат', prop: 'score', parserId: 5 },
+].map((item, i) => ({ ...item, id: `lq-${i}` }));
 
 export const leadQualResultsConfig = [
-    { id: 'lqr-1', name: 'место', prop: 'rank', parserId: 0 },
-    { id: 'lqr-2', name: NAME_COL, prop: 'name', parserId: 2 },
-    { id: 'lqr-3', name: 'команда', prop: 'command', parserId: 3 },
-    { id: 'lqr-4', name: 'тр.1', prop: 'score1', parserId: 4 },
-    { id: 'lqr-5', name: 'балл', prop: 'mark1', parserId: 5 },
-    { id: 'lqr-6', name: 'тр.2', prop: 'score2', parserId: 6 },
-    { id: 'lqr-7', name: 'балл', prop: 'mark2', parserId: 7 },
-    { id: 'lqr-8', name: 'баллы', prop: 'mark', parserId: 8 },
-]
+    { name: 'место', prop: 'rank', parserId: 0 },
+    { name: NAME_COL, prop: 'name', parserId: 2 },
+    { name: 'команда', prop: 'command', parserId: 3 },
+    { name: 'тр.1', prop: 'score1', parserId: 4 },
+    { name: 'балл', prop: 'mark1', parserId: 5 },
+    { name: 'тр.2', prop: 'score2', parserId: 6 },
+    { name: 'балл', prop: 'mark2', parserId: 7 },
+    { name: 'баллы', prop: 'mark', parserId: 8 },
+].map((item, i) => ({ ...item, id: `lqr-${i}` }));
 
 export const leadFinalsConfig = [
-    { id: 'lqf-1', name: 'место', prop: 'rank', parserId: 0 },
-    { id: 'lqf-2', name: 'ст.#', prop: 'stRank', parserId: 2 },
-    { id: 'lqf-3', name: NAME_COL, prop: 'name', parserId: 3 },
-    { id: 'lqf-4', name: 'команда', prop: 'command', parserId: 4 },
-    { id: 'lqf-5', name: 'кв.свод', prop: 'qRank', parserId: 5 },
-    { id: 'lqf-6', name: 'результат', prop: 'score', parserId: 6 },
-]
+    { name: 'место', prop: 'rank', parserId: 0 },
+    { name: 'ст.#', prop: 'stRank', parserId: 2 },
+    { name: NAME_COL, prop: 'name', parserId: 3 },
+    { name: 'команда', prop: 'command', parserId: 4 },
+    { name: 'кв.свод', prop: 'qRank', parserId: 5 },
+    { name: 'результат', prop: 'score', parserId: 6 },
+].map((item, i) => ({ ...item, id: `lqf-${i}` }));
+
+export const boulderQualConfig = [
+    { name: 'место', prop: 'rank', parserId: 0 },
+    { name: 'ст.#', prop: 'stRank', parserId: 2 },
+    { name: NAME_COL, prop: 'name', parserId: 3 },
+    { name: 'команда', prop: 'command', parserId: 4 },
+    { name: '1', prop: '1', parserId: 5 },
+    { name: '2', prop: '2', parserId: 6 },
+    { name: '3', prop: '3', parserId: 7 },
+    { name: '4', prop: '4', parserId: 8 },
+    { name: '5', prop: '5', parserId: 9 },
+    { name: 'результат', prop: 'score', parserId: 10 },
+].map((item, i) => ({ ...item, id: `bq-${i}` }));
+
+export const boulderFinalsConfig = [
+    { name: 'место', prop: 'rank', parserId: 0 },
+    { name: 'ст.#', prop: 'stRank', parserId: 2 },
+    { name: NAME_COL, prop: 'name', parserId: 3 },
+    { name: 'команда', prop: 'command', parserId: 4 },
+    { name: '1', prop: '1', parserId: 5 },
+    { name: '2', prop: '2', parserId: 6 },
+    { name: '3', prop: '3', parserId: 7 },
+    { name: '4', prop: '4', parserId: 8 },
+    { name: 'результат', prop: 'score', parserId: 9 },
+].map((item, i) => ({ ...item, id: `bf-${i}` }));

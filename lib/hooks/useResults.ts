@@ -11,6 +11,7 @@ interface UseResultsState {
   isLead: boolean
   isQualResult: boolean
   isFinal: boolean
+  isBoulder: boolean
   isLoading: boolean
   error: string | null
 }
@@ -21,21 +22,22 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     isLead: false,
     isQualResult: false,
     isFinal: false,
+    isBoulder: false,
     isLoading: false,
     error: null
   })
 
   const loadResults = async () => {
     if (!subgroupLink) return
-    
+    console.log('here');
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     try {
       const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
-      const { data: results, isLead, isQualResult, isFinal }: SubGroupData = await response.json()
-      setState({ results, isLead, isQualResult, isFinal, isLoading: false, error: null })
+      const { data: results, isLead, isQualResult, isFinal, isBoulder }: SubGroupData = await response.json()
+      setState({ results, isLead, isQualResult, isFinal, isBoulder, isLoading: false, error: null })
     } catch (error) {
       // Логируем ошибку для диагностики
       console.error('Error in loadResults:', error)
