@@ -3,7 +3,7 @@ import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
 import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default function LeadQualTable({
   subGroup,
@@ -18,7 +18,7 @@ export default function LeadQualTable({
 }) {
     if (!subGroup) return null;
     
-    const { results, isLead, isFinal, isQualResult, isLoading, error } = useResults({
+    const { results, isLead, isFinal, isQualResult, isLoading, error, loadResults } = useResults({
       urlCode,
       subgroupLink: subGroup.link
     })
@@ -41,9 +41,15 @@ export default function LeadQualTable({
       <div className="mt-4 relative">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
           {subGroup.title}
-          <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {climbedCount} / {results.length} пролезло
-          </span>
+          <div>
+            <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {climbedCount} / {results.length} пролезло
+            </span>
+            <FontAwesomeIcon icon={faRefresh} 
+              className="cursor-pointer text-sm text-blue-600 rounded hover:text-blue-800 transition-colors ml-2"
+              onClick={loadResults}
+            />
+          </div>
         </h3>
         <div className="overflow-x-auto relative">
           <table className="w-full">

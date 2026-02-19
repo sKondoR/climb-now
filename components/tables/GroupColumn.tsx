@@ -1,7 +1,5 @@
 import { Group } from '@/types'
 import { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import LeadQualTable from './LeadQualTable'
 import StatusIcon from '../StatusIcon'
 
@@ -37,16 +35,6 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
           <h2 className="text-xl font-bold text-gray-900">
             {group.title}
           </h2>
-          <div className="flex items-center space-x-2">
-            <FontAwesomeIcon icon={faRefresh} 
-              className="cursor-pointer px-3 py-1 text-sm text-blue-600 rounded hover:text-blue-800 transition-colors"
-              onClick={() => {
-                const currentSubgroup = group.subgroups.find(s => s.id === activeTab)
-                if (currentSubgroup) {
-                }
-              }}
-            />
-          </div>
         </div>
         
         {/* Табы */}
