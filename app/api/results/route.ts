@@ -3,8 +3,6 @@ import { parseResultsTable } from '@/lib/parsers'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'
 
-export const runtime = 'nodejs';
-
 export async function GET(request: NextRequest) {
   const urlCode = request.nextUrl.searchParams.get('urlCode')
   const subgroup = request.nextUrl.searchParams.get('subgroup')
