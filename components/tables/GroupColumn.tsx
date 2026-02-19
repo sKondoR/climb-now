@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 import LeadQualTable from './LeadQualTable'
+import StatusIcon from '../StatusIcon'
 
 interface GroupColumnProps {
   group: Group
@@ -25,7 +26,8 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
 
   const tabs = group.subgroups.map(subgroup => ({
     id: subgroup.id,
-    label: subgroup.title
+    label: subgroup.title,
+    status: subgroup.status
   }))
 
   return (
@@ -49,19 +51,20 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
         
         {/* Табы */}
         <div className="flex space-x-1 mb-4">
-          {tabs.map((tab, index) => (
+          {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => {
                 setActiveTab(tab.id)
               }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`flex border-2 px-4 py-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'border-blue-600'
+                  : 'border-gray-100'
               }`}
-            >
-              {tab.label}
+            > 
+              <StatusIcon status={tab.status} />
+              <div>{tab.label}</div>
             </button>
           ))}
         </div>

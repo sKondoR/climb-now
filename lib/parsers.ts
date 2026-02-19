@@ -1,6 +1,7 @@
 import { parse } from 'parse5';
 import { ApiResponse, Group, QualItem, QualResultItem, SubGroupData, Results } from '@/types';
 import { leadQualConfig, leadQualResultsConfig } from '@/components/tables/configs';
+import { STATUSES } from './constants';
 
 const parseFragment = (html: string) => {
   const document = parse(html, { sourceCodeLocationInfo: true });
@@ -19,18 +20,21 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
     let currentGroup: Group | null = null;
     elements.forEach((element, index) => {
       const title = getTextContent(element) || `Группа ${index + 1}`;
-      
 
       if (hasClass(element, 'p_l') && currentGroup?.subgroups) {
+        const linkEl = findElementsByTag(element, 'a')[0]
+        const statusEl = findElementsByTag(linkEl, 'div')[0]
+        const statusClass = statusEl?.attrs.find((a: any) => a.name === 'class').value;
         currentGroup.subgroups.push({
           id: `subgroup-${index}`,
           title,
-          link: findElementsByTag(element, 'a')[0].attrs.find((a: any) => a.name === 'href').value || '',
+          link: linkEl?.attrs.find((a: any) => a.name === 'href').value.replace('.html', '') || '',
+          status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_pas' ? STATUSES.PASSED : STATUSES.PENDING),
           results: []
         });
       } else if (hasClass(element, 'g_title')) {
         if (currentGroup) {
-          groups.push(currentGroup);
+          groups.push(currentGroup)
         }
         currentGroup = {
           id: `group-${index}`,

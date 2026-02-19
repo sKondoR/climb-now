@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     
     // Ensure timeout is cleared even if there's an error
     try {
-      const response = await fetch(`${EXTERNAL_API_BASE_URL}${urlCode}/${subgroup}`, {
+      const response = await fetch(`${EXTERNAL_API_BASE_URL}${urlCode}/${subgroup}.html`, {
         cache: 'no-store',
         signal: controller.signal,
         headers: {
