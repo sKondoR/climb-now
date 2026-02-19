@@ -1,6 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--max-old-space-size=4096 --dns-result-order=ipv4first"
+    }
+  },
   "functions": {
     "src/app/api/groups/route.ts": {
       "maxDuration": 30,
