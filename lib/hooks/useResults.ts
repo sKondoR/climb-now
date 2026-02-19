@@ -45,7 +45,14 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
 
   // Auto-refresh results every 30 seconds
   useEffect(() => {
+    const interval = setInterval(() => {
       loadResults()
+    }, 30000)
+    
+    // Load immediately on mount
+    loadResults()
+    
+    return () => clearInterval(interval)
   }, [urlCode, subgroupLink])
 
   return { ...state, loadResults }
