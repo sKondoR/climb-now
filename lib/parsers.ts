@@ -29,7 +29,7 @@ export const parseResults = (html: string, urlCode: string): ApiResponse | null 
           id: `subgroup-${index}`,
           title,
           link: linkEl?.attrs.find((a: any) => a.name === 'href').value.replace('.html', '') || '',
-          status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_pas' ? STATUSES.PASSED : STATUSES.PENDING),
+          status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_run' ? STATUSES.ONLINE : STATUSES.PENDING),
           results: []
         });
       } else if (hasClass(element, 'g_title')) {
