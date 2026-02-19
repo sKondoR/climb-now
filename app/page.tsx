@@ -29,15 +29,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-        </div>
-      </header>
-
-      {/* Form Section */}
-      <section className="bg-white py-5 border-b border-b-gray-300">
+     {/* Form Section */}
+      <header className="bg-white py-5 border-b border-b-gray-300">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-around items-center">
             <div>
@@ -55,7 +48,7 @@ export default function HomePage() {
             />
           </div>
         </div>
-      </section>
+      </header>
 
           
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
