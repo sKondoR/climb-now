@@ -2,6 +2,8 @@ import { isCityMatch } from '@/lib/isCityMatch';
 import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
 import { leadQualConfig, leadQualResultsConfig } from './configs';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 export default function LeadQualTable({
   subGroup,
@@ -87,9 +89,9 @@ export default function LeadQualTable({
           {/* Оверлей для загрузки */}
           {isLoading && (
             <div className="absolute inset-0 bg-white/30 flex items-center justify-center">
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span className="text-white text-lg font-medium">Загрузка результатов...</span>
+              <div className="flex items-center justify-center space-x-2 text-gray-500">
+                <FontAwesomeIcon icon={faSpinner} spin />
+                <span className="text-lg font-medium">Загрузка результатов...</span>
               </div>
             </div>
           )}
