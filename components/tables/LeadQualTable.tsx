@@ -1,7 +1,7 @@
 import { isCityMatch } from '@/lib/isCityMatch';
 import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
-import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig } from './configs';
+import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig, NAME_COL } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -56,7 +56,7 @@ export default function LeadQualTable({
             <thead>
               <tr className="border-b">
                 {config.map((col) => (
-                  <th key={col.id} className={`text-left px-4 py-2 ${col.name === 'Имя' ? '' : 'w-12'}`}>
+                  <th key={col.id} className={`text-left px-4 py-2 ${col.name === NAME_COL ? '' : 'w-6'}`}>
                     {col.name}
                   </th>
                 ))}
