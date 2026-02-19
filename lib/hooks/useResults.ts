@@ -8,9 +8,9 @@ interface UseResultsOptions {
 
 interface UseResultsState {
   results: Results
-  isLead: boolean | null
-  isQualResult: boolean | null
-  isFinal: boolean | null
+  isLead: boolean
+  isQualResult: boolean
+  isFinal: boolean
   isLoading: boolean
   error: string | null
 }
@@ -18,9 +18,9 @@ interface UseResultsState {
 export default function useResults({ urlCode, subgroupLink }: UseResultsOptions) {
   const [state, setState] = useState<UseResultsState>({
     results: [],
-    isLead: null,
-    isQualResult: null,
-    isFinal: null,
+    isLead: false,
+    isQualResult: false,
+    isFinal: false,
     isLoading: false,
     error: null
   })

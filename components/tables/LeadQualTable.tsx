@@ -1,9 +1,11 @@
 import { isCityMatch } from '@/lib/isCityMatch';
 import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
-import { leadFinalsConfig, leadQualConfig, leadQualResultsConfig, NAME_COL } from './configs';
+import { NAME_COL } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { getRowClasses, getTableConfig } from './utils';
+
 
 export default function LeadQualTable({
   subGroup,
@@ -33,9 +35,9 @@ export default function LeadQualTable({
     const filteredResults: Results = filterResultsByCity(results as Results)
     const climbedCount = results.filter((result: Results[number]) => 
       'score' in result ? result.score !== '' : result.score1 !== ''
-    ).length;
+    ).length
 
-    const config = isFinal ? leadFinalsConfig : (isQualResult ? leadQualResultsConfig : leadQualConfig);
+    const config = getTableConfig({ isFinal, isQualResult, isLead })
 
     return (
       <div className="mt-4 relative">
@@ -66,9 +68,7 @@ export default function LeadQualTable({
               {filteredResults.map((result, index) => (
                 <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b transition-colors ${
-                    isCityMatch(result.command, selectedCity) ? 'bg-green-300 border-blue-200' : ''
-                  }`}
+                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, selectedCity })}`}
                 >
                   {config.map((col) => {
                     const value = result[col.prop as keyof typeof result];
