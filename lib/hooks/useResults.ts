@@ -1,4 +1,4 @@
-import { SubGroupData, Results, LeadResultsItem } from '@/types'
+import { SubGroupData, Results } from '@/types'
 import { useState, useEffect } from 'react'
 
 interface UseResultsOptions {

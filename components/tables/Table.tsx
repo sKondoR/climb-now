@@ -68,13 +68,15 @@ export default function Table({
               {filteredResults.map((result, index) => (
                 <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, command })}`}
+                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
                 >
                   {config.map((col) => {
                     const value = result[col.prop as keyof typeof result];
                     const isBoulder = value.includes('/');
                     if (isBoulder) {
-                      return <BoulderCell id={col.id} value={value} />
+                      return <td key={col.id} className="text-left font-medium">
+                        <BoulderCell id={col.id} value={value} />
+                      </td>
                     }
                     return (
                       <td key={col.id} className="px-2 py-1 text-left font-medium">

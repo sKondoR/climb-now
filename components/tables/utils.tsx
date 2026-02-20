@@ -1,4 +1,4 @@
-import { LeadResultsItem } from '@/types'
+import { ResultsItem } from '@/types'
 import {
     leadFinalsConfig,
     leadQualConfig,
@@ -31,15 +31,18 @@ export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: get
 }
 
 interface getRowClassesProps {
-    result: LeadResultsItem
+    result: ResultsItem
     isLead: boolean
     isQualResult: boolean
+    isBoulder: boolean
     isFinal: boolean
     command: string
 }
-export function getRowClasses({ result, isFinal, isQualResult, isLead, command }: getRowClassesProps) { 
+export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command }: getRowClassesProps) { 
     const isCommandRow = isCommandMatch(result.command, command);
-    const isFinalRow = isFinal && ['1','2','3'].includes(result['rank']);
+    const isFinalRow = 
+    (isLead && isFinal && ['1','2','3'].includes(result['rank'])) || 
+    (isBoulder && ['1','2','3','4','5','6','7','8','9','10','11','12'].includes(result['rank']));
     if (isCommandRow) {
         return ' bg-blue-400/50';
     }

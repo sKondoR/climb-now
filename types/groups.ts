@@ -44,7 +44,8 @@ export interface LeadFinalsItem {
   score: string
 }
 
-export type LeadResultsItem = LeadQualItem | LeadQualResultItem | LeadFinalsItem
+export type ResultsItem = LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem
+
 export interface SubgroupResults {
   [key: string]: {
     results: Results
@@ -58,6 +59,11 @@ export interface BoulderQualItem {
   stRank: string
   name: string
   command: string
+  r1: string
+  r2: string
+  r3: string
+  r4: string
+  r5: string
   score: string
 }
 
@@ -66,6 +72,10 @@ export interface BoulderFinalItem {
   stRank: string
   name: string
   command: string
+  r1: string
+  r2: string
+  r3: string
+  r4: string
   score: string
 }
 
