@@ -6,20 +6,13 @@ import { fetchResults } from '@/lib/api'
 import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default observer(
 function ResultsForm() {
   const router = useRouter()
   const store = mobxStore()
-  const searchParams = useSearchParams()
-  const [code, setCode] = useState(() => {
-    const urlCode = searchParams.get('code')
-    if (urlCode) {
-      store.setCode(urlCode)
-    }
-    return urlCode || store.code
-  })
+  const [code, setCode] = useState(store.code)
   const [command, setCommand] = useState(store.command)
   const { isCommandFilterEnabled } = store
 
