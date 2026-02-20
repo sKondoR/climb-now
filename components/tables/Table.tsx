@@ -4,6 +4,7 @@ import { NAME_COL } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { getRowClasses, getTableConfig, isCommandMatch } from './utils';
+import BoulderCell from './BoulderCell';
 
 
 export default function Table({
@@ -71,6 +72,10 @@ export default function Table({
                 >
                   {config.map((col) => {
                     const value = result[col.prop as keyof typeof result];
+                    const isBoulder = value.includes('/');
+                    if (isBoulder) {
+                      return <BoulderCell id={col.id} value={value} />
+                    }
                     return (
                       <td key={col.id} className="px-2 py-1 text-left font-medium">
                         {value}

@@ -181,16 +181,22 @@ const parseRouteCell = (node: any): string => {
   
   const values: string[] = [];
   node.childNodes.forEach((child: any) => {
-    if (child.tagName === 'div' && hasClass(child, 'r_2')) {
+    if (hasClass(child, 'r_0')) {
+      values.push(' ', ' ');
+    }
+    if (hasClass(child, 'r_1')) {
+      values.push(' ', getTextContent(child));
+    }
+    if (hasClass(child, 'r_2')) {
       child.childNodes.forEach((routeChild: any) => {
         if (routeChild.value) {
-          values.push(routeChild.value.trim());
+          values.push(routeChild.value.trim() || ' ');
         }
       });
     }
   });
   
-  return values.join('/');
+  return values.join('/')
 };
 
 const hasClass = (node: any, className: string): boolean => {
