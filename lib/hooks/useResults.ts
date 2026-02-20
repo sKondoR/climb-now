@@ -2,7 +2,7 @@ import { SubGroupData, Results, LeadResultsItem } from '@/types'
 import { useState, useEffect } from 'react'
 
 interface UseResultsOptions {
-  urlCode: string
+  code: string
   subgroupLink: string
 }
 
@@ -16,7 +16,7 @@ interface UseResultsState {
   error: string | null
 }
 
-export default function useResults({ urlCode, subgroupLink }: UseResultsOptions) {
+export default function useResults({ code, subgroupLink }: UseResultsOptions) {
   const [state, setState] = useState<UseResultsState>({
     results: [],
     isLead: false,
@@ -31,7 +31,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
     if (!subgroupLink) return
     setState(prev => ({ ...prev, isLoading: true, error: null }))
     try {
-      const response = await fetch(`/api/results?urlCode=${urlCode}&subgroup=${subgroupLink}`)
+      const response = await fetch(`/api/results?code=${code}&subgroup=${subgroupLink}`)
       if (!response.ok) {
         throw new Error(`Failed to fetch results: ${response.statusText}`)
       }
@@ -60,7 +60,7 @@ export default function useResults({ urlCode, subgroupLink }: UseResultsOptions)
   // Auto-refresh results every 30 seconds
   useEffect(() => {
     loadResults();
-  }, [urlCode, subgroupLink])
+  }, [code, subgroupLink])
 
   return { ...state, loadResults }
 }

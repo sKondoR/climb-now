@@ -8,27 +8,27 @@ import { getRowClasses, getTableConfig, isCityMatch } from './utils';
 
 export default function Table({
   subGroup,
-  urlCode,
+  code,
   isCityFilterEnabled,
-  selectedCity,
+  city,
 }: {
   subGroup: Subgroup | undefined,
-  urlCode: string,
+  code: string,
   isCityFilterEnabled: boolean,
-  selectedCity: string,
+  city: string,
 }) {
     if (!subGroup) return null;
     
     const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, loadResults } = useResults({
-      urlCode,
+      code,
       subgroupLink: subGroup.link
     })
     
     const filterResultsByCity = (results: Results) => {
-      if (!isCityFilterEnabled || !selectedCity) {
+      if (!isCityFilterEnabled || !city) {
         return results
       }
-      return results.filter((result, index) => index===0 || isCityMatch(result.command, selectedCity))
+      return results.filter((result, index) => index===0 || isCityMatch(result.command, city))
     }
 
     const filteredResults: Results = filterResultsByCity(results as Results)
@@ -67,7 +67,7 @@ export default function Table({
               {filteredResults.map((result, index) => (
                 <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, selectedCity })}`}
+                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, city })}`}
                 >
                   {config.map((col) => {
                     const value = result[col.prop as keyof typeof result];

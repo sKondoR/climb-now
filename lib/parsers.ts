@@ -1,5 +1,5 @@
 import { parse } from 'parse5';
-import { AllData, Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, LeadResultsItem, BoulderQualItem, BoulderFinalItem } from '@/types';
+import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, LeadResultsItem, BoulderQualItem, BoulderFinalItem } from '@/types';
 import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig } from '@/components/tables/configs';
 import { DISCIPLINES, STATUSES } from './constants';
 
@@ -8,7 +8,7 @@ const parseFragment = (html: string) => {
   return document;
 };
 
-export const parseResults = (html: string, urlCode: string): AllData | null => {
+export const parseResults = (html: string): Discipline[] | null => {
   try {
     const document = parseFragment(html);   
    
@@ -61,10 +61,7 @@ export const parseResults = (html: string, urlCode: string): AllData | null => {
     
     
     
-    return {
-      data,
-      url: urlCode,
-    };
+    return data;
     
   } catch (error) {
     console.error('Error parsing HTML:', error);

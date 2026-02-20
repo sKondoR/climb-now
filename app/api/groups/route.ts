@@ -5,10 +5,10 @@ import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'
 
 export async function GET(request: NextRequest) {
-  const urlCode = request.nextUrl.searchParams.get('urlCode')
+  const code = request.nextUrl.searchParams.get('code')
   
-  if (!urlCode) {
-    throw new ApiError('Missing urlCode parameter', 400)
+  if (!code) {
+    return NextResponse.json(null)
   }
 
   try {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     
     // Ensure timeout is cleared even if there's an error
     try {
-      const response = await axios.get(`${EXTERNAL_API_BASE_URL}${urlCode}/index.html`)
+      const response = await axios.get(`${EXTERNAL_API_BASE_URL}${code}/index.html`)
       
       clearTimeout(timeoutId)
       
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       }
 
       const html = response.data
-      const parsedResults = parseResults(html, urlCode)
+      const parsedResults = parseResults(html)
 
       return NextResponse.json(parsedResults)
     } catch (error) {

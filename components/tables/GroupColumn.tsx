@@ -6,12 +6,12 @@ import Table from './Table'
 
 interface GroupColumnProps {
   group: Group
-  selectedCity: string,
-  urlCode: string
+  city: string
+  code: string
   isCityFilterEnabled: boolean
 }
 
-export default function GroupColumn({ group, selectedCity, urlCode, isCityFilterEnabled }: GroupColumnProps) {
+export default function GroupColumn({ group, city, code, isCityFilterEnabled }: GroupColumnProps) {
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (group.subgroups.length === 0) return '0';
     const onlineSubgroup = group.subgroups.find(s => s.status === STATUSES.ONLINE);
@@ -63,9 +63,9 @@ export default function GroupColumn({ group, selectedCity, urlCode, isCityFilter
         {/* Контент табов */}
         <Table
           subGroup={group.subgroups.find(s => s.id === activeTab)}
-          urlCode={urlCode}
+          code={code}
           isCityFilterEnabled={isCityFilterEnabled}
-          selectedCity={selectedCity}
+          city={city}
         />
       </div>
     </div>

@@ -4,8 +4,4 @@ export interface Discipline {
   groups: Group[]
 }
 
-export interface AllData {
-  data: Discipline[]
-  url: string
-}
 

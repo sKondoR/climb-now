@@ -35,10 +35,10 @@ interface getRowClassesProps {
     isLead: boolean
     isQualResult: boolean
     isFinal: boolean
-    selectedCity: string
+    city: string
 }
-export function getRowClasses({ result, isFinal, isQualResult, isLead, selectedCity }: getRowClassesProps) { 
-    const isCityRow = isCityMatch(result.command, selectedCity);
+export function getRowClasses({ result, isFinal, isQualResult, isLead, city }: getRowClassesProps) { 
+    const isCityRow = isCityMatch(result.command, city);
     const isFinalRow = isFinal && ['1','2','3'].includes(result['rank']);
     if (isCityRow) {
         return ' bg-blue-400/50';

@@ -1,7 +1,7 @@
 import { Discipline } from '@/types'
 
 interface DisciplineTabsProps {
-  disciplines?: Discipline[]
+  disciplines: Discipline[] | null
   setActiveTab: (index: number) => void
   activeTab: number
 }

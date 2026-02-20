@@ -1,20 +1,20 @@
-import { AllData } from '@/types'
+import { Discipline } from '@/types'
 
-export const fetchResults = async (urlCode: string): Promise<AllData | null> => {
+export const fetchResults = async (code: string): Promise<Discipline[] | null> => {
   let lastError: Error | null = null;
   
 
     try {
-      console.log(`Fetching results for urlCode: ${urlCode}`)
-      const response = await fetch(`/api/groups?urlCode=${urlCode}`)
+      console.log(`Fetching results for code: ${code}`)
+      const response = await fetch(`/api/groups?code=${code}`)
       
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
       }
       
       const data = await response.json();
-      console.log(`Successfully fetched results for urlCode: ${urlCode}`)
-      return data as AllData
+      console.log(`Successfully fetched results for code: ${code}`)
+      return data as Discipline[]
       
     } catch (error) {
       lastError = error as Error;
@@ -24,9 +24,9 @@ export const fetchResults = async (urlCode: string): Promise<AllData | null> => 
   // Обрабатываем специфические ошибки
   if (lastError) {
     if (lastError.name === 'AbortError') {
-      console.error('Fetch request timed out for urlCode:', urlCode)
+      console.error('Fetch request timed out for code:', code)
     } else if (lastError.name === 'TypeError' && lastError.message.includes('fetch failed')) {
-      console.error('Network error occurred for urlCode:', urlCode, lastError.message)
+      console.error('Network error occurred for code:', code, lastError.message)
     }
   }
   return null
