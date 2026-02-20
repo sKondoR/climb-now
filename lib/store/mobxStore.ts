@@ -34,7 +34,7 @@ export class MobxStore {
 
   reset() {
     this.code = ''
-    this.command = ''
+    this.command = DEFAULT_CITY
     this.isCommandFilterEnabled = false
     this.disciplinesData = null
   }
