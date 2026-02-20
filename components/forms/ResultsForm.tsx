@@ -6,16 +6,14 @@ import { fetchResults } from '@/lib/api'
 import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default observer(
 function ResultsForm() {
   const router = useRouter()
   const store = mobxStore()
-  const [code, setCode] = useState(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('code') || store.code
-  })
+  const searchParams = useSearchParams()
+  const [code, setCode] = useState(() => searchParams.get('code') || store.code)
   const [command, setCommand] = useState(store.command)
   const { isCommandFilterEnabled } = store;
 
@@ -45,7 +43,7 @@ function ResultsForm() {
     500
   )
 
-  // Debounced fetch для города
+  // Debounced fetch для команды
   const debouncedCommandFetch = useDebouncedCallback(
     (command: string) => {
       store.setCommand(command)
@@ -110,7 +108,7 @@ function ResultsForm() {
         <label
           htmlFor="command"
           className="block text-sm font-medium text-gray-700 mb-2"
-          title="Скалолазы из этого города будут подсвечены"
+          title="Скалолазы из команды будут подсвечены"
         >
           команда
           <span className="text-xs text-gray-500"> (например {DEFAULT_CITY})</span>
