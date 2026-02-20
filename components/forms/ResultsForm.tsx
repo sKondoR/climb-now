@@ -3,15 +3,20 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { fetchResults } from '@/lib/api'
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
-import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants';
-
+import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
+import useUrlParams from '@/lib/hooks/useUrlParams'
+import { useRouter } from 'next/navigation'
 
 export default observer(
 function ResultsForm() {
+  const router = useRouter();
+  const urlParams = useUrlParams();
   const store = mobxStore();
-  const [code, setCode] = useState(store.code)
+  const [code, setCode] = useState(() => {
+    return urlParams.code || store.code;
+  })
   const [command, setCommand] = useState(store.command)
   const { isCommandFilterEnabled } = store;
 
@@ -19,15 +24,23 @@ function ResultsForm() {
   const debouncedFetch = useDebouncedCallback(
     async (code: string) => {
       store.setIsDisciplinesLoading(true)
-      store.setCode(code)
+      store.setDisciplinesData(null)
+      const url = new URL(window.location.href)
       try {
         const data = await fetchResults(code)
+        store.setCode(code)
         store.setDisciplinesData(data)
         store.setIsDisciplinesLoading(false)
+        if (data?.length) {
+          url.searchParams.set('code', code)
+          router.replace(url.pathname + url.search)          
+        } else {
+          router.replace(url.pathname)
+        }     
       } catch (error) {
         console.error('Ошибка загрузки данных:', error)
-        store.setDisciplinesData(null)
         store.setIsDisciplinesLoading(false)
+        router.replace(url.pathname)
       }
     },
     500
@@ -67,15 +80,15 @@ function ResultsForm() {
     []
   )
 
-  useEffect(() => {  
+  useEffect(() => {
     debouncedFetch(code)
   }, [])
 
   return (
     <div className="flex flex-wrap gap-4">
       <div className="w-full md:w-auto">
-        <label 
-          htmlFor="url" 
+        <label
+          htmlFor="url"
           className="block text-sm font-medium text-gray-700 mb-2"
           title="Введите код соревнований из URL"
         >
@@ -95,8 +108,8 @@ function ResultsForm() {
       </div>
       
       <div className="w-full md:w-auto">
-        <label 
-          htmlFor="command" 
+        <label
+          htmlFor="command"
           className="block text-sm font-medium text-gray-700 mb-2"
           title="Скалолазы из этого города будут подсвечены"
         >

@@ -106,7 +106,6 @@ export const parseTable = <T>(document: any, config: any): T[] => {
   const rows = findElementsByTag(document, 'tr');
   const results: T[] = [];
   
-  console.log('config ', config)
   rows.forEach((row: any, index: number) => {
     if (index === 0) return; // Пропускаем заголовок
     const cells = findElementsByTag(row, 'td');
@@ -116,15 +115,9 @@ export const parseTable = <T>(document: any, config: any): T[] => {
       const cell = cells[key.parserId];
       if (hasClass(cell, 'route')) {
         return ({ ...acc, [key.prop]: parseRouteCell(cell) })
-      }
-      if(index === 1) {
-        // console.log('col ', i)
-      }
-      if(index === 1 && i === 10) {
-        // console.log('>>> ', getTextContent(cell))
-      }
+      } 
       return ({ ...acc, [key.prop]: getTextContent(cell) })
-    }, {}) as T;   
+    }, {}) as T; 
     results.push(data);
   });
   
@@ -210,7 +203,7 @@ const parseRouteCell = (node: any): string => {
 const hasClass = (node: any, className: string): boolean => {
   if (!node.attrs) return false;
   const classAttr = node.attrs.find((attr: any) => attr.name === 'class');
-  return classAttr?.value?.includes(className) || false;
+  return classAttr?.value?.split(' ').includes(className) || false;
 };
 
 const getDisciplines = (document: any) => {

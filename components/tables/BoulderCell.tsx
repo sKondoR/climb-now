@@ -1,4 +1,4 @@
-export default function BoulderCell({ id, value }: { id: string, value: string }): JSX.Element | null {
+ export default function BoulderCell({ value }: { value: string }): JSX.Element | null {
   const [val1, val2] = value.split('/');
   return (
       <div className="bg-gray-200 inset text-center flex flex-col h-full">

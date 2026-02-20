@@ -6,7 +6,6 @@ import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { getRowClasses, getTableConfig, isCommandMatch } from './utils';
 import BoulderCell from './BoulderCell';
 
-
 export default function Table({
   subGroup,
   code,
@@ -70,16 +69,16 @@ export default function Table({
                   key={`${result.name}-${index}`}
                   className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
                 >
-                  {config.map((col) => {
+                  {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];
                     const isBoulder = value.includes('/');
                     if (isBoulder) {
-                      return <td key={col.id} className="text-left font-medium">
-                        <BoulderCell id={col.id} value={value} />
+                      return <td key={`${col.id}-${index}`} className="text-left font-medium">
+                        <BoulderCell value={value} />
                       </td>
                     }
                     return (
-                      <td key={col.id} className="px-2 py-1 text-left font-medium">
+                      <td key={`${col.id}-${index}`} className="px-2 py-1 text-left font-medium">
                         {value}
                       </td>
                     );
