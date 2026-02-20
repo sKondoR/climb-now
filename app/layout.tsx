@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
+import { MobxStoreProvider } from '@/lib/store/MobxStoreProvider';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,7 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <MobxStoreProvider>
+          {children}
+        </MobxStoreProvider>
+      </body>
     </html>
   )
 }

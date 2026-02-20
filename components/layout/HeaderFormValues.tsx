@@ -6,7 +6,8 @@ import { mobxStore } from '@/lib/store/mobxStore'
 export default observer(
 function HeaderFormValues() {
 
-  const { isCommandFilterEnabled, command, code } = mobxStore;
+  const store = mobxStore();
+  const { isCommandFilterEnabled, command, code } = store;
 
   return (<span className="text-xs md:text-sm">
       <span className="text-nowrap ml-6 block md:inline">код соревнований: <span className="font-bold text-gray-900">{code}</span></span>

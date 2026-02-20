@@ -6,8 +6,10 @@ const nextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
     };
+
     return config;
   },
+  transpilePackages: ['mobx', 'mobx-react-lite'],
 };
 
 module.exports = nextConfig;

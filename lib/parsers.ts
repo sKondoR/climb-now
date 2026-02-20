@@ -77,8 +77,6 @@ export const parseResultsTable = (html: string): SubGroupData => {
   const isQualResult = documentTitle.includes('сводный');
   const isFinal = documentTitle.includes('финал');
 
-  console.log(documentTitle, `isLead: ${isLead}, isBoulder: ${isBoulder}, isQualResult: ${isQualResult}, isFinal: ${isFinal}`);
-
   const result = {
     isLead,
     isBoulder,
@@ -96,7 +94,6 @@ export const parseResultsTable = (html: string): SubGroupData => {
     result.data = parseLeadFinalsResults(document);
   }
   if (isBoulder && !isFinal) {
-    console.log('here');
     result.data = parseBoulderQual(document);
   }
   if (isBoulder && isFinal) {

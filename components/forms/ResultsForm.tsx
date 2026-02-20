@@ -10,23 +10,24 @@ import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants';
 
 export default observer(
 function ResultsForm() {
-  const [code, setCode] = useState(mobxStore.code)
-  const [command, setCommand] = useState(mobxStore.command)
-  const { isCommandFilterEnabled } = mobxStore;
+  const store = mobxStore();
+  const [code, setCode] = useState(store.code)
+  const [command, setCommand] = useState(store.command)
+  const { isCommandFilterEnabled } = store;
 
   // Debounced fetch для URL
   const debouncedFetch = useDebouncedCallback(
     async (code: string) => {
-      mobxStore.setIsDisciplinesLoading(true)
-      mobxStore.setCode(code)
+      store.setIsDisciplinesLoading(true)
+      store.setCode(code)
       try {
         const data = await fetchResults(code)
-        mobxStore.setDisciplinesData(data)
-        mobxStore.setIsDisciplinesLoading(false)
+        store.setDisciplinesData(data)
+        store.setIsDisciplinesLoading(false)
       } catch (error) {
         console.error('Ошибка загрузки данных:', error)
-        mobxStore.setDisciplinesData(null)
-        mobxStore.setIsDisciplinesLoading(false)
+        store.setDisciplinesData(null)
+        store.setIsDisciplinesLoading(false)
       }
     },
     500
@@ -35,7 +36,7 @@ function ResultsForm() {
   // Debounced fetch для города
   const debouncedCommandFetch = useDebouncedCallback(
     (command: string) => {
-      mobxStore.setCommand(command)
+      store.setCommand(command)
     },
     300
   )
@@ -61,7 +62,7 @@ function ResultsForm() {
   const handleCommandFilterToggle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const isEnabled = e.target.checked
-      mobxStore.setIsCommandFilterEnabled(isEnabled)
+      store.setIsCommandFilterEnabled(isEnabled)
     },
     []
   )
