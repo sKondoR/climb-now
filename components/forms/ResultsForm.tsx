@@ -17,13 +17,16 @@ function ResultsForm() {
   // Debounced fetch для URL
   const debouncedFetch = useDebouncedCallback(
     async (code: string) => {
+      mobxStore.setIsDisciplinesLoading(true)
       mobxStore.setCode(code)
       try {
         const data = await fetchResults(code)
         mobxStore.setDisciplinesData(data)
+        mobxStore.setIsDisciplinesLoading(false)
       } catch (error) {
         console.error('Ошибка загрузки данных:', error)
         mobxStore.setDisciplinesData(null)
+        mobxStore.setIsDisciplinesLoading(false)
       }
     },
     500

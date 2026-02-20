@@ -1,5 +1,5 @@
 import { parse } from 'parse5';
-import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, LeadResultsItem, BoulderQualItem, BoulderFinalItem } from '@/types';
+import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, BoulderQualItem, BoulderFinalItem } from '@/types';
 import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig } from '@/components/tables/configs';
 import { DISCIPLINES, STATUSES } from './constants';
 

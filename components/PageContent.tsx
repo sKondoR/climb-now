@@ -9,14 +9,8 @@ import { mobxStore } from '@/lib/store/mobxStore'
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
-  const { isCityFilterEnabled, city, code, disciplinesData } = mobxStore;
+  const { isCityFilterEnabled, city, code, disciplinesData, isDisciplinesLoading } = mobxStore;
 
-  // Дополнительный observer для disciplinesData
-  useEffect(() => {
-    console.log('disciplinesData updated:', disciplinesData);
-  }, [disciplinesData]);
-
-  console.log('mobxStore: ', mobxStore.disciplinesData)
   const discipline = disciplinesData?.[activeTab];
   if (!discipline) {
     return (<div className="text-center py-12">
@@ -30,6 +24,7 @@ function PageContent() {
   }
 
   return (<>
+      {isDisciplinesLoading}
       <DisciplineTabs
         disciplines={disciplinesData}
         setActiveTab={setActiveTab}
