@@ -4,8 +4,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'ClimbNow - Real-time Climbing Results',
-  description: 'Real-time results of climbing competitions with city-based highlighting',
+  title: 'ClimbNow - Соревнования ФСР онлайн',
+  description: '',
 }
 
 export default function RootLayout({

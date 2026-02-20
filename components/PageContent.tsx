@@ -1,15 +1,15 @@
 'use client'
 
 import GroupColumn from '@/components/tables/GroupColumn'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import DisciplineTabs from './DisciplineTabs'
-import { observer } from 'mobx-react-lite';
+import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
 
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
-  const { isCityFilterEnabled, city, code, disciplinesData, isDisciplinesLoading } = mobxStore;
+  const { isCommandFilterEnabled, command, code, disciplinesData, isDisciplinesLoading } = mobxStore;
 
   const discipline = disciplinesData?.[activeTab];
   if (!discipline) {
@@ -30,14 +30,14 @@ function PageContent() {
         setActiveTab={setActiveTab}
         activeTab={activeTab}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-xs md:text-sm">
         {discipline.groups.map((group) => (
           <GroupColumn 
             key={group.id}
             group={group}
-            city={city}
+            command={command}
             code={code}
-            isCityFilterEnabled={isCityFilterEnabled}
+            isCommandFilterEnabled={isCommandFilterEnabled}
           />
         ))}
       </div>

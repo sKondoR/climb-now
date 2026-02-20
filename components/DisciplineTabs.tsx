@@ -24,7 +24,7 @@ export default function DisciplineTabs({
               }}
               disabled={discipline === DISCIPLINES.SPEED}
               title={discipline === DISCIPLINES.SPEED ? 'недоступно' : discipline}
-              className={`px-4 py-1 mb-1 rounded-lg text-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-blue-700 hover:text-white
+              className={`px-4 py-1 mb-1 rounded-lg text-md md:text-lg font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-blue-700 hover:text-white
                 disabled:bg-gray-100 disabled:text-gray-300
                 ${
                 activeTab === index

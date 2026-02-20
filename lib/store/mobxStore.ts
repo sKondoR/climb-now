@@ -3,8 +3,8 @@ import { makeAutoObservable } from 'mobx'
 import { DEFAULT_CITY } from '../constants'
 export class MobxStore {
   code: string = ''
-  city: string = DEFAULT_CITY
-  isCityFilterEnabled: boolean = false
+  command: string = DEFAULT_CITY
+  isCommandFilterEnabled: boolean = false
   isDisciplinesLoading: boolean = false
   disciplinesData!: Discipline[] | null
 
@@ -16,12 +16,12 @@ export class MobxStore {
     this.code = code
   }
 
-  setCity(city: string) {
-    this.city = city
+  setCommand(command: string) {
+    this.command = command
   }
 
-  setIsCityFilterEnabled(enabled: boolean) {
-    this.isCityFilterEnabled = enabled
+  setIsCommandFilterEnabled(enabled: boolean) {
+    this.isCommandFilterEnabled = enabled
   }
 
   setIsDisciplinesLoading(enabled: boolean) {
@@ -34,8 +34,8 @@ export class MobxStore {
 
   reset() {
     this.code = ''
-    this.city = ''
-    this.isCityFilterEnabled = false
+    this.command = ''
+    this.isCommandFilterEnabled = false
     this.disciplinesData = null
   }
 }

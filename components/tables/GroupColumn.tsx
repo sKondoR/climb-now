@@ -6,12 +6,12 @@ import Table from './Table'
 
 interface GroupColumnProps {
   group: Group
-  city: string
+  command: string
   code: string
-  isCityFilterEnabled: boolean
+  isCommandFilterEnabled: boolean
 }
 
-export default function GroupColumn({ group, city, code, isCityFilterEnabled }: GroupColumnProps) {
+export default function GroupColumn({ group, command, code, isCommandFilterEnabled }: GroupColumnProps) {
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (group.subgroups.length === 0) return '0';
     const onlineSubgroup = group.subgroups.find(s => s.status === STATUSES.ONLINE);
@@ -33,7 +33,7 @@ export default function GroupColumn({ group, city, code, isCityFilterEnabled }: 
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-      <div className="p-6">
+      <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold text-gray-900">
             {group.title}
@@ -64,8 +64,8 @@ export default function GroupColumn({ group, city, code, isCityFilterEnabled }: 
         <Table
           subGroup={group.subgroups.find(s => s.id === activeTab)}
           code={code}
-          isCityFilterEnabled={isCityFilterEnabled}
-          city={city}
+          isCommandFilterEnabled={isCommandFilterEnabled}
+          command={command}
         />
       </div>
     </div>

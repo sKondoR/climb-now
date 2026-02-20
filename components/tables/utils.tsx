@@ -7,8 +7,8 @@ import {
     boulderFinalsConfig,
 } from './configs'
 
-export const isCityMatch = (city: string, selectedCity: string) => {
-    return selectedCity && city.toLowerCase() === selectedCity.toLowerCase()
+export const isCommandMatch = (command: string, selectedCommand: string) => {
+    return selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
 }
 
 interface getConfigProps {
@@ -35,15 +35,15 @@ interface getRowClassesProps {
     isLead: boolean
     isQualResult: boolean
     isFinal: boolean
-    city: string
+    command: string
 }
-export function getRowClasses({ result, isFinal, isQualResult, isLead, city }: getRowClassesProps) { 
-    const isCityRow = isCityMatch(result.command, city);
+export function getRowClasses({ result, isFinal, isQualResult, isLead, command }: getRowClassesProps) { 
+    const isCommandRow = isCommandMatch(result.command, command);
     const isFinalRow = isFinal && ['1','2','3'].includes(result['rank']);
-    if (isCityRow) {
+    if (isCommandRow) {
         return ' bg-blue-400/50';
     }
-    if (isFinalRow && !isCityRow) {
+    if (isFinalRow && !isCommandRow) {
         return ' bg-green-300/30';
     }
     return '';

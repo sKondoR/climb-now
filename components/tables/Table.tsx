@@ -3,19 +3,19 @@ import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { getRowClasses, getTableConfig, isCityMatch } from './utils';
+import { getRowClasses, getTableConfig, isCommandMatch } from './utils';
 
 
 export default function Table({
   subGroup,
   code,
-  isCityFilterEnabled,
-  city,
+  isCommandFilterEnabled,
+  command,
 }: {
   subGroup: Subgroup | undefined,
   code: string,
-  isCityFilterEnabled: boolean,
-  city: string,
+  isCommandFilterEnabled: boolean,
+  command: string,
 }) {
     if (!subGroup) return null;
     
@@ -24,14 +24,14 @@ export default function Table({
       subgroupLink: subGroup.link
     })
     
-    const filterResultsByCity = (results: Results) => {
-      if (!isCityFilterEnabled || !city) {
+    const filterResultsByCommand = (results: Results) => {
+      if (!isCommandFilterEnabled || !command) {
         return results
       }
-      return results.filter((result, index) => index===0 || isCityMatch(result.command, city))
+      return results.filter((result, index) => index===0 || isCommandMatch(result.command, command))
     }
 
-    const filteredResults: Results = filterResultsByCity(results as Results)
+    const filteredResults: Results = filterResultsByCommand(results as Results)
     const climbedCount = results.filter((result: Results[number]) => 
       'score' in result ? result.score !== '' : result.score1 !== ''
     ).length
@@ -67,7 +67,7 @@ export default function Table({
               {filteredResults.map((result, index) => (
                 <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, city })}`}
+                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, command })}`}
                 >
                   {config.map((col) => {
                     const value = result[col.prop as keyof typeof result];
@@ -103,7 +103,7 @@ export default function Table({
           
           {/* Оверлей для ошибки */}
           {error && (
-            <div className="absolute inset-0 bg-red-500 bg-opacity-80 flex items-center justify-center">
+            <div className="absolute inset-0 bg-red-500 bg-opacommand-80 flex items-center justify-center">
               <div className="text-white text-center">
                 <h3 className="text-lg font-semibold mb-2">Ошибка загрузки</h3>
                 <p className="text-white">{error}</p>
