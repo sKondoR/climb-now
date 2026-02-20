@@ -1,6 +1,6 @@
 import { parse } from 'parse5';
 import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, BoulderQualItem, BoulderFinalItem } from '@/types';
-import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig } from '@/components/tables/configs';
+import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig, boulderQualConfig, boulderFinalsConfig } from '@/components/tables/configs';
 import { DISCIPLINES, STATUSES } from './constants';
 
 const parseFragment = (html: string) => {
@@ -77,6 +77,8 @@ export const parseResultsTable = (html: string): SubGroupData => {
   const isQualResult = documentTitle.includes('сводный');
   const isFinal = documentTitle.includes('финал');
 
+  console.log(documentTitle, `isLead: ${isLead}, isBoulder: ${isBoulder}, isQualResult: ${isQualResult}, isFinal: ${isFinal}`);
+
   const result = {
     isLead,
     isBoulder,
@@ -94,6 +96,7 @@ export const parseResultsTable = (html: string): SubGroupData => {
     result.data = parseLeadFinalsResults(document);
   }
   if (isBoulder && !isFinal) {
+    console.log('here');
     result.data = parseBoulderQual(document);
   }
   if (isBoulder && isFinal) {
@@ -108,10 +111,15 @@ export const parseTable = <T>(document: any, config: any): T[] => {
   
   rows.forEach((row: any, index: number) => {
     if (index === 0) return; // Пропускаем заголовок
-    
     const cells = findElementsByTag(row, 'td');
     if (cells.length < config.length) return;
-    const data = config.reduce((acc: any, key: any, i: number) => ({ ...acc, [key.prop]: getTextContent(cells[key.parserId]) }), {}) as T;  
+    const data = config.reduce((acc: any, key: any, i: number) => {
+      const cell = cells[key.parserId];
+      if (hasClass(cell, 'route')) {
+        return ({ ...acc, [key.prop]: parseRouteCell(cell) })
+      }
+      return ({ ...acc, [key.prop]: getTextContent(cell) })
+    }, {}) as T;   
     results.push(data);
   });
   
@@ -131,11 +139,11 @@ export const parseLeadFinalsResults = (document: any): LeadFinalsItem[] => {
 };
 
 export const parseBoulderQual = (document: any): BoulderQualItem[] => {
-  return parseTable<BoulderQualItem>(document, leadQualConfig);
+  return parseTable<BoulderQualItem>(document, boulderQualConfig);
 };
 
 export const parseBoulderFinal = (document: any): BoulderFinalItem[] => {
-  return parseTable<BoulderFinalItem>(document, leadQualConfig);
+  return parseTable<BoulderFinalItem>(document, boulderFinalsConfig);
 };
 
 
@@ -169,6 +177,23 @@ const getTextContent = (node: any): string => {
   });
   
   return text.trim();
+};
+
+const parseRouteCell = (node: any): string => {
+  if (!node || !node.childNodes) return '';
+  
+  const values: string[] = [];
+  node.childNodes.forEach((child: any) => {
+    if (child.tagName === 'div' && hasClass(child, 'r_2')) {
+      child.childNodes.forEach((routeChild: any) => {
+        if (routeChild.value) {
+          values.push(routeChild.value.trim());
+        }
+      });
+    }
+  });
+  
+  return values.join('/');
 };
 
 const hasClass = (node: any, className: string): boolean => {
