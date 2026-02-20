@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { fetchResults } from '@/lib/api'
 import { observer } from 'mobx-react-lite'
@@ -13,9 +13,15 @@ function ResultsForm() {
   const router = useRouter()
   const store = mobxStore()
   const searchParams = useSearchParams()
-  const [code, setCode] = useState(() => searchParams.get('code') || store.code)
+  const [code, setCode] = useState(() => {
+    const urlCode = searchParams.get('code')
+    if (urlCode) {
+      store.setCode(urlCode)
+    }
+    return urlCode || store.code
+  })
   const [command, setCommand] = useState(store.command)
-  const { isCommandFilterEnabled } = store;
+  const { isCommandFilterEnabled } = store
 
   // Debounced fetch для URL
   const debouncedFetch = useDebouncedCallback(
