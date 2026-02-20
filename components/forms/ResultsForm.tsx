@@ -6,16 +6,15 @@ import { fetchResults } from '@/lib/api'
 import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
-import useUrlParams from '@/lib/hooks/useUrlParams'
 import { useRouter } from 'next/navigation'
 
 export default observer(
 function ResultsForm() {
-  const router = useRouter();
-  const urlParams = useUrlParams();
-  const store = mobxStore();
+  const router = useRouter()
+  const store = mobxStore()
   const [code, setCode] = useState(() => {
-    return urlParams.code || store.code;
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('code') || store.code
   })
   const [command, setCommand] = useState(store.command)
   const { isCommandFilterEnabled } = store;
