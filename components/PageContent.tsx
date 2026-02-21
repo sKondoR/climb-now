@@ -1,6 +1,6 @@
 'use client'
 
-import GroupColumn from '@/components/tables/GroupColumn'
+import GroupCard from '@/components/GroupCard'
 import { useState } from 'react'
 import DisciplineTabs from './DisciplineTabs'
 import { observer } from 'mobx-react-lite'
@@ -33,7 +33,7 @@ function PageContent() {
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-xs md:text-sm">
         {discipline.groups.map((group: any) => (
-          <GroupColumn 
+          <GroupCard 
             key={group.id}
             group={group}
             command={command}

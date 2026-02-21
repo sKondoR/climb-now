@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { STATUSES } from '@/lib/constants';
 
-export default function StatusIcon({ status }: { status: Status }): JSX.Element | null {
+export default function StatusIcon({ status, onlyOnline }: { status: Status, onlyOnline?: boolean }): JSX.Element | null {
  if (status === STATUSES.PENDING) return null;
+ if (onlyOnline && status !== STATUSES.ONLINE) return null;
  const isOnline = status === STATUSES.ONLINE;
  const icon = isOnline ? faCircle : faCheck;
   return (
