@@ -1,4 +1,4 @@
-# ClimbNow - Система отображения результатов скалолазания
+# ClimbNow
 
 🌐 [https://climbnow-skondor.amvera.io/](https://climbnow-skondor.amvera.io/)
 
