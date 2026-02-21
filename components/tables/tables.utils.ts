@@ -38,11 +38,17 @@ interface getRowClassesProps {
     isFinal: boolean
     command: string
 }
+
+export const PRIZE_PLACES = ['1','2','3'];
+export const LEAD_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10'];
+export const BOULDER_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+
 export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command }: getRowClassesProps) { 
     const isCommandRow = isCommandMatch(result.command, command);
     const isFinalRow = 
-    (isLead && isFinal && ['1','2','3'].includes(result['rank'])) || 
-    (isBoulder && ['1','2','3','4','5','6','7','8','9','10','11','12'].includes(result['rank']));
+    (isLead && isFinal && PRIZE_PLACES.includes(result['rank'])) || 
+    (isLead && isQualResult && LEAD_FINAL_PLACES.includes(result['rank'])) ||
+    (isBoulder && BOULDER_FINAL_PLACES.includes(result['rank']));
     if (isCommandRow) {
         return ' bg-blue-400/50';
     }
@@ -58,4 +64,14 @@ export function getClimbedCount({ results, isLead, isBoulder }: { results: Resul
         if (isLead) return 'score' in result ? result.score !== '' : result.score1 !== ''
         return results.length
     }).length;
+}
+
+
+export function getFinalBorderClass({ isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank }:
+    { isFinalBorderDrawed: boolean, isFinal: boolean, isLead: boolean, isQualResult: boolean, isBoulder: boolean, rank: string }) {
+    const place = Number.parseInt(rank);
+    return (isFinal && !isFinalBorderDrawed && place > PRIZE_PLACES.length ) ||
+           (isLead && isQualResult && place > LEAD_FINAL_PLACES.length) ||
+           (!isFinal && isBoulder && place > BOULDER_FINAL_PLACES.length) ?
+           'border-t-2 border-t-green-500' : ''
 }

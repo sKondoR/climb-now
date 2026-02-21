@@ -3,7 +3,7 @@ import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { getClimbedCount, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
+import { BOULDER_FINAL_PLACES, getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch, PRIZE_PLACES } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import { STATUSES } from '@/lib/constants'
 
@@ -37,7 +37,8 @@ export default function Table({
     const climbedCount = getClimbedCount({ results, isLead, isBoulder });
 
     const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder })
-
+    
+    let isFinalBorderDrawed = false;
     return (
       <div className="mt-4 relative">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
@@ -64,10 +65,14 @@ export default function Table({
               </tr>
             </thead>
             <tbody>
-              {filteredResults.map((result, index) => (
-                <tr
+              {filteredResults.map((result, index) => {
+                const finalBorderClass = isFinalBorderDrawed ? '' : getFinalBorderClass({ isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank: result.rank })
+                if (finalBorderClass) {
+                  isFinalBorderDrawed = true
+                }
+                return <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b transition-colors ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
+                  className={`border-b transition-colors ${finalBorderClass} ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
                 >
                   {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];
@@ -84,7 +89,7 @@ export default function Table({
                     );
                   })}
                 </tr>
-              ))}
+              })}
               
               {/* Сообщение если нет результатов */}
               {filteredResults.length === 0 && !isLoading && !error && (
