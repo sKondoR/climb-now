@@ -74,7 +74,7 @@ function GroupCard({ group }: GroupCardProps) {
           }`}
         >
         {/* Табы */}
-        <div className="flex flex-wrap space-x-1 mb-3 mt-3">
+        <div className="flex flex-wrap space-x-1 mb-1 mt-2">
           {tabs.map((tab) => (
             <button
               key={tab.id}

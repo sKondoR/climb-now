@@ -40,7 +40,7 @@ export default function Table({
     
     let isFinalBorderDrawed = false;
     return (
-      <div className="mt-4 relative">
+      <div className="mt-2 relative">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
           {subGroup.title}
           <div>
