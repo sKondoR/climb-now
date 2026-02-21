@@ -52,7 +52,10 @@ function GroupCard({ group }: GroupCardProps) {
   return (
     <div className={`${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
      ${isOnline ? 'border-green-500' : 'border-gray-200'}`}>
-      <div className={`${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '} p-4`}>
+      <div className={`p-4
+        ${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
+        ${isOnline ? 'border-green-500' : 'border-gray-200'}`}
+      >
         <div className="w-full flex flex-start items-center relative cursor-pointer" onClick={toggleHeader}>
           <h2 className="text-xl font-bold text-gray-900 mr-2">
             {group.title} 
