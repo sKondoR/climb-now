@@ -12,6 +12,6 @@ export const DISCIPLINES = {
 
 export const STATUSES = {
   PENDING: 'pending' as const,
-  ONLINE: 'active' as const,
-  PASSED: 'inactive' as const,
+  ONLINE: 'online' as const,
+  PASSED: 'passed' as const,
 } as const

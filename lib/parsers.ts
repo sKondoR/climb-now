@@ -35,7 +35,7 @@ export const parseResults = (html: string): Discipline[] | null => {
             title,
             link: linkEl?.attrs.find((a: any) => a.name === 'href').value.replace('.html', '') || '',
             status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_run' ? STATUSES.ONLINE : STATUSES.PENDING),
-            results: []
+            results: [],
           });
         } else if (hasClass(element, 'g_title')) {
           if (currentGroup) {

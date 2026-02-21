@@ -3,7 +3,7 @@ import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { getRowClasses, getTableConfig, isCommandMatch } from './utils';
+import { getRowClasses, getTableConfig, isCommandMatch } from './tables.utils';
 import BoulderCell from './BoulderCell';
 
 export default function Table({

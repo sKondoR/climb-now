@@ -1,16 +1,17 @@
 'use client'
 
-import GroupCard from '@/components/GroupCard'
+import GroupCard from '@/components/groups/GroupCard'
 import { useState } from 'react'
-import DisciplineTabs from './DisciplineTabs'
+import DisciplineTabs from '../groups/DisciplineTabs'
 import { observer } from 'mobx-react-lite'
 import { useMobxStore } from '@/lib/store/mobxStore'
+import { Group } from '@/types'
 
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
   const store = useMobxStore()
-  const { isCommandFilterEnabled, command, code, disciplinesData, isDisciplinesLoading } = store;
+  const { disciplinesData, isDisciplinesLoading } = store;
 
   const discipline = disciplinesData?.[activeTab];
   if (!discipline) {
@@ -32,13 +33,10 @@ function PageContent() {
         activeTab={activeTab}
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-xs md:text-sm">
-        {discipline.groups.map((group: any) => (
+        {discipline.groups.map((group: Group) => (
           <GroupCard 
             key={group.id}
             group={group}
-            command={command}
-            code={code}
-            isCommandFilterEnabled={isCommandFilterEnabled}
           />
         ))}
       </div>

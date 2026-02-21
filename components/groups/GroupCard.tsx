@@ -4,29 +4,32 @@ import { Group } from '@/types'
 import { useState, useEffect } from 'react'
 import StatusIcon from './StatusIcon'
 import { STATUSES } from '@/lib/constants'
-import Table from './tables/Table'
+import Table from '../tables/Table'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { observer } from 'mobx-react-lite'
+import { mobxStore } from '@/lib/store/mobxStore'
+import { isGroupOnline } from './groups.utils'
 
 interface GroupCardProps {
   group: Group
-  command: string
-  code: string
-  isCommandFilterEnabled: boolean
 }
 
-export default function GroupCard({ group, command, code, isCommandFilterEnabled }: GroupCardProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+export default observer(
+function GroupCard({ group }: GroupCardProps) {
+  const store = mobxStore()
+  const [isExpanded, setIsExpanded] = useState(true)
+  const { isOnlyOnline, isCommandFilterEnabled, code, command } = store
 
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (group.subgroups.length === 0) return '0';
     const onlineSubgroup = group.subgroups.find(s => s.status === STATUSES.ONLINE);
-    return onlineSubgroup ? onlineSubgroup.id : group.subgroups[group.subgroups.length - 1].id;
+    return onlineSubgroup ? onlineSubgroup.id : group.subgroups[group.subgroups.length - 1].id
   })
 
   const toggleHeader = () => {
     setIsExpanded(!isExpanded);
-  };
+  }
 
   // Sync activeTab with available subgroups
   useEffect(() => {
@@ -35,6 +38,7 @@ export default function GroupCard({ group, command, code, isCommandFilterEnabled
     }
   }, [group.subgroups, activeTab])
 
+  if (isOnlyOnline && !isGroupOnline(group)) return null
   let isOnline = null;
   const tabs = group.subgroups.map(subgroup => {
     if (subgroup.status === STATUSES.ONLINE) isOnline = STATUSES.ONLINE
@@ -46,17 +50,16 @@ export default function GroupCard({ group, command, code, isCommandFilterEnabled
   })  
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow
+    <div className={`${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
      ${isOnline ? 'border-green-500' : 'border-gray-200'}`}>
-      <div className="p-4">
-        <div className="w-full flex flex-start items-center relative">
+      <div className={`${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '} p-4`}>
+        <div className="w-full flex flex-start items-center relative cursor-pointer" onClick={toggleHeader}>
           <h2 className="text-xl font-bold text-gray-900 mr-2">
             {group.title} 
           </h2>
           <StatusIcon status={isOnline} onlyOnline />
           <button
-              onClick={toggleHeader}
-              className="absolute bottom-0 right-0 transform -translate-x-1/2 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none"
+              className="absolute bottom-0 right-0 transform bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none"
               aria-label={isExpanded ? "Свернуть шапку" : "Развернуть шапку"}
             >
               <FontAwesomeIcon 
@@ -67,7 +70,7 @@ export default function GroupCard({ group, command, code, isCommandFilterEnabled
         </div>
         <div 
           className={`overflow-hidden transition-all duration-300 ease-in-out  ${
-            isExpanded ? 'max-h-96 opacommand-100' : 'max-h-0 opacommand-0'
+            isExpanded ? 'opacommand-100' : 'max-h-0 opacommand-0'
           }`}
         >
         {/* Табы */}
@@ -101,4 +104,4 @@ export default function GroupCard({ group, command, code, isCommandFilterEnabled
       </div>
     </div>
   )
-}
+})

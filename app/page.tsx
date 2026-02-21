@@ -1,4 +1,4 @@
-import PageContent from '@/components/PageContent'
+import PageContent from '@/components/layout/PageContent'
 import Header from '@/components/layout/Header'
 
 export default function HomePage() {

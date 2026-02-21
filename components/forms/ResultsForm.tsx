@@ -14,7 +14,7 @@ function ResultsForm() {
   const store = mobxStore()
   const [code, setCode] = useState(store.code)
   const [command, setCommand] = useState(store.command)
-  const { isCommandFilterEnabled } = store
+  const { isCommandFilterEnabled, isOnlyOnline } = store
 
   // Debounced fetch для URL
   const debouncedFetch = useDebouncedCallback(
@@ -76,6 +76,14 @@ function ResultsForm() {
     []
   )
 
+  const handleOnlyOnlineToggle = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const isEnabled = e.target.checked
+      store.setIsOnlyOnline(isEnabled)
+    },
+    []
+  )
+
   useEffect(() => {
     debouncedFetch(code)
   }, [])
@@ -122,16 +130,30 @@ function ResultsForm() {
         />
       </div>
       <div className="w-full md:w-auto">
-        <input
-          type="checkbox"
-          id="commandFilter"
-          checked={isCommandFilterEnabled}
-          onChange={handleCommandFilterToggle}
-          className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-        />
-        <label htmlFor="commandFilter" className="text-sm font-medium text-gray-700 ml-2">
-          только команда
-        </label>
+        <div className="flex flex-start align-center">
+          <input
+            type="checkbox"
+            id="commandFilter"
+            checked={isCommandFilterEnabled}
+            onChange={handleCommandFilterToggle}
+            className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+          />
+          <label htmlFor="commandFilter" className="text-sm font-medium text-gray-700 ml-2">
+            только команда
+          </label>
+        </div>
+        <div className="flex flex-start align-center">
+          <input
+            type="checkbox"
+            id="onlineFilter"
+            checked={isOnlyOnline}
+            onChange={handleOnlyOnlineToggle}
+            className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+          />
+          <label htmlFor="onlineFilter" className="text-sm font-medium text-gray-700 ml-2">
+            только онлайн
+          </label>
+        </div>
       </div>
     </div>
   )
