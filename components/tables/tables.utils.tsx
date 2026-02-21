@@ -1,4 +1,4 @@
-import { ResultsItem } from '@/types'
+import { Results, ResultsItem } from '@/types'
 import {
     leadFinalsConfig,
     leadQualConfig,
@@ -50,4 +50,12 @@ export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder
         return ' bg-green-300/30';
     }
     return '';
+}
+
+export function getClimbedCount({ results, isLead, isBoulder }: { results: Results, isLead: boolean, isBoulder: boolean }) { 
+    return results.filter((result) => {
+        if (isBoulder) return 'rank' in result && result.rank !== ''
+        if (isLead) return 'score' in result ? result.score !== '' : result.score1 !== ''
+        return results.length
+    }).length;
 }

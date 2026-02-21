@@ -3,7 +3,7 @@ import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
+import { getClimbedCount, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import { STATUSES } from '@/lib/constants'
 
@@ -34,9 +34,7 @@ export default function Table({
     }
 
     const filteredResults: Results = filterResultsByCommand(results as Results)
-    const climbedCount = results.filter((result: Results[number]) => 
-      'score' in result ? result.score !== '' : result.score1 !== ''
-    ).length
+    const climbedCount = getClimbedCount({ results, isLead, isBoulder });
 
     const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder })
 
