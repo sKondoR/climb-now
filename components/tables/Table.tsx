@@ -1,10 +1,11 @@
 import { Subgroup, Results } from '@/types'
 import useResults from '@/lib/hooks/useResults'
-import { NAME_COL } from './configs';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { getRowClasses, getTableConfig, isCommandMatch } from './tables.utils';
-import BoulderCell from './BoulderCell';
+import { NAME_COL } from './configs'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
+import BoulderCell from './BoulderCell'
+import { STATUSES } from '@/lib/constants'
 
 export default function Table({
   subGroup,
@@ -17,10 +18,11 @@ export default function Table({
   isCommandFilterEnabled: boolean,
   command: string,
 }) {
-    if (!subGroup) return null;
+    if (!subGroup) return null
     
-    const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, loadResults } = useResults({
+    const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useResults({
       code,
+      isOnline: subGroup.status === STATUSES.ONLINE,
       subgroupLink: subGroup.link
     })
     
@@ -46,9 +48,9 @@ export default function Table({
             <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {climbedCount} / {results.length} пролезло
             </span>
-            <FontAwesomeIcon icon={faRefresh} 
+            <FontAwesomeIcon icon={faRefresh}
               className="cursor-pointer text-sm text-blue-600 rounded hover:text-blue-800 transition-colors ml-2"
-              onClick={loadResults}
+              onClick={() => refetch()}
             />
           </div>
         </h3>
