@@ -3,7 +3,7 @@ import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { BOULDER_FINAL_PLACES, getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch, PRIZE_PLACES } from './tables.utils'
+import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import { STATUSES } from '@/lib/constants'
 
@@ -76,8 +76,8 @@ export default function Table({
                 >
                   {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];
-                    const isBoulder = value.includes('/');
-                    if (isBoulder) {
+                    const isBoulderCell = value.includes('/') && value.toLowerCase() !== 'н/я';
+                    if (isBoulderCell) {
                       return <td key={`${col.id}-${index}`} className="text-left font-medium">
                         <BoulderCell value={value} />
                       </td>
