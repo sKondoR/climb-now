@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Subgroup, Results } from '@/types'
 import { NAME_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,6 +27,8 @@ export default function Table({
       subgroupLink: subGroup.link
     })
     
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    
     const filterResultsByCommand = (results: Results) => {
       if (!isCommandFilterEnabled || !command) {
         return results
@@ -49,8 +52,12 @@ export default function Table({
               {climbedCount} / {results.length} пролезло
             </span>
             <FontAwesomeIcon icon={faRefresh}
-              className="cursor-pointer text-sm text-blue-600 rounded hover:text-blue-800 transition-colors ml-2"
-              onClick={() => refetch()}
+              className={`cursor-pointer text-sm text-blue-600 rounded hover:text-blue-800 transition-colors ml-2 ${isRefreshing ? 'animate-spin' : ''}`}
+              onClick={() => {
+                setIsRefreshing(true);
+                refetch();
+                setTimeout(() => setIsRefreshing(false), 1000);
+              }}
             />
           </div>
         </h3>
