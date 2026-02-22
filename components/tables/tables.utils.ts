@@ -44,11 +44,12 @@ export const LEAD_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10'];
 export const BOULDER_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 
 export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command }: getRowClassesProps) { 
-    const isCommandRow = isCommandMatch(result.command, command);
+    const isCommandRow = isCommandMatch(result.command, command)
     const isFinalRow = 
     (isLead && isFinal && PRIZE_PLACES.includes(result['rank'])) || 
     (isLead && isQualResult && LEAD_FINAL_PLACES.includes(result['rank'])) ||
-    (isBoulder && BOULDER_FINAL_PLACES.includes(result['rank']));
+    (isBoulder && isFinal && PRIZE_PLACES.includes(result['rank'])) || 
+    (isBoulder && !isFinal && BOULDER_FINAL_PLACES.includes(result['rank']));
     if (isCommandRow) {
         return ' bg-blue-400/50';
     }
