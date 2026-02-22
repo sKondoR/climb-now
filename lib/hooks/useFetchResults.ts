@@ -18,7 +18,7 @@ interface UseResultsState {
   error: string | null
 }
 
-export default function useResults({ code, subgroupLink, isOnline }: UseResultsOptions) {
+export default function useFetchResults({ code, subgroupLink, isOnline }: UseResultsOptions) {
   const [state, setState] = useState<UseResultsState>({
     results: [],
     isLead: false,
@@ -55,7 +55,7 @@ export default function useResults({ code, subgroupLink, isOnline }: UseResultsO
       setState(prev => ({ ...prev, isLoading: true, error: null }))
     } else if (query.error) {
       // Логируем ошибку для диагностики
-      console.error('Error in useResults:', query.error)
+      console.error('Error in useFetchResults:', query.error)
       setState(prev => ({
         ...prev,
         isLoading: false,

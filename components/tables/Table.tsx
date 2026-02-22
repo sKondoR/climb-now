@@ -1,11 +1,11 @@
 import { Subgroup, Results } from '@/types'
-import useResults from '@/lib/hooks/useResults'
 import { NAME_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import { STATUSES } from '@/lib/constants'
+import useFetchResults from '@/lib/hooks/useFetchResults'
 
 export default function Table({
   subGroup,
@@ -20,7 +20,7 @@ export default function Table({
 }) {
     if (!subGroup) return null
     
-    const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useResults({
+    const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
       code,
       isOnline: subGroup.status === STATUSES.ONLINE,
       subgroupLink: subGroup.link
