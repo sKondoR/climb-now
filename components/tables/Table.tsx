@@ -31,7 +31,7 @@ export default function Table({
         return results
       }
       const filtered = results.filter((result) => isCommandMatch(result.command, command))
-      return filtered.length ? results.filter((result, index) => index===0 || isCommandMatch(result.command, command)) : []
+      return filtered.length ? results.filter((result, index) => result.rank === '1' || isCommandMatch(result.command, command)) : []
     }
 
     const filteredResults: Results = filterResultsByCommand(results as Results)
