@@ -16,8 +16,12 @@ export class MobxStore {
   isDisciplinesLoading: boolean = false
   disciplinesData: Discipline[] | null = null
 
-  constructor() {
+  constructor(initialCode?: string) {
     makeAutoObservable(this)
+    
+    if (initialCode) {
+      this.code = initialCode
+    }
   }
 
   setCode(code: string) {
@@ -57,17 +61,37 @@ export class MobxStore {
 // Create a function to initialize the store
 let store: MobxStore | null = null
 
-export function initializeStore() {
+export function initializeStore(initialCode?: string) {
   if (typeof window === 'undefined') {
     // On server side, create a new instance every time
-    return new MobxStore()
+    return new MobxStore(initialCode)
   } else {
     // On client side, use singleton pattern
     if (store === null) {
-      store = new MobxStore()
+      // Get the code from URL if not provided
+      const codeFromURL = initialCode || getInitialCodeFromURL();
+      store = new MobxStore(codeFromURL)
     }
     return store
   }
+}
+
+// Helper function to get code from URL query parameter
+function getInitialCodeFromURL(): string {
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('code') || '';
+  }
+  return '';
+}
+
+// Function to initialize store with code from URL on client side only
+export function initializeStoreWithUrlCode() {
+  if (typeof window !== 'undefined') {
+    const urlCode = getInitialCodeFromURL();
+    return initializeStore(urlCode);
+  }
+  return initializeStore();
 }
 
 export const MobxStoreContext = createContext<MobxStore | undefined>(undefined)
