@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { fetchResults } from '@/lib/api'
+import useFetchGroups from '@/lib/hooks/useFetchGroups'
 import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
 import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
@@ -16,31 +16,45 @@ function ResultsForm() {
   const [command, setCommand] = useState(store.command)
   const { isCommandFilterEnabled, isOnlyOnline } = store
 
-  // Debounced fetch для URL
-  const debouncedFetch = useDebouncedCallback(
-    async (code: string) => {
-      store.setIsDisciplinesLoading(true)
-      store.setDisciplinesData(null)
+  const {
+    disciplines,
+    isLoading: isDisciplinesLoading,
+    error: disciplinesError,
+    refetch
+  } = useFetchGroups({
+    code,
+    enabled: !!code
+  })
+
+  useEffect(() => {
+    if (disciplines && disciplines.length > 0) {
+      store.setCode(code)
+      store.setDisciplinesData(disciplines)
+    }
+  }, [disciplines, code, store])
+
+  useEffect(() => {
+    store.setIsDisciplinesLoading(isDisciplinesLoading)
+  }, [isDisciplinesLoading, store])
+
+  useEffect(() => {
+    if (disciplinesError) {
+      console.error('Ошибка загрузки данных:', disciplinesError)
       const url = new URL(window.location.href)
-      try {
-        const data = await fetchResults(code)
-        store.setCode(code)
-        store.setDisciplinesData(data)
-        store.setIsDisciplinesLoading(false)
-        if (data?.length) {
-          url.searchParams.set('code', code)
-          router.replace(url.pathname + url.search)          
-        } else {
-          router.replace(url.pathname)
-        }     
-      } catch (error) {
-        console.error('Ошибка загрузки данных:', error)
-        store.setIsDisciplinesLoading(false)
-        router.replace(url.pathname)
-      }
-    },
-    500
-  )
+      router.replace(url.pathname)
+    }
+  }, [disciplinesError, router])
+
+  useEffect(() => {
+    if (disciplines && disciplines.length > 0) {
+      const url = new URL(window.location.href)
+      url.searchParams.set('code', code)
+      router.replace(url.pathname + url.search)
+    } else if (disciplines && disciplines.length === 0) {
+      const url = new URL(window.location.href)
+      router.replace(url.pathname)
+    }
+  }, [disciplines, code, router])
 
   // Debounced fetch для команды
   const debouncedCommandFetch = useDebouncedCallback(
@@ -54,9 +68,9 @@ function ResultsForm() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newCode = e.target.value
       setCode(newCode)
-      debouncedFetch(newCode)
+      // Дебаунс убран, так как useQuery автоматически управляет запросами
     },
-    [debouncedFetch]
+    []
   )
 
   const handleCommandChange = useCallback(
@@ -84,9 +98,7 @@ function ResultsForm() {
     []
   )
 
-  useEffect(() => {
-    debouncedFetch(code)
-  }, [])
+  // Инициальный вызов не нужен, так как useQuery автоматически запускается при изменении code
 
   return (
     <div className="flex flex-wrap gap-4">
