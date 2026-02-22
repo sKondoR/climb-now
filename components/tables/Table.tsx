@@ -73,7 +73,7 @@ export default function Table({
                 }
                 return <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b transition-colors ${finalBorderClass} ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
+                  className={`border-b border-white transition-colors ${finalBorderClass} ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
                 >
                   {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];

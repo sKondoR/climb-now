@@ -18,7 +18,7 @@ export default observer(
 function GroupCard({ group }: GroupCardProps) {
   const store = mobxStore()
   const [isExpanded, setIsExpanded] = useState(true)
-  const { isOnlyOnline, isCommandFilterEnabled, code, command } = store
+  const { isCommandFilterEnabled, code, command } = store
 
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (group.subgroups.length === 0) return '0';

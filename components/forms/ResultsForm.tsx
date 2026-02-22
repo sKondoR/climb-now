@@ -145,21 +145,21 @@ function ResultsForm() {
             id="commandFilter"
             checked={isCommandFilterEnabled}
             onChange={handleCommandFilterToggle}
-            className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+            className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-[3px]"
           />
-          <label htmlFor="commandFilter" className="text-sm font-medium text-gray-700 ml-2">
+          <label htmlFor="commandFilter" className="cursor-pointer text-sm font-medium text-gray-700 ml-2">
             только команда
           </label>
         </div>
-        <div className="flex flex-start align-center">
+        <div className="flex flex-start align-center mt-2">
           <input
             type="checkbox"
             id="onlineFilter"
             checked={isOnlyOnline}
             onChange={handleOnlyOnlineToggle}
-            className="cursor-pointer h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-1"
+            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-[3px]"
           />
-          <label htmlFor="onlineFilter" className="text-sm font-medium text-gray-700 ml-2">
+          <label htmlFor="onlineFilter" className="cursor-pointer text-sm font-medium text-gray-700 ml-2">
             только онлайн
           </label>
         </div>
