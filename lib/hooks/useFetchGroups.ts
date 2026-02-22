@@ -31,12 +31,12 @@ export default function useFetchGroups({ code, enabled = true }: UseGroupsOption
     return response.json()
   }
 
-  // Используем useQuery для управления состоянием и запросами
+
   const query = useQuery({
     queryKey: ['groups', code],
     queryFn: fetchGroups,
     enabled: enabled && !!code,
-    refetchInterval: 120000, // Обновление каждые 10 минут
+    refetchInterval: 10 * 60 * 1000,
     retry: 3,
     retryDelay: 1000,
   })
@@ -45,7 +45,6 @@ export default function useFetchGroups({ code, enabled = true }: UseGroupsOption
     if (query.isLoading) {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
     } else if (query.error) {
-      // Логируем ошибку для диагностики
       console.error('Error in useFetchGroups:', query.error)
       setState(prev => ({
         ...prev,
@@ -54,7 +53,6 @@ export default function useFetchGroups({ code, enabled = true }: UseGroupsOption
       }))
     } else if (query.data) {
       const disciplines = query.data
-      // Извлекаем все группы из всех дисциплин
       const groups = disciplines.flatMap(discipline => discipline.groups)
       setState({ 
         disciplines, 

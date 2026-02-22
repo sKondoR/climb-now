@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import useFetchGroups from '@/lib/hooks/useFetchGroups'
 import { observer } from 'mobx-react-lite'
@@ -56,7 +56,7 @@ function ResultsForm() {
     }
   }, [disciplines, code, router])
 
-  // Debounced fetch для команды
+
   const debouncedCommandFetch = useDebouncedCallback(
     (command: string) => {
       store.setCommand(command)
@@ -68,8 +68,7 @@ function ResultsForm() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newCode = e.target.value
       setCode(newCode)
-      // Дебаунс убран, так как useQuery автоматически управляет запросами
-    },
+},
     []
   )
 
@@ -97,8 +96,6 @@ function ResultsForm() {
     },
     []
   )
-
-  // Инициальный вызов не нужен, так как useQuery автоматически запускается при изменении code
 
   return (
     <div className="flex flex-wrap gap-4">
