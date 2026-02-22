@@ -30,7 +30,8 @@ export default function Table({
       if (!isCommandFilterEnabled || !command) {
         return results
       }
-      return results.filter((result, index) => index===0 || isCommandMatch(result.command, command))
+      const filtered = results.filter((result) => isCommandMatch(result.command, command))
+      return filtered.length ? results.filter((result, index) => index===0 || isCommandMatch(result.command, command)) : []
     }
 
     const filteredResults: Results = filterResultsByCommand(results as Results)
@@ -95,7 +96,7 @@ export default function Table({
               {filteredResults.length === 0 && !isLoading && !error && (
                 <tr className="border-b">
                   <td colSpan={config.length} className="px-2 py-1 text-center text-gray-500">
-                    Результаты пока не доступны
+                    -
                   </td>
                 </tr>
               )}
