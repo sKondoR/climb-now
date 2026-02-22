@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { observer } from 'mobx-react-lite'
 import { mobxStore } from '@/lib/store/mobxStore'
-import { isGroupOnline } from './groups.utils'
 
 interface GroupCardProps {
   group: Group
@@ -38,7 +37,6 @@ function GroupCard({ group }: GroupCardProps) {
     }
   }, [group.subgroups, activeTab])
 
-  if (isOnlyOnline && !isGroupOnline(group)) return null
   let isOnline = null;
   const tabs = group.subgroups.map(subgroup => {
     if (subgroup.status === STATUSES.ONLINE) isOnline = STATUSES.ONLINE
