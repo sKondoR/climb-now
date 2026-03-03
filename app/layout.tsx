@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { UrlAwareMobxStoreProvider } from '@/lib/store/UrlAwareMobxStoreProvider';
+import { RootStoreProvider } from '@/lib/store/RootStoreProvider';
 import QueryClientProviderWrapper from '@/lib/query/QueryClientProvider';
 
 const inter = Inter({ subsets: ['latin'] })
@@ -19,9 +19,9 @@ export default function RootLayout({
     <html lang="ru">
       <body className={inter.className}>
         <QueryClientProviderWrapper>
-          <UrlAwareMobxStoreProvider>
+          <RootStoreProvider>
             {children}
-          </UrlAwareMobxStoreProvider>
+          </RootStoreProvider>
         </QueryClientProviderWrapper>
       </body>
     </html>

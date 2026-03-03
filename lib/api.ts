@@ -1,5 +1,21 @@
 import { Discipline } from '@/types'
 
+export const fetchTeams = async (): Promise<string[]> => {
+  try {
+    const response = await fetch('https://cfr-search.vercel.app/api/teams');
+    
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return data.teams;
+  } catch (error) {
+    console.error('Error fetching teams:', error);
+    return [];
+  }
+};
+
 export const fetchResults = async (code: string): Promise<Discipline[] | null> => {
   let lastError: Error | null = null;
   

@@ -1,13 +1,12 @@
 'use client'
 
 import { observer } from 'mobx-react-lite'
-import { mobxStore } from '@/lib/store/mobxStore'
+import { rootStore } from '@/lib/store/root.store'
 
 export default observer(
 function HeaderFormValues() {
 
-  const store = mobxStore();
-  const { isCommandFilterEnabled, command, code, isOnlyOnline } = store;
+  const { isCommandFilterEnabled, command, code, isOnlyOnline } = rootStore.formStore;
 
   return (<span className="text-xs md:text-sm">
       <span className="text-nowrap ml-6 block md:inline">код соревнований: <span className="font-bold text-gray-900">{code || '-'}</span></span>

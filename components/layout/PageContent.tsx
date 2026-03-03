@@ -4,15 +4,15 @@ import GroupCard from '@/components/groups/GroupCard'
 import { useState } from 'react'
 import DisciplineTabs from '../groups/DisciplineTabs'
 import { observer } from 'mobx-react-lite'
-import { useMobxStore } from '@/lib/store/mobxStore'
+import { rootStore } from '@/lib/store/root.store'
 import { Group } from '@/types'
 import { isGroupOnline } from '../groups/groups.utils'
 
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
-  const store = useMobxStore()
-  const { disciplinesData, isDisciplinesLoading, isOnlyOnline } = store;
+  const { disciplinesData, isDisciplinesLoading } = rootStore.disciplinesStore;
+  const { isOnlyOnline } = rootStore.formStore;
 
   const discipline = disciplinesData?.[activeTab];
   if (!discipline) {

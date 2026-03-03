@@ -17,7 +17,7 @@ const CollapsibleHeader = () => {
     <>
       <header className="bg-white border-b border-b-gray-300 relative">
         <div 
-          className={`overflow-hidden transition-all duration-300 ease-in-out  ${
+          className={`transition-all duration-300 ease-in-out  ${
             isExpanded ? 'max-h-96 opacommand-100' : 'max-h-0 opacommand-0'
           }`}
         >

@@ -8,7 +8,7 @@ import Table from '../tables/Table'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { observer } from 'mobx-react-lite'
-import { mobxStore } from '@/lib/store/mobxStore'
+import { rootStore } from '@/lib/store/root.store'
 
 interface GroupCardProps {
   group: Group
@@ -16,9 +16,8 @@ interface GroupCardProps {
 
 export default observer(
 function GroupCard({ group }: GroupCardProps) {
-  const store = mobxStore()
   const [isExpanded, setIsExpanded] = useState(true)
-  const { isCommandFilterEnabled, code, command } = store
+  const { isCommandFilterEnabled, code, command } = rootStore.formStore
 
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (group.subgroups.length === 0) return '0';

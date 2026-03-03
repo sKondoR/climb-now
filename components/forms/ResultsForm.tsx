@@ -4,17 +4,19 @@ import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import useFetchGroups from '@/lib/hooks/useFetchGroups'
 import { observer } from 'mobx-react-lite'
-import { mobxStore } from '@/lib/store/mobxStore'
-import { DEFAULT_CITY, DEFAULT_URL_CODE } from '@/lib/constants'
+import { rootStore } from '@/lib/store/root.store'
+import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
+import { TeamAutocomplete } from './TeamAutocomplete'
 
 export default observer(
 function ResultsForm() {
   const router = useRouter()
-  const store = mobxStore()
-  const [code, setCode] = useState(store.code)
-  const [command, setCommand] = useState(store.command)
-  const { isCommandFilterEnabled, isOnlyOnline } = store
+  const formStore = rootStore.formStore
+  const disciplinesStore = rootStore.disciplinesStore
+  const [code, setCode] = useState(formStore.code)
+  const [command, setCommand] = useState(formStore.command)
+  const { isCommandFilterEnabled, isOnlyOnline } = formStore
 
   const {
     disciplines,
@@ -28,14 +30,14 @@ function ResultsForm() {
 
   useEffect(() => {
     if (disciplines && disciplines.length > 0) {
-      store.setCode(code)
-      store.setDisciplinesData(disciplines)
+      formStore.setCode(code)
+      disciplinesStore.setDisciplinesData(disciplines)
     }
-  }, [disciplines, code, store])
+  }, [disciplines, code, formStore, disciplinesStore])
 
   useEffect(() => {
-    store.setIsDisciplinesLoading(isDisciplinesLoading)
-  }, [isDisciplinesLoading, store])
+    disciplinesStore.setIsDisciplinesLoading(isDisciplinesLoading)
+  }, [isDisciplinesLoading, disciplinesStore])
 
   useEffect(() => {
     if (disciplinesError) {
@@ -59,7 +61,7 @@ function ResultsForm() {
 
   const debouncedCommandFetch = useDebouncedCallback(
     (command: string) => {
-      store.setCommand(command)
+      formStore.setCommand(command)
     },
     300
   )
@@ -68,15 +70,14 @@ function ResultsForm() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newCode = e.target.value
       setCode(newCode)
-},
+    },
     []
   )
 
   const handleCommandChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newCommand = e.target.value
-      setCommand(newCommand)
-      debouncedCommandFetch(newCommand)
+    (value: string) => {
+      setCommand(value)
+      debouncedCommandFetch(value)
     },
     [debouncedCommandFetch]
   )
@@ -84,7 +85,7 @@ function ResultsForm() {
   const handleCommandFilterToggle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const isEnabled = e.target.checked
-      store.setIsCommandFilterEnabled(isEnabled)
+      formStore.setIsCommandFilterEnabled(isEnabled)
     },
     []
   )
@@ -92,7 +93,7 @@ function ResultsForm() {
   const handleOnlyOnlineToggle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const isEnabled = e.target.checked
-      store.setIsOnlyOnline(isEnabled)
+      formStore.setIsOnlyOnline(isEnabled)
     },
     []
   )
@@ -120,24 +121,11 @@ function ResultsForm() {
         </div>
       </div>
       
-      <div className="w-full md:w-auto">
-        <label
-          htmlFor="command"
-          className="block text-sm font-medium text-gray-700 mb-2"
-          title="Скалолазы из команды будут подсвечены"
-        >
-          команда
-          <span className="text-xs text-gray-500"> (например {DEFAULT_CITY})</span>
-        </label>
-        <input
-          type="text"
-          id="command"
-          value={command}
-          onChange={handleCommandChange}
-          placeholder="СПБ"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+      <TeamAutocomplete
+        value={command}
+        onChange={handleCommandChange}
+        placeholder="СПБ"
+      />
       <div className="w-full md:w-auto">
         <div className="flex flex-start align-center">
           <input
