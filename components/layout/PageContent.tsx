@@ -11,26 +11,26 @@ import { isGroupOnline } from '../groups/groups.utils'
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
-  const { disciplinesData, isDisciplinesLoading } = rootStore.disciplinesStore;
-  const { isOnlyOnline } = rootStore.formStore;
+  const { groupsData, isGroupsLoading } = rootStore.disciplinesStore
+  const { isOnlyOnline } = rootStore.formStore
 
-  const discipline = disciplinesData?.[activeTab];
+   const discipline = groupsData?.[activeTab]
   if (!discipline) {
     return (<div className="text-center py-12">
       <div className="text-2xl font-semibold text-gray-600 mb-4">
         Добро пожаловать в ClimbNow!
       </div>
       <div className="text-gray-500 max-w-md mx-auto">
-        Введите код соревнований и город для отображения результатов
+        Введите код соревнований и свою команду для отображения результатов
       </div>
     </div>)
   }
 
-  const filteredOnline = isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups;
+  const filteredOnline = isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
   return (<>
-      <div>{isDisciplinesLoading}</div>
+      <div>{isGroupsLoading}</div>
       <DisciplineTabs
-        disciplines={disciplinesData}
+        disciplines={groupsData}
         setActiveTab={setActiveTab}
         activeTab={activeTab}
       />

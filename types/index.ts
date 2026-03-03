@@ -1,3 +1,3 @@
-export * from './disciplines';
-export * from './groups';
-export * from './status';
+export * from './disciplines'
+export * from './groups'
+export * from './status'

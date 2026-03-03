@@ -2,10 +2,9 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import useFetchGroups from '@/lib/hooks/useFetchGroups'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
-import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
+import { DEFAULT_URL_CODE } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
 import { TeamAutocomplete } from './TeamAutocomplete'
 
@@ -14,49 +13,45 @@ function ResultsForm() {
   const router = useRouter()
   const formStore = rootStore.formStore
   const disciplinesStore = rootStore.disciplinesStore
-  const [code, setCode] = useState(formStore.code)
-  const [command, setCommand] = useState(formStore.command)
+  const code = formStore.code
+  const command = formStore.command
   const { isCommandFilterEnabled, isOnlyOnline } = formStore
 
-  const {
-    disciplines,
-    isLoading: isDisciplinesLoading,
-    error: disciplinesError,
-    refetch
-  } = useFetchGroups({
-    code,
-    enabled: !!code
-  })
-
   useEffect(() => {
-    if (disciplines && disciplines.length > 0) {
-      formStore.setCode(code)
-      disciplinesStore.setDisciplinesData(disciplines)
+    if (code) {
+      disciplinesStore.fetchGroups(code)
     }
-  }, [disciplines, code, formStore, disciplinesStore])
+  }, [code, disciplinesStore])
 
   useEffect(() => {
-    disciplinesStore.setIsDisciplinesLoading(isDisciplinesLoading)
-  }, [isDisciplinesLoading, disciplinesStore])
+    if (formStore.code) {
+      disciplinesStore.fetchGroups(formStore.code)
+    }
+  }, [formStore.code, disciplinesStore])
 
   useEffect(() => {
-    if (disciplinesError) {
-      console.error('Ошибка загрузки данных:', disciplinesError)
+    disciplinesStore.setIsDisciplinesLoading(disciplinesStore.isGroupsLoading)
+  }, [disciplinesStore.isGroupsLoading, disciplinesStore])
+
+  useEffect(() => {
+    if (disciplinesStore.groupsError) {
+      console.error('Ошибка загрузки данных:', disciplinesStore.groupsError)
       const url = new URL(window.location.href)
       router.replace(url.pathname)
     }
-  }, [disciplinesError, router])
+  }, [disciplinesStore.groupsError, router])
 
   useEffect(() => {
-    if (disciplines && disciplines.length > 0) {
+    if (disciplinesStore.groupsData && disciplinesStore.groupsData.length > 0) {
       const url = new URL(window.location.href)
       url.searchParams.set('code', code)
-      router.replace(url.pathname + url.search)
-    } else if (disciplines && disciplines.length === 0) {
+      window.history.replaceState({}, document.title, url.pathname + url.search)
+    } else if (disciplinesStore.groupsData && disciplinesStore.groupsData.length === 0) {
       const url = new URL(window.location.href)
-      router.replace(url.pathname)
+      url.searchParams.delete('code')
+      window.history.replaceState({}, document.title, url.pathname + url.search)
     }
-  }, [disciplines, code, router])
+  }, [disciplinesStore.groupsData, code])
 
 
   const debouncedCommandFetch = useDebouncedCallback(
@@ -69,14 +64,14 @@ function ResultsForm() {
   const handleUrlChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newCode = e.target.value
-      setCode(newCode)
+      formStore.setCode(newCode)
     },
     []
   )
 
   const handleCommandChange = useCallback(
     (value: string) => {
-      setCommand(value)
+      formStore.setCommand(value)
       debouncedCommandFetch(value)
     },
     [debouncedCommandFetch]
@@ -124,7 +119,6 @@ function ResultsForm() {
       <TeamAutocomplete
         value={command}
         onChange={handleCommandChange}
-        placeholder="СПБ"
       />
       <div className="w-full md:w-auto">
         <div className="flex flex-start align-center">

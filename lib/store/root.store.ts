@@ -21,7 +21,7 @@ export class RootStore {
 
     this.teamsStore = new TeamsStore(this.queryClient)
     this.formStore = new FormStore()
-    this.disciplinesStore = new DisciplinesStore()
+    this.disciplinesStore = new DisciplinesStore(this.queryClient)
   }
 
   destroy() {

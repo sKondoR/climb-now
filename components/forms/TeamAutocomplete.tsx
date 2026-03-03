@@ -1,43 +1,45 @@
-'use client';
+'use client'
 
-import { useState, useRef, useEffect } from 'react';
-import { rootStore } from '@/lib/store/root.store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { useState, useRef, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+
+import { rootStore } from '@/lib/store/root.store'
+import { DEFAULT_TEAM } from '@/lib/constants'
 
 interface TeamAutocompleteProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
 }
 
 export const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
   value,
   onChange,
-  placeholder = 'СПБ',
+  placeholder = DEFAULT_TEAM,
 }) => {
-  const teamsStore = rootStore.teamsStore;
-  const [isOpen, setIsOpen] = useState(false);
-  const [filteredTeams, setFilteredTeams] = useState<string[]>([]);
-  const [allTeams, setAllTeams] = useState<string[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const teamsStore = rootStore.teamsStore
+  const [isOpen, setIsOpen] = useState(false)
+  const [filteredTeams, setFilteredTeams] = useState<string[]>([])
+  const [allTeams, setAllTeams] = useState<string[]>([])
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Load all teams and filter teams based on input value
   useEffect(() => {
     if (teamsStore.teams) {
-      setAllTeams(teamsStore.teams);
+      setAllTeams(teamsStore.teams)
       if (!value) {
-        setFilteredTeams([]);
-        return;
+        setFilteredTeams([])
+        return
       }
       
       const filtered = teamsStore.teams.filter((team) =>
         team.toLowerCase().includes(value.toLowerCase())
-      ) || [];
-      setFilteredTeams(filtered);
+      ) || []
+      setFilteredTeams(filtered)
     }
-  }, [value, teamsStore.teams]);
+  }, [value, teamsStore.teams])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -48,36 +50,36 @@ export const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
         inputRef.current &&
         !inputRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false);
+        setIsOpen(false)
       }
-    };
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    onChange(newValue);
-    setIsOpen(true);
-  };
+    const newValue = e.target.value
+    onChange(newValue)
+    setIsOpen(true)
+  }
 
   const handleCaretClick = () => {
     // When caret is clicked, show all teams without filtering
     if (teamsStore.teams) {
-      setFilteredTeams(teamsStore.teams);
+      setFilteredTeams(teamsStore.teams)
     }
-    setIsOpen(true);
-  };
+    setIsOpen(true)
+  }
 
   const handleTeamSelect = (team: string) => {
-    onChange(team);
-    setIsOpen(false);
+    onChange(team)
+    setIsOpen(false)
     // Reset filtered teams when an item is selected
-    setFilteredTeams([]);
-  };
+    setFilteredTeams([])
+  }
 
   return (
     <div className="w-full md:w-auto relative">
@@ -136,7 +138,6 @@ export const TeamAutocomplete: React.FC<TeamAutocompleteProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-const DEFAULT_TEAM = 'СПБ';
