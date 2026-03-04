@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx'
 import { DEFAULT_TEAM } from '@/lib/constants'
+
 export class FormStore {
   code: string = ''
   command: string = DEFAULT_TEAM
@@ -10,6 +11,15 @@ export class FormStore {
   }
   setCode(code: string) {
     this.code = code
+  }
+  loadCodeFromUrl() {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const code = urlParams.get('code')
+      if (code) {
+        this.code = code
+      }
+    }
   }
   setCommand(command: string) {
     this.command = command

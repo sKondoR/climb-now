@@ -1,3 +1,4 @@
+import { BACKEND_API_URL } from '@/lib/constants'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -6,7 +7,7 @@ export async function GET(request: NextRequest) {
     const startDate = url.searchParams.get('start') || '01-01-2024'
     const endDate = url.searchParams.get('end') || '2026-04-04'
 
-    const response = await fetch(`https://cfr-search.vercel.app/api/events?start=${startDate}&end=${endDate}`, {
+    const response = await fetch(`${BACKEND_API_URL}events?start=${startDate}&end=${endDate}`, {
       headers: {
         'Content-Type': 'application/json',
         ...request.headers

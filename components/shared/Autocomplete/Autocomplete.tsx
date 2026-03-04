@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, ReactNode } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { Item } from './Autocomplete.types'
 import BaseTemplate from './BaseTemplate'
 
@@ -130,22 +130,23 @@ export const Autocomplete = <T extends Item = any>({
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+          disabled={!data.length}
         />
         <button
           type="button"
           onClick={handleCaretClick}
           className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none`}
         >
-          <FontAwesomeIcon icon={faCaretDown} />
+          <FontAwesomeIcon icon={data.length ? faCaretDown : faSpinner} spin={!data.length} />
         </button>
       </div>
 
       {isOpen && filteredData.length > 0 && (
         <div
           ref={dropdownRef}
-          className={`text-sm absolute z-10 w-auto mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[500px] overflow-y-auto
+          className={`text-sm absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[500px] overflow-y-auto
           `}
-          style={{ width: dropdownWidth ? `${dropdownWidth}px` : undefined }}
+          style={{ minWidth: dropdownWidth ? `${dropdownWidth}px` : undefined }}
         >
         {filteredData.map((item) => {
           const itemValue = getTemplate(item)

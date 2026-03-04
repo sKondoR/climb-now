@@ -5,20 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
-import { STATUSES } from '@/lib/constants'
+import { SPECIAL_STATUSES, STATUSES } from '@/lib/constants'
 import useFetchResults from '@/lib/hooks/useFetchResults'
+
+interface TableProps {
+  subGroup: Subgroup | undefined,
+  code: string,
+  isCommandFilterEnabled: boolean,
+  command: string,
+}
 
 export default function Table({
   subGroup,
   code,
   isCommandFilterEnabled,
   command,
-}: {
-  subGroup: Subgroup | undefined,
-  code: string,
-  isCommandFilterEnabled: boolean,
-  command: string,
-}) {
+}: TableProps) {
     if (!subGroup) return null
     
     const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
@@ -84,7 +86,7 @@ export default function Table({
                 >
                   {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];
-                    const isBoulderCell = value.includes('/') && value.toLowerCase() !== 'н/я';
+                    const isBoulderCell = value.includes('/') && !SPECIAL_STATUSES.includes(value.toLowerCase());
                     if (isBoulderCell) {
                       return <td key={`${col.id}-${index}`} className="text-left font-medium">
                         <BoulderCell value={value} />

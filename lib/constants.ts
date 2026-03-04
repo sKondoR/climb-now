@@ -3,6 +3,7 @@ export const DEFAULT_TEAM = 'СПБ'
 export const UPDATE_INTERVAL = 120000 
 export const DEBOUNCE_DELAY = 500
 export const EXTERNAL_API_BASE_URL = 'http://c-f-r.ru/live/'
+export const BACKEND_API_URL = 'https://cfr-search.vercel.app/api/'
 
 export const DISCIPLINES = {
   LEAD: 'трудность' as const,
@@ -15,3 +16,5 @@ export const STATUSES = {
   ONLINE: 'online' as const,
   PASSED: 'passed' as const,
 } as const
+
+export const SPECIAL_STATUSES = ['н/я', 'в/к']

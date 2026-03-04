@@ -1,8 +1,10 @@
 import { Discipline, Event } from '@/types'
+import { BACKEND_API_URL } from './constants'
+import { getDateRange } from './utils/date.utils'
 
 export const fetchTeams = async (): Promise<string[]> => {
   try {
-    const response = await fetch('https://cfr-search.vercel.app/api/teams')
+    const response = await fetch(`${BACKEND_API_URL}teams`)
     
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -16,21 +18,10 @@ export const fetchTeams = async (): Promise<string[]> => {
   }
 }
 
-const getDateRange = (): [string, string] => {
-  const currentDate = new Date()
-  const nextMonth = new Date(currentDate.setMonth(currentDate.getMonth() + 1))
-  
-  const year = nextMonth.getFullYear()
-  const month = String(nextMonth.getMonth() + 1).padStart(2, '0')
-  const day = String(nextMonth.getDate()).padStart(2, '0')
-  
-  return [`${year - 1}-01-01`, `${year}-${month}-${day}`]
-}
-
 export const fetchEvents = async (): Promise<Event[]> => {
   try {
     const [startDate, endDate] = getDateRange()
-    const response = await fetch(`https://cfr-search.vercel.app/api/events?start=${startDate}&end=${endDate}`)
+    const response = await fetch(`${BACKEND_API_URL}events?start=${startDate}&end=${endDate}`)
     
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
@@ -46,7 +37,6 @@ export const fetchEvents = async (): Promise<Event[]> => {
 
 export const fetchResults = async (code: string): Promise<Discipline[] | null> => {
   let lastError: Error | null = null
-  
 
     try {
       console.log(`Fetching results for code: ${code}`)

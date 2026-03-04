@@ -1,15 +1,17 @@
 'use client'
 
+import { useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
 import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
-import { Autocomplete } from './Autocomplete'
-import { Item } from './Autocomplete.types'
+
+import { EventTemplate } from './EventTemplate'
+import { Autocomplete } from '@/components/shared/Autocomplete/Autocomplete'
+import { Item } from '@/components/shared/Autocomplete/Autocomplete.types'
 import { Event } from '@/types/events'
-import { useCallback, useEffect } from 'react'
-import EventTemplate from './EventTemplate'
+import LinkToEvent from '@/components/shared/LinkToEvent/LinkToEvent'
 
 export default observer(
 function ResultsForm() {
@@ -99,18 +101,21 @@ function ResultsForm() {
 
   return (
     <div className="flex flex-wrap gap-4">
-      <Autocomplete
-        value={code}
-        onChange={handleUrlChange}
-        placeholder="2602vrn"
-        data={eventsStore.events as Item[]}
-        label="код соревнований"
-        labelTitle="Введите код соревнований из URL"
-        dataLabel={DEFAULT_URL_CODE}
-        property="link"
-        renderItem={(item: Item, value: Item) => EventTemplate(item as Event, value as string)}
-        dropdownWidth={400}
-      />
+      <div className="flex-1 relative">
+        <Autocomplete
+          value={code}
+          onChange={handleUrlChange}
+          placeholder="2602vrn"
+          data={eventsStore.events as Item[]}
+          label="код соревнований"
+          labelTitle="Введите код соревнований из URL"
+          dataLabel={DEFAULT_URL_CODE}
+          property="link"
+          renderItem={(item: Item, value: Item) => EventTemplate(item as Event, value)}
+          dropdownWidth={400}
+        />
+        <LinkToEvent code={code as string}/>
+      </div>
       <Autocomplete
         value={command}
         onChange={handleCommandChange}
