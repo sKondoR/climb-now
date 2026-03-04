@@ -2,12 +2,14 @@ import { QueryClient } from '@tanstack/react-query'
 import { TeamsStore } from './teams/teams.store'
 import { DisciplinesStore } from './disciplines/disciplines.store'
 import { FormStore } from './form/form.store'
+import { EventsStore } from './events/events.store'
 
 export class RootStore {
   queryClient: QueryClient
   teamsStore: TeamsStore
   formStore: FormStore
   disciplinesStore: DisciplinesStore
+  eventsStore: EventsStore
 
   constructor() {
     this.queryClient = new QueryClient({
@@ -22,6 +24,7 @@ export class RootStore {
     this.teamsStore = new TeamsStore(this.queryClient)
     this.formStore = new FormStore()
     this.disciplinesStore = new DisciplinesStore(this.queryClient)
+    this.eventsStore = new EventsStore(this.queryClient)
   }
 
   destroy() {
