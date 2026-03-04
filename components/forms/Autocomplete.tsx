@@ -3,24 +3,25 @@
 import { useState, useRef, useEffect, ReactNode } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown } from '@fortawesome/free-solid-svg-icons'
+import { Item } from './Autocomplete.types'
+import BaseTemplate from './BaseTemplate'
 
-interface AutocompleteProps {
-  value: any
-  onChange: (value: any) => void
+type RenderItem<T extends Item = any> = (item: T, value: T | null) => ReactNode
+
+interface AutocompleteProps<T extends Item = any> {
+  value: T | null
+  onChange: (value: T | null) => void
   placeholder?: string
-  data: any[]
+  data: T[]
   label?: string
   labelTitle?: string
   dataLabel?: string
-  property?: string
-  renderItem?: (item: any) => ReactNode | string
+  property?: keyof T | string
+  renderItem?: RenderItem<T> | ((item: any, value: any) => ReactNode)
+  dropdownWidth?: number
 }
 
-interface DataItem<T = any> {
-  [key: string]: T
-}
-
-export const Autocomplete: React.FC<AutocompleteProps> = ({
+export const Autocomplete = <T extends Item = any>({
   value,
   onChange,
   placeholder = '',
@@ -30,24 +31,31 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   dataLabel = '',
   property = '',
   renderItem,
-}: AutocompleteProps) => {
+  dropdownWidth,
+}: AutocompleteProps<T>) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [filteredData, setFilteredData] = useState<any[]>([])
+  const [filteredData, setFilteredData] = useState<T[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const getValue = (val: any | string, prop: string) => prop && typeof val === 'object' ? (val as any)[prop] : (typeof val === 'object' ? JSON.stringify(val) : val)
-  const getTemplate = (val: any | string, prop: string) => prop && typeof val === 'object' && renderItem ? renderItem((val as any)) : val
+  const getValue = (item: T, prop: keyof T | string): string | T => {
+    if (prop && typeof item === 'object' && prop in item) {
+      return item[prop as keyof T] as string
+    }
+    return typeof item === 'object' ? JSON.stringify(item) : item
+  }
+
+  const getTemplate = (item: T) => renderItem ? renderItem(item, value!) : BaseTemplate(item as string, value!)
 
   useEffect(() => {
     if (!value) {
       setFilteredData([])
       return
     }
-    const text = getValue(value, property)
+    const textValue = String(getValue(value, property)).toLowerCase()
     const filtered = data?.filter((item) => {
-      const itemString = getValue(item, property)
-      return itemString.toLowerCase().includes(text.toLowerCase())
+      const itemValue = String(getValue(item, property)).toLowerCase()
+      return itemValue.includes(textValue)
     }) || []
     setFilteredData(filtered)
   }, [value, data, property])
@@ -71,8 +79,14 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = getValue(e.target.value, property)
-    onChange(newValue)
+    const textValue = e.target.value
+    // Если property указан и value - объект, берем свойство, иначе берем строку
+    const newValue = value
+      ? (property && typeof value === 'object' && property in value
+          ? value[property as keyof T]
+          : textValue)
+      : textValue
+    onChange(newValue as T)
     setIsOpen(true)
   }
 
@@ -81,13 +95,16 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
     setIsOpen(true)
   }
 
-  const handleSelect = (item: any) => {
-    onChange(getValue(item, property))
+  const handleSelect = (item: T) => {
+    const newValue = property && typeof item === 'object' && property in item
+      ? item[property as keyof T]
+      : item
+    onChange(newValue as T)
     setIsOpen(false)
     setFilteredData([])
   }
 
-  const visibleValue = getValue(value, property)
+  const visibleValue = getValue(value!, property)
 
   return (
     <div className="w-full md:w-auto relative">
@@ -108,7 +125,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
           ref={inputRef}
           type="text"
           id="autocomplete-input"
-          value={visibleValue}
+          value={String(visibleValue)}
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
@@ -117,7 +134,7 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
         <button
           type="button"
           onClick={handleCaretClick}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          className={`absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none`}
         >
           <FontAwesomeIcon icon={faCaretDown} />
         </button>
@@ -126,16 +143,18 @@ export const Autocomplete: React.FC<AutocompleteProps> = ({
       {isOpen && filteredData.length > 0 && (
         <div
           ref={dropdownRef}
-          className="text-sm absolute z-10 w-auto md:w-[400px] mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto"
+          className={`text-sm absolute z-10 w-auto mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[500px] overflow-y-auto
+          `}
+          style={{ width: dropdownWidth ? `${dropdownWidth}px` : undefined }}
         >
         {filteredData.map((item) => {
-          const itemValue = getTemplate(item, property)
+          const itemValue = getTemplate(item)
           return (
             <button
               key={typeof item === 'object' ? JSON.stringify(item) : item}
               type="button"
               onClick={() => handleSelect(item)}
-              className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none border-b border-b-gray-200"
+              className="w-full text-left text-sm text-gray-700 border-b border-b-gray-200 border-r border-r-gray-200"
             >
               {itemValue}
             </button>

@@ -51,10 +51,10 @@ export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder
     (isBoulder && isFinal && PRIZE_PLACES.includes(result['rank'])) || 
     (isBoulder && !isFinal && BOULDER_FINAL_PLACES.includes(result['rank']));
     if (isCommandRow) {
-        return ' bg-blue-300/50';
+        return ' bg-blue-200';
     }
     if (isFinalRow && !isCommandRow) {
-        return ' bg-green-300/30';
+        return ' bg-green-200';
     }
     return '';
 }

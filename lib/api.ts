@@ -1,4 +1,4 @@
-import { Discipline } from '@/types'
+import { Discipline, Event } from '@/types'
 
 export const fetchTeams = async (): Promise<string[]> => {
   try {
@@ -16,7 +16,7 @@ export const fetchTeams = async (): Promise<string[]> => {
   }
 }
 
-const getCurrentDatePlusOneMonth = (): string => {
+const getDateRange = (): [string, string] => {
   const currentDate = new Date()
   const nextMonth = new Date(currentDate.setMonth(currentDate.getMonth() + 1))
   
@@ -24,13 +24,13 @@ const getCurrentDatePlusOneMonth = (): string => {
   const month = String(nextMonth.getMonth() + 1).padStart(2, '0')
   const day = String(nextMonth.getDate()).padStart(2, '0')
   
-  return `${year}-${month}-${day}`
+  return [`${year - 1}-01-01`, `${year}-${month}-${day}`]
 }
 
-export const fetchEvents = async (): Promise<string[]> => {
+export const fetchEvents = async (): Promise<Event[]> => {
   try {
-    const endDate = getCurrentDatePlusOneMonth()
-    const response = await fetch(`https://cfr-search.vercel.app/api/events?start=01-01-2024&end=${endDate}`)
+    const [startDate, endDate] = getDateRange()
+    const response = await fetch(`https://cfr-search.vercel.app/api/events?start=${startDate}&end=${endDate}`)
     
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)

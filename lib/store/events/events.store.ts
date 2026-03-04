@@ -1,23 +1,26 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import { QueryClient, QueryObserver } from '@tanstack/react-query'
 import { fetchEvents } from '@/lib/api'
+import { Event } from '@/types/events'
 
 export class EventsStore {
   private queryClient: QueryClient
-  events: string[] = []
+  events: Event[] = []
   isEventsLoading: boolean = false
   error: string | null = null
 
-  private EventsQueryObserver: QueryObserver<string[], Error>
+  private EventsQueryObserver: QueryObserver<Event[], unknown>
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient
     makeAutoObservable(this)
 
-    this.EventsQueryObserver = new QueryObserver<string[], Error>(this.queryClient, {
+    this.EventsQueryObserver = new QueryObserver<Event[], unknown>(this.queryClient, {
       queryKey: ['events'],
       queryFn: fetchEvents,
       staleTime: 1000 * 60 * 60 * 24, // day
+      retry: 3,
+      retryDelay: 1000
     })
 
     this.setupQuerySubscription()
@@ -26,9 +29,9 @@ export class EventsStore {
   private setupQuerySubscription() {
     this.EventsQueryObserver.subscribe((result) => {
       runInAction(() => {
-        this.events = result?.data || []
+        this.events = result?.data?.sort((a, b) => b.startdate.localeCompare(a.startdate)) || []
         this.isEventsLoading = false
-        this.error = result.error?.message || null
+        this.error = result.error instanceof Error ? result.error.message : null
       })
     })
   }

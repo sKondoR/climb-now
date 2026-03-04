@@ -6,8 +6,10 @@ import { rootStore } from '@/lib/store/root.store'
 import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
 import { Autocomplete } from './Autocomplete'
+import { Item } from './Autocomplete.types'
+import { Event } from '@/types/events'
 import { useCallback, useEffect } from 'react'
-import EventTemplate from './EventITemplate'
+import EventTemplate from './EventTemplate'
 
 export default observer(
 function ResultsForm() {
@@ -16,13 +18,13 @@ function ResultsForm() {
   const teamsStore = rootStore.teamsStore
   const disciplinesStore = rootStore.disciplinesStore
   const eventsStore = rootStore.eventsStore
-  const code = formStore.code
-  const command = formStore.command
+  const code = formStore.code as Item | null
+  const command = formStore.command as Item | null
   const { isCommandFilterEnabled, isOnlyOnline } = formStore
 
   useEffect(() => {
     if (code) {
-      disciplinesStore.fetchGroups(code)
+      disciplinesStore.fetchGroups(typeof code === 'string' ? code : '')
     }
   }, [code, disciplinesStore])
 
@@ -47,7 +49,7 @@ function ResultsForm() {
   useEffect(() => {
     if (disciplinesStore.groupsData && disciplinesStore.groupsData.length > 0) {
       const url = new URL(window.location.href)
-      url.searchParams.set('code', code)
+      url.searchParams.set('code', typeof code === 'string' ? code : '')
       window.history.replaceState({}, document.title, url.pathname + url.search)
     } else if (disciplinesStore.groupsData && disciplinesStore.groupsData.length === 0) {
       const url = new URL(window.location.href)
@@ -65,16 +67,16 @@ function ResultsForm() {
   )
 
   const handleUrlChange = useCallback(
-    (value: string) => {
-      formStore.setCode(value)
+    (value: Item | null) => {
+      formStore.setCode(typeof value === 'string' ? value : '')
     },
     []
   )
 
   const handleCommandChange = useCallback(
-    (value: string) => {
-      formStore.setCommand(value)
-      debouncedCommandFetch(value)
+    (value: Item | null) => {
+      formStore.setCommand(typeof value === 'string' ? value : '')
+      debouncedCommandFetch(typeof value === 'string' ? value : '')
     },
     [debouncedCommandFetch]
   )
@@ -101,18 +103,19 @@ function ResultsForm() {
         value={code}
         onChange={handleUrlChange}
         placeholder="2602vrn"
-        data={eventsStore.events}
+        data={eventsStore.events as Item[]}
         label="код соревнований"
         labelTitle="Введите код соревнований из URL"
         dataLabel={DEFAULT_URL_CODE}
         property="link"
-        renderItem={EventTemplate}
+        renderItem={(item: Item, value: Item) => EventTemplate(item as Event, value as string)}
+        dropdownWidth={400}
       />
       <Autocomplete
         value={command}
         onChange={handleCommandChange}
         placeholder={DEFAULT_TEAM}
-        data={teamsStore.teams}
+        data={teamsStore.teams as Item[]}
         label="команда"
         labelTitle="Скалолазы из команды будут подсвечены"
         dataLabel={DEFAULT_TEAM}

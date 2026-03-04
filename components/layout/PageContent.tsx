@@ -11,10 +11,10 @@ import { isGroupOnline } from '../groups/groups.utils'
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
-  const { groupsData, isGroupsLoading } = rootStore.disciplinesStore
+  const { disciplinesStore } = rootStore
   const { isOnlyOnline } = rootStore.formStore
 
-   const discipline = groupsData?.[activeTab]
+  const discipline = disciplinesStore.groupsData?.[activeTab]
   if (!discipline) {
     return (<div className="text-center py-12">
       <div className="text-2xl font-semibold text-gray-600 mb-4">
@@ -28,9 +28,9 @@ function PageContent() {
 
   const filteredOnline = isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
   return (<>
-      <div>{isGroupsLoading}</div>
+      <div>{disciplinesStore.isGroupsLoading}</div>
       <DisciplineTabs
-        disciplines={groupsData}
+        disciplines={disciplinesStore.groupsData}
         setActiveTab={setActiveTab}
         activeTab={activeTab}
       />
