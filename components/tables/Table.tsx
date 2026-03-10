@@ -21,22 +21,22 @@ export default function Table({
   isCommandFilterEnabled,
   command,
 }: TableProps) {
-    if (!subGroup) return null
     
     const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
       code,
-      isOnline: subGroup.status === STATUSES.ONLINE,
-      subgroupLink: subGroup.link
+      isOnline: subGroup?.status === STATUSES.ONLINE,
+      subgroupLink: subGroup?.link
     })
     
     const [isRefreshing, setIsRefreshing] = useState(false);
     
+    if (!subGroup) return null
     const filterResultsByCommand = (results: Results) => {
       if (!isCommandFilterEnabled || !command) {
         return results
       }
       const filtered = results.filter((result) => isCommandMatch(result.command, command))
-      return filtered.length ? results.filter((result, index) => result.rank === '1' || isCommandMatch(result.command, command)) : []
+      return filtered.length ? results.filter((result) => result.rank === '1' || isCommandMatch(result.command, command)) : []
     }
 
     const filteredResults: Results = filterResultsByCommand(results as Results)

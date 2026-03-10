@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { parseResultsTable } from '@/lib/parsers'
+import { parseResultsTable } from '@/lib/parser/parsers'
 import axios from 'axios'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'

@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 interface UseResultsOptions {
   code: string
   isOnline: boolean
-  subgroupLink: string
+  subgroupLink?: string
 }
 
 interface UseResultsState {
@@ -73,6 +73,7 @@ export default function useFetchResults({ code, subgroupLink, isOnline }: UseRes
       // Вызываем запрос вручную один раз
       query.refetch()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOnline, subgroupLink, query.refetch])
 
   return { ...state, refetch: query.refetch }

@@ -39,7 +39,7 @@
             "--context",
             "ide",
             "--project",
-            "/c/Users/kondr/_projects/HH-clicker"
+            "/c/Users/kondr/_projects/climb-now/climb-now"
          ],
          "disabled":false,
          "stdlog":"C:\\Users\\kondr\\AppData\\Local\\Temp\\_MCP\\serena.log",
@@ -71,14 +71,12 @@
          ]
       },
       "sequentialthinking":{
-         "type":"stdio",
-         "command":"node",
-         "args":[
-            "../mcp-sequentialthinking-tools/dist/index.js"
-         ],
-         "stdlog":"C:\\Users\\kondr\\AppData\\Local\\Temp\\_MCP\\sequentialthinking.log",
-         "disabled":false,
-         "alwaysAllow":[
+         "type": "stdio",
+         "command": "mcp-sequentialthinking-tools",
+         "args": [],
+         "stdlog": "C:\\Users\\kondr\\AppData\\Local\\Temp\\_MCP\\sequentialthinking.log",
+         "disabled": false,
+         "alwaysAllow": [
             "sequentialthinking_tools"
          ]
       },
@@ -88,28 +86,10 @@
          "args": [
             "-y",
             "@modelcontextprotocol/server-filesystem",
-            "C:\\Users\\kondr\\_projects\\HH-clicker"
+            "C:\\Users\\kondr\\_projects\\climb-now\\climb-now"
          ],
          "disabled": false,
          "alwaysAllow": ["list_dir", "find_file", "read_file", "write_file", "delete_file"]
-      },
-      "puppeteer": {
-         "type": "stdio",
-         "command": "npx",
-         "args": [
-            "-y",
-            "@modelcontextprotocol/server-puppeteer"
-         ],
-         "disabled": true,
-         "alwaysAllow":[
-            "puppeteer_navigate",
-            "puppeteer_screenshot",
-            "puppeteer_click",
-            "puppeteer_fill",
-            "puppeteer_select",
-            "puppeteer_hover",
-            "puppeteer_evaluate"
-         ]
       }
    }
 }

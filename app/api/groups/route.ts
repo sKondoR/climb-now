@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
-import { parseResults } from '@/lib/parsers'
+import { parseResults } from '@/lib/parser/parsers'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'
 
