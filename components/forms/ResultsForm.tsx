@@ -1,7 +1,6 @@
 'use client'
 
 import { useCallback, useEffect } from 'react'
-import { useDebouncedCallback } from 'use-debounce'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
 import { DEFAULT_TEAM, DEFAULT_URL_CODE, MIN_URL_CODE_LENGTH } from '@/lib/constants'
@@ -24,11 +23,11 @@ function ResultsForm() {
   const command = formStore.command as Item | null
   const { isCommandFilterEnabled, isOnlyOnline } = formStore
 
-  useEffect(() => {
-    if (code) {
-      disciplinesStore.fetchGroups(typeof code === 'string' ? code : '')
-    }
-  }, [code, disciplinesStore])
+  // useEffect(() => {
+  //   if (code) {
+  //     disciplinesStore.fetchGroups(typeof code === 'string' ? code : '')
+  //   }
+  // }, [code, disciplinesStore])
 
   useEffect(() => {
     if (formStore.code.length >= MIN_URL_CODE_LENGTH) {
@@ -59,14 +58,6 @@ function ResultsForm() {
     }
   }, [disciplinesStore.groupsData, code])
 
-
-  const debouncedCommandFetch = useDebouncedCallback(
-    (command: string) => {
-      formStore.setCommand(command)
-    },
-    300
-  )
-
   const handleUrlChange = useCallback(
     (value: Item | null) => {
       formStore.setCode(typeof value === 'string' ? value : '')
@@ -77,9 +68,8 @@ function ResultsForm() {
   const handleCommandChange = useCallback(
     (value: Item | null) => {
       formStore.setCommand(typeof value === 'string' ? value : '')
-      debouncedCommandFetch(typeof value === 'string' ? value : '')
     },
-    [debouncedCommandFetch]
+    []
   )
 
   const handleCommandFilterToggle = useCallback(

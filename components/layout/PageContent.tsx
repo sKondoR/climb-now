@@ -1,14 +1,23 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import DisciplineTabs from '../groups/DisciplineTabs'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
 import { MIN_URL_CODE_LENGTH } from '@/lib/constants'
 import { Group } from '@/types'
 
-import GroupCard from '@/components/groups/GroupCard'
 import { isGroupOnline } from '../groups/groups.utils'
+import dynamic from 'next/dynamic'
+
+const DisciplineTabs = dynamic(
+  () => import('../groups/DisciplineTabs'),
+  { ssr: false }
+)
+
+const GroupCard = dynamic(
+  () => import('../groups/GroupCard'),
+  { ssr: false }
+)
 
 export default observer(
 function PageContent() {

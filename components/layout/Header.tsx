@@ -3,8 +3,12 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import HeaderFormValues from './HeaderFormValues'
 import dynamic from 'next/dynamic'
+
+const HeaderFormValues = dynamic(
+  () => import('./HeaderFormValues'),
+  { ssr: false }
+)
 
 const ResultsForm = dynamic(
   () => import('../forms/ResultsForm'),
