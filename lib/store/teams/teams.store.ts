@@ -44,4 +44,10 @@ export class TeamsStore {
   destroy() {
     this.teamsQueryObserver.destroy()
   }
+
+  reset() {
+    this.teams = []
+    this.isTeamsLoading = false
+    this.error = null
+  }
 }

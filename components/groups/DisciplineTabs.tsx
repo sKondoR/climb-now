@@ -13,12 +13,12 @@ export default function DisciplineTabs({
   activeTab,
 }: DisciplineTabsProps) {
 
-  if (!disciplines) return null;
+  if (!disciplines) return null
   return (
     <div className="flex flex-wrap space-x-1 mb-3 justify-center ">
         {disciplines.map(({ discipline }, index: number) => (
             <button
-              key={discipline}
+              key={`${discipline}-${index}`}
               onClick={() => {
                 setActiveTab(index)
               }}

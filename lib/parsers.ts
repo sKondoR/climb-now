@@ -10,7 +10,12 @@ const parseFragment = (html: string) => {
 
 export const parseResults = (html: string): Discipline[] | null => {
   try {
-    const document = parseFragment(html);   
+    const document = parseFragment(html);  
+    
+    const documentTitle = getTextContent(findElementsByTag(document, 'h1')[0]).toLowerCase();
+    const isNotFound = documentTitle.includes('404');
+
+    if (isNotFound) return null;
    
     const disciplines = getDisciplines(document);
     const disciplineColumns = findElementsByTag(document, 'td');

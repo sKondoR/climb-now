@@ -4,14 +4,20 @@ import { useCallback, useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
-import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
+import { DEFAULT_TEAM, DEFAULT_URL_CODE, MIN_URL_CODE_LENGTH } from '@/lib/constants'
 import { useRouter } from 'next/navigation'
 
 import { EventTemplate } from './EventTemplate'
-import { Autocomplete } from '@/components/shared/Autocomplete/Autocomplete'
 import { Item } from '@/components/shared/Autocomplete/Autocomplete.types'
 import { Event } from '@/types/events'
 import LinkToEvent from '@/components/shared/LinkToEvent/LinkToEvent'
+
+import dynamic from 'next/dynamic';
+
+const Autocomplete = dynamic(
+  () => import('../shared/Autocomplete/Autocomplete'),
+  { ssr: false }
+)
 
 export default observer(
 function ResultsForm() {
@@ -20,7 +26,7 @@ function ResultsForm() {
   const teamsStore = rootStore.teamsStore
   const disciplinesStore = rootStore.disciplinesStore
   const eventsStore = rootStore.eventsStore
-  const code = formStore.code as Item | null
+  const code = formStore.code
   const command = formStore.command as Item | null
   const { isCommandFilterEnabled, isOnlyOnline } = formStore
 
@@ -31,14 +37,12 @@ function ResultsForm() {
   }, [code, disciplinesStore])
 
   useEffect(() => {
-    if (formStore.code) {
+    if (formStore.code.length >= MIN_URL_CODE_LENGTH) {
       disciplinesStore.fetchGroups(formStore.code)
+    } else {
+      disciplinesStore.setGroupsData(null)
     }
   }, [formStore.code, disciplinesStore])
-
-  useEffect(() => {
-    disciplinesStore.setIsDisciplinesLoading(disciplinesStore.isGroupsLoading)
-  }, [disciplinesStore.isGroupsLoading, disciplinesStore])
 
   useEffect(() => {
     if (disciplinesStore.groupsError) {
@@ -49,11 +53,12 @@ function ResultsForm() {
   }, [disciplinesStore.groupsError, router])
 
   useEffect(() => {
-    if (disciplinesStore.groupsData && disciplinesStore.groupsData.length > 0) {
+    if (!code) return
+    if (disciplinesStore.groupsData) {
       const url = new URL(window.location.href)
-      url.searchParams.set('code', typeof code === 'string' ? code : '')
+      url.searchParams.set('code', code)
       window.history.replaceState({}, document.title, url.pathname + url.search)
-    } else if (disciplinesStore.groupsData && disciplinesStore.groupsData.length === 0) {
+    } else {
       const url = new URL(window.location.href)
       url.searchParams.delete('code')
       window.history.replaceState({}, document.title, url.pathname + url.search)

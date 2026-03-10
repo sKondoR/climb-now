@@ -11,7 +11,8 @@ interface LinkToEventProps {
 
 export default function LinkToEvent({ code }: LinkToEventProps): JSX.Element | null {
   const store = rootStore.eventsStore
-  if (!code || !store.events) return null
+  // const disciplinesStore = rootStore.disciplinesStore
+  // if (!code || !disciplinesStore.groupsData) return null
   const hasLink = store.events?.find((event) => event.link === code)
   if (!hasLink) return null
   return (

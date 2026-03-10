@@ -1,21 +1,12 @@
-import { makeAutoObservable, runInAction } from 'mobx'
+import { makeAutoObservable } from 'mobx'
 import { QueryClient } from '@tanstack/react-query'
 import type { Discipline } from '@/types/disciplines'
 import { fetchResults } from '@/lib/api'
-
-interface GroupsQueryData {
-  code: string
-  data: Discipline[] | null
-  isLoading: boolean
-  error: string | null
-}
+import { MIN_URL_CODE_LENGTH } from '@/lib/constants'
 
 export class DisciplinesStore {
   private queryClient: QueryClient
   
-  disciplinesData: Discipline[] | null = null
-  isDisciplinesLoading: boolean = false
-  error: string | null = null
   groupsData: Discipline[] | null = null
   isGroupsLoading: boolean = false
   groupsError: string | null = null
@@ -25,22 +16,8 @@ export class DisciplinesStore {
     makeAutoObservable(this)
   }
 
-  async fetchDisciplines(code: string) {
-    this.setIsDisciplinesLoading(true)
-    this.setDisciplinesData(null)
-    this.error = null
-
-    try {
-      const data = await fetchResults(code)
-      this.setDisciplinesData(data)
-    } catch (error) {
-      this.error = error instanceof Error ? error.message : 'Unknown error'
-    } finally {
-      this.setIsDisciplinesLoading(false)
-    }
-  }
-
   async fetchGroups(code: string) {
+    if (code?.length < MIN_URL_CODE_LENGTH) return
     this.setIsGroupsLoading(true)
     this.setGroupsData(null)
     this.groupsError = null
@@ -55,13 +32,6 @@ export class DisciplinesStore {
     }
   }
 
-  refetchDisciplines() {
-    this.queryClient.refetchQueries({ queryKey: ['disciplines'] })
-  }
-
-  invalidateDisciplines() {
-    this.queryClient.invalidateQueries({ queryKey: ['disciplines'] })
-  }
 
   refetchGroups() {
     this.queryClient.refetchQueries({ queryKey: ['groups'] })
@@ -79,18 +49,8 @@ export class DisciplinesStore {
     this.isGroupsLoading = enabled
   }
 
-  setDisciplinesData(data: Discipline[] | null) {
-    this.disciplinesData = data
-  }
-
-  setIsDisciplinesLoading(enabled: boolean) {
-    this.isDisciplinesLoading = enabled
-  }
 
   reset() {
-    this.disciplinesData = null
-    this.isDisciplinesLoading = false
-    this.error = null
     this.groupsData = null
     this.isGroupsLoading = false
     this.groupsError = null

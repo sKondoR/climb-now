@@ -1,18 +1,48 @@
 'use client'
 
-import GroupCard from '@/components/groups/GroupCard'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import DisciplineTabs from '../groups/DisciplineTabs'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
+import { MIN_URL_CODE_LENGTH } from '@/lib/constants'
 import { Group } from '@/types'
+
+import GroupCard from '@/components/groups/GroupCard'
 import { isGroupOnline } from '../groups/groups.utils'
 
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
-  const { disciplinesStore } = rootStore
-  const { isOnlyOnline } = rootStore.formStore
+  const disciplinesStore = rootStore.disciplinesStore
+  const formStore= rootStore.formStore
+
+  useEffect(() => {
+      setActiveTab(0) 
+  }, [formStore.code])
+
+  if (disciplinesStore.isGroupsLoading) {
+    return (<div className="text-center py-12">
+      <div className="text-2xl font-semibold text-gray-600 mb-4">
+        загрузка...
+      </div>
+    </div>)
+  }
+
+  if (formStore.code.length >= MIN_URL_CODE_LENGTH && !disciplinesStore.isGroupsLoading && disciplinesStore.groupsData === null) {
+    return (<div className="text-center py-12">
+      <div className="text-2xl font-semibold text-gray-600 mb-4">
+        Соревнование не найденно
+      </div>
+    </div>)
+  }
+
+  if (formStore.code.length >= MIN_URL_CODE_LENGTH && !disciplinesStore.isGroupsLoading && !disciplinesStore.groupsData?.length) {
+    return (<div className="text-center py-12">
+      <div className="text-2xl font-semibold text-gray-600 mb-4">
+        Нет данных по этому соревнованию
+      </div>
+    </div>)
+  }
 
   const discipline = disciplinesStore.groupsData?.[activeTab]
   if (!discipline) {
@@ -26,7 +56,7 @@ function PageContent() {
     </div>)
   }
 
-  const filteredOnline = isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
+  const filteredOnline = formStore.isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
   return (<>
       <div>{disciplinesStore.isGroupsLoading}</div>
       <DisciplineTabs

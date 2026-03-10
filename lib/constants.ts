@@ -1,4 +1,5 @@
 export const DEFAULT_URL_CODE = '2602vrn'
+export const MIN_URL_CODE_LENGTH = 7
 export const DEFAULT_TEAM = 'СПБ'
 export const UPDATE_INTERVAL = 120000 
 export const DEBOUNCE_DELAY = 500
