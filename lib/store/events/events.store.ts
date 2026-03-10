@@ -20,7 +20,7 @@ export class EventsStore {
       queryFn: fetchEvents,
       staleTime: 1000 * 60 * 60 * 24, // day
       retry: 3,
-      retryDelay: 1000
+      retryDelay: 500
     })
 
     this.setupQuerySubscription()

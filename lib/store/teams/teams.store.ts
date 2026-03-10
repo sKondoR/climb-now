@@ -18,6 +18,8 @@ export class TeamsStore {
       queryKey: ['teams'],
       queryFn: fetchTeams,
       staleTime: 1000 * 60 * 60 * 24 * 7, // week
+      retry: 3,
+      retryDelay: 500
     })
 
     this.setupQuerySubscription()
