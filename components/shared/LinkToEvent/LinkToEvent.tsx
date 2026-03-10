@@ -1,15 +1,16 @@
 'use client'
 
+import { ReactNode } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkSquare } from '@fortawesome/free-solid-svg-icons'
-import { EXTERNAL_API_BASE_URL } from '@/lib/constants';
-import { rootStore } from '@/lib/store/root.store';
+import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
+import { rootStore } from '@/lib/store/root.store'
 
 interface LinkToEventProps {
   code: string | null
 }
 
-export default function LinkToEvent({ code }: LinkToEventProps): JSX.Element | null {
+export default function LinkToEvent({ code }: LinkToEventProps): ReactNode | null {
   const disciplinesStore = rootStore.disciplinesStore
   if (!code || !disciplinesStore.groupsData) return null
   return (

@@ -1,4 +1,6 @@
- export default function BoulderCell({ value }: { value: string }): JSX.Element | null {
+import { ReactNode } from 'react'
+
+export default function BoulderCell({ value }: { value: string }): ReactNode | null {
   const [val1, val2] = value.split('/');
   return (
       <div className="bg-gray-200 inset text-center flex flex-col h-full">
