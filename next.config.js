@@ -1,4 +1,5 @@
 const nextConfig = {
+  output: 'standalone',
   optimizeFonts: true, // Optimize font loading
   compress: true, // Enable compression
   poweredByHeader: false, // Improve performance
@@ -11,11 +12,6 @@ const nextConfig = {
   //   return config;
   // },
   transpilePackages: ['mobx', 'mobx-react-lite'],
-  // Add experimental optimizations (Next.js 13+)
-  experimental: {
-    optimizeCss: true, // Optimize CSS removal
-    scrollRestoration: true,
-  },
 };
 
 module.exports = nextConfig;
