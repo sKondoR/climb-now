@@ -3,8 +3,13 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import ResultsForm from '../forms/ResultsForm'
 import HeaderFormValues from './HeaderFormValues'
+import dynamic from 'next/dynamic'
+
+const ResultsForm = dynamic(
+  () => import('../forms/ResultsForm'),
+  { ssr: false }
+)
 
 const CollapsibleHeader = () => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -21,18 +26,18 @@ const CollapsibleHeader = () => {
             isExpanded ? 'max-h-96 opacommand-100 ' : 'max-h-0 opacommand-0 overflow-hidden'
           }`}
         >
-          <div className="py-5 mx-auto px-4">
-            <div className="flex flex-wrap justify-around items-center gap-4">
-                <div>
-                  <div className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 bg-clip-text text-transparent">
-                      ClimbNow
-                  </div>
-                  <div className="text text-gray-500">
-                      Соревнования ФСР онлайн
-                  </div>
+          <div className="mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <div className="flex flex-wrap justify-between items-center gap-4">
+              <div className="w-full md:w-auto">
+                <div className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 bg-clip-text text-transparent text-center">
+                    ClimbNow
                 </div>
-                <ResultsForm />
-                <div className="w-[140px] hidden md:block"></div>
+                <div className="text text-gray-500 text-center">
+                    Соревнования ФСР онлайн
+                </div>
+              </div>
+              <ResultsForm />
+              <div className="w-[100px] hidden md:block"></div>
             </div>
           </div>
         </div>

@@ -4,11 +4,17 @@ import { Group } from '@/types'
 import { useState, useEffect } from 'react'
 import StatusIcon from './StatusIcon'
 import { STATUSES } from '@/lib/constants'
-import Table from '../tables/Table'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
+
+import dynamic from 'next/dynamic'
+
+const Table = dynamic(
+  () => import('../tables/Table'),
+  { ssr: false }
+)
 
 interface GroupCardProps {
   group: Group

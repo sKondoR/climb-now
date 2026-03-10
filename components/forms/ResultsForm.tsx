@@ -11,13 +11,7 @@ import { EventTemplate } from './EventTemplate'
 import { Item } from '@/components/shared/Autocomplete/Autocomplete.types'
 import { Event } from '@/types/events'
 import LinkToEvent from '@/components/shared/LinkToEvent/LinkToEvent'
-
-import dynamic from 'next/dynamic';
-
-const Autocomplete = dynamic(
-  () => import('../shared/Autocomplete/Autocomplete'),
-  { ssr: false }
-)
+import Autocomplete from '../shared/Autocomplete/Autocomplete'
 
 export default observer(
 function ResultsForm() {

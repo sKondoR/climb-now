@@ -111,7 +111,7 @@ export const Autocomplete = <T extends Item = string>({
     <div className="w-full md:w-auto relative">
       {label && (
         <label
-          htmlFor="autocomplete-input"
+          htmlFor={`autocomplete-${String(property)}`}
           className="block text-sm font-medium text-gray-700 mb-2"
           title={labelTitle}
         >
@@ -125,7 +125,7 @@ export const Autocomplete = <T extends Item = string>({
         <input
           ref={inputRef}
           type="text"
-          id="autocomplete-input"
+          id={`autocomplete-${String(property)}`}
           value={String(visibleValue)}
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
