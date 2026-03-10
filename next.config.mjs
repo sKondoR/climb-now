@@ -7,7 +7,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 
 const nextConfig = {
   reactStrictMode: true,
-  output: 'standalone',
+  // output: 'standalone',
   compress: true, // Enable compression
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
