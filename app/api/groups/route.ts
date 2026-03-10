@@ -4,8 +4,10 @@ import { parseResults } from '@/lib/parser/parsers'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'
 
+export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
-  const code = request.nextUrl.searchParams.get('code')
+  const searchParams = request.nextUrl.searchParams
+  const code = searchParams.get('code')
   
   if (!code) {
     return NextResponse.json(null)

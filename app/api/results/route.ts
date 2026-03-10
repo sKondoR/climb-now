@@ -4,9 +4,11 @@ import axios from 'axios'
 import { EXTERNAL_API_BASE_URL } from '@/lib/constants'
 import { ApiError, handleApiError } from '@/lib/errorHandler'
 
+export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
-  const code = request.nextUrl.searchParams.get('code')
-  const subgroup = request.nextUrl.searchParams.get('subgroup')
+  const searchParams = request.nextUrl.searchParams
+  const code = searchParams.get('code')
+  const subgroup = searchParams.get('subgroup')
   
   if (!code) {
     throw new ApiError('Missing code parameter', 400)
