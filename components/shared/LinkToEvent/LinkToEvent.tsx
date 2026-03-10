@@ -10,11 +10,8 @@ interface LinkToEventProps {
 }
 
 export default function LinkToEvent({ code }: LinkToEventProps): JSX.Element | null {
-  const store = rootStore.eventsStore
-  // const disciplinesStore = rootStore.disciplinesStore
-  // if (!code || !disciplinesStore.groupsData) return null
-  const hasLink = store.events?.find((event) => event.link === code)
-  if (!hasLink) return null
+  const disciplinesStore = rootStore.disciplinesStore
+  if (!code || !disciplinesStore.groupsData) return null
   return (
     <a
       href={`${EXTERNAL_API_BASE_URL}${code}/index.html`}
