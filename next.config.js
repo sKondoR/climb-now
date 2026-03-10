@@ -1,4 +1,5 @@
 const nextConfig = {
+  output: 'export',
   optimizeFonts: true, // Optimize font loading
   compress: true, // Enable compression
   poweredByHeader: false, // Improve performance
