@@ -10,14 +10,14 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  // Use compat.extends to load the Next.js configs
   ...compat.extends('next/core-web-vitals'),
-  // ...compat.extends('next/typescript'), // If you want TypeScript support
-  
-  // You can add custom rules here
+  ...compat.extends('next/typescript'),
   {
     rules: {
-      // Your custom rules
+      // Дополнительные правила для максимизации Score в Lighthouse
+      "@next/next/no-img-element": "error",   // Запрет обычных <img> (требует next/image)
+      "@next/next/no-html-link-for-pages": "error", // Запрет <a> для внутренних переходов
+      "@next/next/no-sync-scripts": "error"   // Запрет синхронных скриптов
     },
   },
 ];

@@ -6,9 +6,9 @@ import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { Item } from './Autocomplete.types'
 import BaseTemplate from './BaseTemplate'
 
-type RenderItem<T extends Item = any> = (item: T, value: T | null) => ReactNode
+type RenderItem<T extends Item = string | Record<string, unknown>> = (item: T, value: T | null) => ReactNode
 
-interface AutocompleteProps<T extends Item = any> {
+interface AutocompleteProps<T extends Item = string | Record<string, unknown>> {
   value: T | null
   onChange: (value: T | null) => void
   placeholder?: string
@@ -17,11 +17,11 @@ interface AutocompleteProps<T extends Item = any> {
   labelTitle?: string
   dataLabel?: string
   property?: keyof T | string
-  renderItem?: RenderItem<T> | ((item: any, value: any) => ReactNode)
+  renderItem?: RenderItem<T>
   dropdownWidth?: number
 }
 
-export const Autocomplete = <T extends Item = any>({
+export const Autocomplete = <T extends Item = string>({
   value,
   onChange,
   placeholder = '',
@@ -45,7 +45,7 @@ export const Autocomplete = <T extends Item = any>({
     return typeof item === 'object' ? JSON.stringify(item) : item
   }
 
-  const getTemplate = (item: T) => renderItem ? renderItem(item, value!) : BaseTemplate(item as string, value!)
+  const getTemplate = (item: T) => renderItem ? renderItem(item, value!) : BaseTemplate(item as string, value as string)
 
   useEffect(() => {
     if (!value) {
@@ -58,6 +58,7 @@ export const Autocomplete = <T extends Item = any>({
       return itemValue.includes(textValue)
     }) || []
     setFilteredData(filtered)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, data, property])
 
   useEffect(() => {

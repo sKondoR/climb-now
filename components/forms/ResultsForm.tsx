@@ -111,12 +111,12 @@ function ResultsForm() {
           value={code}
           onChange={handleUrlChange}
           placeholder="2602vrn"
-          data={eventsStore.events as Item[]}
+          data={eventsStore.events as unknown as Item[]}
           label="код соревнований"
           labelTitle="Введите код соревнований из URL"
           dataLabel={DEFAULT_URL_CODE}
           property="link"
-          renderItem={(item: Item, value: Item) => EventTemplate(item as Event, value)}
+          renderItem={(item: Item, value: Item | null) => EventTemplate(item as unknown as Event, value as string | null)}
           dropdownWidth={400}
         />
         <LinkToEvent code={code as string}/>
