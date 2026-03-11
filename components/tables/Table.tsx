@@ -1,10 +1,10 @@
-import { useState } from 'react';
 import { Subgroup, Results } from '@/types'
 import { NAME_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faRefresh, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
+import RefreshTableBtn from './RefreshTableBtn'
 import { SPECIAL_STATUSES, STATUSES } from '@/lib/constants'
 import useFetchResults from '@/lib/hooks/useFetchResults'
 
@@ -27,8 +27,6 @@ export default function Table({
       isOnline: subGroup?.status === STATUSES.ONLINE,
       subgroupLink: subGroup?.link
     })
-    
-    const [isRefreshing, setIsRefreshing] = useState(false);
     
     if (!subGroup) return null
     const filterResultsByCommand = (results: Results) => {
@@ -53,14 +51,7 @@ export default function Table({
             <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
               {climbedCount} / {results.length} пролезло
             </span>
-            <FontAwesomeIcon icon={faRefresh}
-              className={`cursor-pointer text-sm text-blue-600 rounded hover:text-blue-800 transition-colors ml-2 ${isRefreshing ? 'animate-spin' : ''}`}
-              onClick={() => {
-                setIsRefreshing(true);
-                refetch();
-                setTimeout(() => setIsRefreshing(false), 1000);
-              }}
-            />
+            <RefreshTableBtn refetch={refetch} />
           </div>
         </h3>
         <div className="overflow-x-auto relative">
