@@ -18,13 +18,14 @@ export class DisciplinesStore {
 
   async fetchGroups(code: string) {
     const url = new URL(window.location.href)
-    this.isGroupsLoading = true
     this.groupsData = null
     this.groupsError = null
     if (code?.length < MIN_URL_CODE_LENGTH) {
       window.history.replaceState({}, document.title, url.pathname)
+      this.isGroupsLoading = false
       return
     }
+    this.isGroupsLoading = true
 
     try {
       const data = await fetchResults(code)
