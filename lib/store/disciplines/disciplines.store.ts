@@ -17,14 +17,24 @@ export class DisciplinesStore {
   }
 
   async fetchGroups(code: string) {
-    if (code?.length < MIN_URL_CODE_LENGTH) return
-    this.setIsGroupsLoading(true)
-    this.setGroupsData(null)
+    const url = new URL(window.location.href)
+    this.isGroupsLoading = true
+    this.groupsData = null
     this.groupsError = null
+    if (code?.length < MIN_URL_CODE_LENGTH) {
+      window.history.replaceState({}, document.title, url.pathname)
+      return
+    }
 
     try {
       const data = await fetchResults(code)
-      this.setGroupsData(data)
+      this.groupsData = data
+      if (data) {
+        url.searchParams.set('code', code)
+      } else {
+        url.searchParams.delete('code')
+      }
+      window.history.replaceState({}, document.title, url.pathname + url.search)
     } catch (error) {
       this.groupsError = error instanceof Error ? error.message : 'Unknown error'
     } finally {

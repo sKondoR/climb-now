@@ -5,6 +5,7 @@ import QueryClientProviderWrapper from '@/lib/query/QueryClientProvider';
 
 const inter = Inter({ 
   subsets: ['latin'],
+  weight: '400',
   display: 'swap',
   preload: true,
   adjustFontFallback: true,

@@ -3,8 +3,7 @@
 import { useCallback, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
-import { DEFAULT_TEAM, DEFAULT_URL_CODE, MIN_URL_CODE_LENGTH } from '@/lib/constants'
-import { useRouter } from 'next/navigation'
+import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
 
 import { EventTemplate } from './EventTemplate'
 import { Item } from '@/components/shared/Autocomplete/Autocomplete.types'
@@ -14,49 +13,19 @@ import Autocomplete from '../shared/Autocomplete/Autocomplete'
 
 export default observer(
 function ResultsForm() {
-  const router = useRouter()
   const formStore = rootStore.formStore
   const teamsStore = rootStore.teamsStore
   const disciplinesStore = rootStore.disciplinesStore
   const eventsStore = rootStore.eventsStore
-  const code = formStore.code
   const command = formStore.command as Item | null
   const { isCommandFilterEnabled, isOnlyOnline } = formStore
 
-  // useEffect(() => {
-  //   if (code) {
-  //     disciplinesStore.fetchGroups(typeof code === 'string' ? code : '')
-  //   }
-  // }, [code, disciplinesStore])
 
   useEffect(() => {
-    if (formStore.code.length >= MIN_URL_CODE_LENGTH) {
-      disciplinesStore.fetchGroups(formStore.code)
-    } else {
-      disciplinesStore.setGroupsData(null)
-    }
-  }, [formStore.code, disciplinesStore])
+    disciplinesStore.fetchGroups(formStore.code)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formStore.code])
 
-  useEffect(() => {
-    if (disciplinesStore.groupsError) {
-      console.error('Ошибка загрузки данных:', disciplinesStore.groupsError)
-      const url = new URL(window.location.href)
-      router.replace(url.pathname)
-    }
-  }, [disciplinesStore.groupsError, router])
-
-  useEffect(() => {
-    if (!code) return
-    if (disciplinesStore.groupsData) {
-      const url = new URL(window.location.href)
-      url.searchParams.set('code', code)
-      window.history.replaceState({}, document.title, url.pathname + url.search)
-    } else {
-      const url = new URL(window.location.href)
-      url.searchParams.delete('code')
-      window.history.replaceState({}, document.title, url.pathname + url.search)
-    }
-  }, [disciplinesStore.groupsData, code])
 
   const handleUrlChange = useCallback(
     (value: Item | null) => {
@@ -92,7 +61,7 @@ function ResultsForm() {
     <div className="flex flex-wrap gap-4">
       <div className="flex-1 relative">
         <Autocomplete
-          value={code}
+          value={formStore.code}
           onChange={handleUrlChange}
           placeholder="2602vrn"
           data={eventsStore.events as unknown as Item[]}
@@ -103,7 +72,7 @@ function ResultsForm() {
           renderItem={(item: Item, value: Item | null) => EventTemplate(item as unknown as Event, value as string | null)}
           dropdownWidth={400}
         />
-        <LinkToEvent code={code as string}/>
+        <LinkToEvent code={formStore.code as string}/>
       </div>
       <Autocomplete
         value={command}
