@@ -72,7 +72,7 @@ function ResultsForm() {
           renderItem={(item: Item, value: Item | null) => EventTemplate(item as unknown as Event, value as string | null)}
           dropdownWidth={400}
         />
-        <LinkToEvent code={formStore.code as string}/>
+        {disciplinesStore.groupsData && <LinkToEvent code={formStore.code as string} />}
       </div>
       <Autocomplete
         value={command}
