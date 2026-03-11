@@ -1,5 +1,5 @@
 import { Subgroup, Results } from '@/types'
-import { NAME_COL } from './configs'
+import { NAME_COL, COMMAND_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
@@ -59,7 +59,7 @@ export default function Table({
             <thead>
               <tr className="border-b">
                 {config.map((col) => (
-                  <th key={col.id} className={`text-left px-2 py-1 ${col.name === NAME_COL ? '' : 'w-4'}`}>
+                  <th key={col.id} className={`text-left px-2 py-1 ${[NAME_COL, COMMAND_COL].includes(col.name) ? '' : 'w-4'}`}>
                     {col.name}
                   </th>
                 ))}
