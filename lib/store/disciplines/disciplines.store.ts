@@ -18,18 +18,18 @@ export class DisciplinesStore {
 
   async fetchGroups(code: string) {
     const url = new URL(window.location.href)
-    this.groupsData = null
-    this.groupsError = null
+    this.setGroupsData(null)
+    this.setGroupsError(null)
     if (code?.length < MIN_URL_CODE_LENGTH) {
       window.history.replaceState({}, document.title, url.pathname)
-      this.isGroupsLoading = false
+      this.setIsGroupsLoading(false)
       return
     }
-    this.isGroupsLoading = true
+    this.setIsGroupsLoading(true)
 
     try {
       const data = await fetchResults(code)
-      this.groupsData = data
+      this.setGroupsData(data)
       if (data) {
         url.searchParams.set('code', code)
       } else {
@@ -37,7 +37,7 @@ export class DisciplinesStore {
       }
       window.history.replaceState({}, document.title, url.pathname + url.search)
     } catch (error) {
-      this.groupsError = error instanceof Error ? error.message : 'Unknown error'
+      this.setGroupsError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
       this.setIsGroupsLoading(false)
     }
@@ -60,10 +60,13 @@ export class DisciplinesStore {
     this.isGroupsLoading = enabled
   }
 
+  setGroupsError(error: string | null) {
+    this.groupsError = error
+  }
 
   reset() {
-    this.groupsData = null
-    this.isGroupsLoading = false
-    this.groupsError = null
+    this.setGroupsData(null)
+    this.setIsGroupsLoading(false)
+    this.setGroupsError(null)
   }
 }
