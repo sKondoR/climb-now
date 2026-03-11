@@ -10,6 +10,7 @@ import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/lib/store/root.store'
 
 import dynamic from 'next/dynamic'
+import { LazyLoader } from './LazyLoader'
 
 const Table = dynamic(
   () => import('../tables/Table'),
@@ -53,61 +54,65 @@ function GroupCard({ group }: GroupCardProps) {
   })  
 
   return (
-    <div className={`${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
-     ${isOnline ? 'border-green-500' : 'border-gray-200'}`}>
-      <div className={`p-4
-        ${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
+      <div className={`min-h-[400px]
+        ${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
         ${isOnline ? 'border-green-500' : 'border-gray-200'}`}
       >
-        <div className="w-full flex flex-start items-center relative cursor-pointer" onClick={toggleHeader}>
-          <h2 className="text-xl font-bold text-gray-900 mr-2">
-            {group.title} 
-          </h2>
-          <StatusIcon status={isOnline} onlyOnline />
-          <button
-              className="absolute bottom-0 right-0 transform bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none"
-              aria-label={isExpanded ? "Свернуть шапку" : "Развернуть шапку"}
-            >
-              <FontAwesomeIcon 
-                icon={isExpanded ? faChevronUp : faChevronDown} 
-                className="text-gray-600 w-3 h-3"
-              />
-          </button>
-        </div>
-        <div 
-          className={`overflow-hidden transition-all duration-300 ease-in-out  ${
-            isExpanded ? 'opacommand-100' : 'max-h-0 opacommand-0'
-          }`}
+        <div className={`p-4
+          ${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
+          ${isOnline ? 'border-green-500' : 'border-gray-200'}`}
         >
-        {/* Табы */}
-        <div className="flex flex-wrap space-x-1 mb-1 mt-2">
-          {tabs.map((tab) => (
+          <div className="w-full flex flex-start items-center relative cursor-pointer" onClick={toggleHeader}>
+            <h2 className="text-xl font-bold text-gray-900 mr-2">
+              {group.title} 
+            </h2>
+            <StatusIcon status={isOnline} onlyOnline />
             <button
-              key={tab.id}
-              onClick={() => {
-                setActiveTab(tab.id)
-              }}
-              className={`flex border-2 px-2 py-1 mb-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
-                activeTab === tab.id
-                  ? 'border-blue-600'
-                  : 'border-gray-100'
-              }`}
-            > 
-              <StatusIcon status={tab.status} />
-              <div>{tab.label}</div>
+                className="absolute bottom-0 right-0 transform bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none"
+                aria-label={isExpanded ? "Свернуть шапку" : "Развернуть шапку"}
+              >
+                <FontAwesomeIcon 
+                  icon={isExpanded ? faChevronUp : faChevronDown} 
+                  className="text-gray-600 w-3 h-3"
+                />
             </button>
-          ))}
-        </div>
-        
-        {isExpanded ?
-        <Table
-          subGroup={group.subgroups.find(s => s.id === activeTab)}
-          code={code}
-          isCommandFilterEnabled={isCommandFilterEnabled}
-          command={command}
-        /> : null}
+          </div>
+          <LazyLoader>
+          <div 
+            className={`overflow-hidden transition-all duration-300 ease-in-out  ${
+              isExpanded ? 'opacommand-100' : 'max-h-0 opacommand-0'
+            }`}
+          >
+          {/* Табы */}
+          <div className="flex flex-wrap space-x-1 mb-1 mt-2">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id)
+                }}
+                className={`flex border-2 px-2 py-1 mb-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
+                  activeTab === tab.id
+                    ? 'border-blue-600'
+                    : 'border-gray-100'
+                }`}
+              > 
+                <StatusIcon status={tab.status} />
+                <div>{tab.label}</div>
+              </button>
+            ))}
+          </div>
+          
+          {isExpanded ?
+          <Table
+            subGroup={group.subgroups.find(s => s.id === activeTab)}
+            code={code}
+            isCommandFilterEnabled={isCommandFilterEnabled}
+            command={command}
+          /> : null}
+          </div>
+          </LazyLoader>
         </div>
       </div>
-    </div>
   )
 })
