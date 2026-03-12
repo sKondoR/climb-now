@@ -62,8 +62,8 @@ const CollapsibleHeader = () => {
             aria-label={isExpanded ? "Свернуть шапку" : "Развернуть шапку"}
         >
             <FontAwesomeIcon 
-            icon={isExpanded ? faChevronUp : faChevronDown} 
-            className="text-gray-600 w-3 h-3"
+              icon={isExpanded ? faChevronUp : faChevronDown} 
+              className="text-gray-600 w-3 h-3"
             />
         </button>
       </header>

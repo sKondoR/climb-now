@@ -1,4 +1,7 @@
-import { useState } from 'react';
+'use client'
+
+import { useState } from 'react'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRefresh } from '@fortawesome/free-solid-svg-icons'
 

@@ -2,20 +2,22 @@
 
 import { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
-import { rootStore } from '@/lib/store/root.store'
-import { MIN_URL_CODE_LENGTH } from '@/lib/constants'
-import { Group } from '@/types'
-
-import { isGroupOnline } from '../groups/groups.utils'
 import dynamic from 'next/dynamic'
 
+import { rootStore } from '@/store/root.store'
+
+import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
+import { Group } from '@/shared/types'
+
+import { isGroupOnline } from './groups/groups.utils'
+
 const DisciplineTabs = dynamic(
-  () => import('../groups/DisciplineTabs'),
+  () => import('./groups/DisciplineTabs'),
   { ssr: false }
 )
 
 const GroupCard = dynamic(
-  () => import('../groups/GroupCard'),
+  () => import('./groups/GroupCard'),
   { ssr: false }
 )
 

@@ -1,6 +1,6 @@
 import { parse } from 'parse5';
-import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, BoulderQualItem, BoulderFinalItem } from '@/types';
-import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig, boulderQualConfig, boulderFinalsConfig } from '@/components/tables/configs';
+import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, BoulderQualItem, BoulderFinalItem } from '@/shared/types';
+import { leadQualConfig, leadQualResultsConfig, leadFinalsConfig, boulderQualConfig, boulderFinalsConfig } from '@/components/tables/tables.configs';
 import { DISCIPLINES, STATUSES } from '../constants';
 import type { Parse5Document, Parse5Element, Parse5Node, Parse5DocumentFragment, Parse5ChildNode } from './parsers.types';
 

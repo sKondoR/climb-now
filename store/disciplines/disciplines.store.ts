@@ -1,8 +1,9 @@
 import { makeAutoObservable } from 'mobx'
 import { QueryClient } from '@tanstack/react-query'
-import type { Discipline } from '@/types/disciplines'
-import { fetchResults } from '@/lib/api'
-import { MIN_URL_CODE_LENGTH } from '@/lib/constants'
+
+import type { Discipline } from '@/shared/types/disciplines'
+import { fetchResults } from '@/shared/api'
+import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
 
 export class DisciplinesStore {
   private queryClient: QueryClient

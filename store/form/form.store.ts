@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx'
-import { DEFAULT_TEAM } from '@/lib/constants'
+
+import { DEFAULT_TEAM } from '@/shared/constants'
 
 export class FormStore {
   code: string = ''

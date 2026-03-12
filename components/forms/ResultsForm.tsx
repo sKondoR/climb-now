@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
-import { rootStore } from '@/lib/store/root.store'
-import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/lib/constants'
+import { rootStore } from '@/store/root.store'
+import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/shared/constants'
 
 import { EventTemplate } from './EventTemplate'
-import { Item } from '@/components/shared/Autocomplete/Autocomplete.types'
-import { Event } from '@/types/events'
-import LinkToEvent from '@/components/shared/LinkToEvent/LinkToEvent'
-import Autocomplete from '../shared/Autocomplete/Autocomplete'
+import { Item } from '@/shared/components/Autocomplete/Autocomplete.types'
+import { Event } from '@/shared/types/events'
+import LinkToEvent from '@/shared/components/LinkToEvent/LinkToEvent'
+import Autocomplete from '../../shared/components/Autocomplete/Autocomplete'
 
 export default observer(
 function ResultsForm() {
@@ -31,6 +31,7 @@ function ResultsForm() {
     (value: Item | null) => {
       formStore.setCode(typeof value === 'string' ? value : '')
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -38,6 +39,7 @@ function ResultsForm() {
     (value: Item | null) => {
       formStore.setCommand(typeof value === 'string' ? value : '')
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -46,6 +48,7 @@ function ResultsForm() {
       const isEnabled = e.target.checked
       formStore.setIsCommandFilterEnabled(isEnabled)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
@@ -54,6 +57,7 @@ function ResultsForm() {
       const isEnabled = e.target.checked
       formStore.setIsOnlyOnline(isEnabled)
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 

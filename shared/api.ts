@@ -1,4 +1,4 @@
-import { Discipline, Event } from '@/types'
+import { Discipline, Event } from '@/shared/types'
 import { BACKEND_API_URL } from './constants'
 import { getDateRange } from './utils/date.utils'
 

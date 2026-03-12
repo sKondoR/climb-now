@@ -1,6 +1,7 @@
-import { SubGroupData, Results } from '@/types'
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
+
+import { SubGroupData, Results } from '@/shared/types'
 
 interface UseResultsOptions {
   code: string

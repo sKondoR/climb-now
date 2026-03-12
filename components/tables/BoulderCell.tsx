@@ -20,6 +20,6 @@ const BoulderCell = memo(({ value }: BoulderCellProps): ReactNode | null => {
   )
 })
 
-BoulderCell.displayName = 'BoulderCell';
+BoulderCell.displayName = 'BoulderCell'
 
-export default BoulderCell;
+export default BoulderCell

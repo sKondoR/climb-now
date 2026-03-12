@@ -1,12 +1,14 @@
-import { Subgroup, Results } from '@/types'
-import { NAME_COL, COMMAND_COL } from './configs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+
+import { NAME_COL, COMMAND_COL } from './tables.configs'
 import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import RefreshTableBtn from './RefreshTableBtn'
-import { SPECIAL_STATUSES, STATUSES } from '@/lib/constants'
-import useFetchResults from '@/lib/hooks/useFetchResults'
+import useFetchResults from './useFetchResults'
+
+import { SPECIAL_STATUSES, STATUSES } from '@/shared/constants'
+import { Subgroup, Results } from '@/shared/types'
 
 interface TableProps {
   subGroup: Subgroup | undefined,

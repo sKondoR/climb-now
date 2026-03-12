@@ -1,4 +1,4 @@
-import { BACKEND_API_URL } from '@/lib/constants'
+import { BACKEND_API_URL } from '@/shared/constants'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'

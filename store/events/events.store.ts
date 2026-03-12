@@ -1,7 +1,8 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import { QueryClient, QueryObserver } from '@tanstack/react-query'
-import { fetchEvents } from '@/lib/api'
-import { Event } from '@/types/events'
+
+import { fetchEvents } from '@/shared/api'
+import { Event } from '@/shared/types/events'
 
 export class EventsStore {
   private queryClient: QueryClient

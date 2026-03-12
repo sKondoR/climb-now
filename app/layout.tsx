@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { RootStoreProvider } from '@/lib/store/RootStoreProvider';
-import QueryClientProviderWrapper from '@/lib/query/QueryClientProvider';
+import { RootStoreProvider } from '@/store/RootStoreProvider';
+import QueryClientProviderWrapper from '@/shared/query/QueryClientProvider';
 
 const inter = Inter({ 
   subsets: ['latin'],

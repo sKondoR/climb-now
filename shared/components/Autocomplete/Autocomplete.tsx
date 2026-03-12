@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, ReactNode } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons'
+
 import { Item } from './Autocomplete.types'
 import BaseTemplate from './BaseTemplate'
 

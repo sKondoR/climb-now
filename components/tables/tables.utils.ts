@@ -1,11 +1,12 @@
-import { Results, ResultsItem } from '@/types'
 import {
     leadFinalsConfig,
     leadQualConfig,
     leadQualResultsConfig,
     boulderQualConfig,
     boulderFinalsConfig,
-} from './configs'
+} from './tables.configs'
+
+import { Results, ResultsItem } from '@/shared/types'
 
 export const isCommandMatch = (command: string, selectedCommand: string) => {
     return selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
