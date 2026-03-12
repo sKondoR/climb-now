@@ -153,7 +153,7 @@ export const parseBoulderFinal = (document: Parse5DocumentFragment): BoulderFina
   return parseTable<BoulderFinalItem>(document, boulderFinalConfig as Array<{ parserId: number; prop: keyof BoulderFinalItem }>)
 }
 
-const findElementsByTag = (node: Parse5Node | null | undefined, tagName: string): Parse5Element[] => {
+export const findElementsByTag = (node: Parse5Node | null | undefined, tagName: string): Parse5Element[] => {
   const result: Parse5Element[] = []
   
   if (!node) return result
@@ -171,11 +171,11 @@ const findElementsByTag = (node: Parse5Node | null | undefined, tagName: string)
   return result
 }
 
-const getTextContent = (node: Parse5Node | null | undefined): string => {
+export const getTextContent = (node: Parse5Node | null | undefined): string => {
   if (!node) return ''
-  
+
   let text = ''
-  
+
   const traverse = (node: Parse5Node) => {
     if (node.nodeName === '#text' && 'value' in node) {
       text += node.value
@@ -183,9 +183,29 @@ const getTextContent = (node: Parse5Node | null | undefined): string => {
       node.childNodes.forEach((child: Parse5ChildNode) => traverse(child))
     }
   }
-  
+
   traverse(node)
   return text.trim()
+}
+
+export const hasClass = (node: Parse5Node | null | undefined, className: string): boolean => {
+  if (!node || !('attrs' in node)) return false
+  const attrs = (node as Parse5Element).attrs
+  if (!attrs) return false
+  const classAttr = attrs.find((attr: { name: string; value: string }) => attr.name === 'class')
+  return classAttr?.value?.split(' ').includes(className) || false
+}
+
+export const getDisciplines = (document: Parse5DocumentFragment) => {
+  return findElementsByTag(document as unknown as Parse5Document, 'th').map((th: Parse5Element) => {
+    let current = ''
+    Object.values(DISCIPLINES).forEach((value) => {
+      if(getTextContent(th).toLowerCase().includes(value.toLowerCase())) {
+        current = value
+      }
+    })
+    return current || getTextContent(th).toLowerCase()
+  })
 }
 
 export const parseRouteCell = (node: Parse5Node | null | undefined): string => {
@@ -194,7 +214,6 @@ export const parseRouteCell = (node: Parse5Node | null | undefined): string => {
   const values: string[] = []
   
   const traverse = (node: Parse5Node) => {
-    // Check if current node has the target class
     if (hasClass(node, 'r_2')) {
       if ('childNodes' in node && Array.isArray(node.childNodes)) {
         node.childNodes.forEach((routeChild: Parse5ChildNode) => {
@@ -203,7 +222,7 @@ export const parseRouteCell = (node: Parse5Node | null | undefined): string => {
             if (text) {
               values.push(text)
             } else {
-              values.push(' ') // Handle empty text nodes between br tags
+              values.push(' ')
             }
           }
         })
@@ -218,46 +237,6 @@ export const parseRouteCell = (node: Parse5Node | null | undefined): string => {
     }
   }
   
-  traverse(node)
+    traverse(node)
   return values.join('/')
-}
-
-
-      // if (hasClass(node, 'r_0')) {
-      //   console.log('r_0 >>>', node)
-      //   values.push(' ', ' ');
-      // }
-      // if (hasClass(node, 'r_1')) {
-      //   console.log('r_1 >>>', node)
-      //   values.push(' ', getTextContent(node));
-      // }
-      // if (hasClass(node, 'r_2')) {
-      //   console.log('r_2 >>>', node)
-      //   if ('childNodes' in node && Array.isArray(node.childNodes)) {
-      //     node.childNodes.forEach((routeChild: Parse5ChildNode) => {
-      //       if (routeChild.nodeName === '#text' && 'value' in routeChild) {
-      //         values.push(routeChild.value.trim() || ' ');
-      //       }
-      //     });
-      //   }
-      // }
-
-const hasClass = (node: Parse5Node | null | undefined, className: string): boolean => {
-  if (!node || !('attrs' in node)) return false
-  const attrs = (node as Parse5Element).attrs
-  if (!attrs) return false
-  const classAttr = attrs.find((attr: { name: string; value: string }) => attr.name === 'class')
-  return classAttr?.value?.split(' ').includes(className) || false
-}
-
-const getDisciplines = (document: Parse5DocumentFragment) => {
-  return findElementsByTag(document as unknown as Parse5Document, 'th').map((th: Parse5Element) => {
-    let current = ''
-    Object.values(DISCIPLINES).forEach((value) => {
-      if(getTextContent(th).toLowerCase().includes(value.toLowerCase())) {
-        current = value
-      }
-    })
-    return current || getTextContent(th).toLowerCase()
-  })
 }

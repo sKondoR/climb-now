@@ -1,13 +1,17 @@
 import { describe, it, expect } from 'vitest'
 
 import { parseResults, parseResultsTable,
-  parseLeadQual, 
+  parseLeadQual,
   parseLeadQualResults,
   parseLeadFinal,
   parseBoulderQual,
   parseBoulderFinal,
   parseRouteCell,
-  parseFragment
+  parseFragment,
+  getTextContent,
+  hasClass,
+  getDisciplines,
+  findElementsByTag
 } from './parsers'
 import {
   mockHtmlWith404,
@@ -245,7 +249,7 @@ describe('parsers', () => {
     it('should parse boulder final table', () => {
       const result = parseBoulderFinal(mockParsedBoulderFinal)
       expect(result).toStrictEqual([
-{
+        {
           command: 'ЛЕНГ',
           name: 'Нагорничных Яромир',
           qRank: '4',
@@ -287,37 +291,218 @@ describe('parsers', () => {
 
   describe('parseRouteCell', () => {
     it('should parse route cell with r_2 class', () => {
-      // Используем parseFragment для создания реального элемента
-      const html = '<div class="r_2">1<br>2</div>';
-      const fragment = parseFragment(html);
-      const result = parseRouteCell(fragment); 
-      expect(result).toBe('1/2');
+      const html = '<div class="r_2">1<br>2</div>'
+      const fragment = parseFragment(html)
+      const result = parseRouteCell(fragment) 
+      expect(result).toBe('1/2')
     })
 
     it('should parse route cell with r_1 class', () => {
-      const html = '<div class="r_1"><br>1</div>';
-      const fragment = parseFragment(html);
-      const result = parseRouteCell(fragment);
-      expect(result).toBe(' /1');
+      const html = '<div class="r_1"><br>1</div>'
+      const fragment = parseFragment(html)
+      const result = parseRouteCell(fragment)
+      expect(result).toBe(' /1')
     })
 
     it('should parse route cell with r_0 class', () => {
-      const html = '<div class="r_0"><br></div>';
-      const fragment = parseFragment(html);
-      const result = parseRouteCell(fragment);
-      expect(result).toBe(' / ');
+      const html = '<div class="r_0"><br></div>'
+      const fragment = parseFragment(html)
+      const result = parseRouteCell(fragment)
+      expect(result).toBe(' / ')
     })
 
     it('should handle empty or null input', () => {
-      expect(parseRouteCell(null)).toBe('');
-      expect(parseRouteCell(undefined)).toBe('');
+      expect(parseRouteCell(null)).toBe('')
+      expect(parseRouteCell(undefined)).toBe('')
     })
 
     it('should handle complex route cell structure', () => {
-      const html = '<div class="r_2">2<br>2</div>';
-      const fragment = parseFragment(html);
-      const result = parseRouteCell(fragment);
-      expect(result).toBe('2/2');
+      const html = '<div class="r_2">2<br>2</div>'
+      const fragment = parseFragment(html)
+      const result = parseRouteCell(fragment)
+      expect(result).toBe('2/2')
+    })
+  })
+
+  describe('getTextContent', () => {
+    it('should extract text content from element', () => {
+      const html = '<div>Test Content</div>'
+      const fragment = parseFragment(html)
+      const result = getTextContent(fragment)
+      expect(result).toBe('Test Content')
+    })
+
+    it('should extract text content from nested elements', () => {
+      const html = '<div><span>Hello</span> <b>World</b></div>'
+      const fragment = parseFragment(html)
+      const result = getTextContent(fragment)
+      expect(result).toBe('Hello World')
+    })
+
+    it('should handle empty element', () => {
+      const html = '<div></div>'
+      const fragment = parseFragment(html)
+      const result = getTextContent(fragment)
+      expect(result).toBe('')
+    })
+
+    it('should handle null input', () => {
+      expect(getTextContent(null)).toBe('')
+    })
+
+    it('should handle undefined input', () => {
+      expect(getTextContent(undefined)).toBe('')
+    })
+
+    it('should handle text-only node', () => {
+      const html = 'Just text'
+      const result = getTextContent(parseFragment(html))
+      expect(result).toBe('Just text')
+    })
+  })
+
+  describe('hasClass', () => {
+    it('should return true when class exists', () => {
+      const html = '<div class="test-class">Content</div>'
+      const element =  findElementsByTag(parseFragment(html), 'div')[0]
+      const result = hasClass(element, 'test-class')
+      expect(result).toBe(true)
+    })
+
+    it('should return false when class does not exist', () => {
+      const html = '<div class="other-class">Content</div>'
+      const element =  findElementsByTag(parseFragment(html), 'div')[0]
+      const result = hasClass(element, 'missing-class')
+      expect(result).toBe(false)
+    })
+
+    it('should return false for null input', () => {
+      expect(hasClass(null, 'test-class')).toBe(false)
+    })
+
+    it('should return false for undefined input', () => {
+      expect(hasClass(undefined, 'test-class')).toBe(false)
+    })
+
+    it('should return false when node has no attrs', () => {
+      const html = '<div>Content</div>'
+      const element =  findElementsByTag(parseFragment(html), 'div')[0]
+      const result = hasClass(element, 'test-class')
+      expect(result).toBe(false)
+    })
+
+    it('should handle multiple classes', () => {
+      const html = '<div class="class1 class2 class3">Content</div>'
+      const element =  findElementsByTag(parseFragment(html), 'div')[0]
+      expect(hasClass(element, 'class1')).toBe(true)
+      expect(hasClass(element, 'class2')).toBe(true)
+      expect(hasClass(element, 'class3')).toBe(true)
+      expect(hasClass(element, 'class4')).toBe(false)
+    })
+
+    it('should handle class with hyphen', () => {
+      const html = '<div class="my-class">Content</div>'
+      const element =  findElementsByTag(parseFragment(html), 'div')[0]
+      const result = hasClass(element, 'my-class')
+      expect(result).toBe(true)
+    })
+  })
+
+  describe('getDisciplines', () => {
+    it('should extract disciplines from table headers', () => {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Трудность</th>
+              <th>Боулдеринг</th>
+              <th>Скорость</th>
+            </tr>
+          </thead>
+        </table>
+      `
+      const fragment = parseFragment(html)
+      const result = getDisciplines(fragment)
+      expect(result).toHaveLength(3)
+      expect(result[0]).toBe('трудность')
+      expect(result[1]).toBe('боулдеринг')
+      expect(result[2]).toBe('скорость')
+    })
+
+    it('should return empty array when no disciplines found', () => {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Other Header</th>
+            </tr>
+          </thead>
+        </table>
+      `
+      const fragment = parseFragment(html)
+      const result = getDisciplines(fragment)
+      expect(result).toHaveLength(1)
+      expect(result[0]).toBe('other header')
+    })
+
+    it('should handle case-insensitive matching', () => {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>ТРУДНОСТЬ</th>
+              <th>БОУЛДЕРИНГ</th>
+            </tr>
+          </thead>
+        </table>
+      `
+      const fragment = parseFragment(html)
+      const result = getDisciplines(fragment)
+      expect(result).toHaveLength(2)
+      expect(result[0]).toBe('трудность')
+      expect(result[1]).toBe('боулдеринг')
+    })
+
+    it('should return lowercase text when no discipline found', () => {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Some Discipline Name</th>
+            </tr>
+          </thead>
+        </table>
+      `
+      const fragment = parseFragment(html)
+      const result = getDisciplines(fragment)
+      expect(result[0]).toBe('some discipline name')
+    })
+
+    it('should handle multiple discipline headers', () => {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Трудность</th>
+              <th>Боулдеринг</th>
+              <th>Абсолют</th>
+            </tr>
+          </thead>
+        </table>
+      `
+      const fragment = parseFragment(html)
+      const result = getDisciplines(fragment)
+      expect(result).toHaveLength(3)
+      expect(result).toContain('трудность')
+      expect(result).toContain('боулдеринг')
+      expect(result).toContain('абсолют')
+    })
+
+    it('should handle empty document', () => {
+      const html = ''
+      const fragment = parseFragment(html)
+      const result = getDisciplines(fragment)
+      expect(result).toHaveLength(0)
     })
   })
 })
