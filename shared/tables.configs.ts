@@ -21,7 +21,7 @@ export const leadQualResultsConfig = [
     { name: 'баллы', prop: 'mark', parserId: 8 },
 ].map((item, i) => ({ ...item, id: `lqr-${i}` }));
 
-export const leadFinalsConfig = [
+export const leadFinalConfig = [
     { name: 'место', prop: 'rank', parserId: 0 },
     { name: 'ст.#', prop: 'stRank', parserId: 2 },
     { name: NAME_COL, prop: 'name', parserId: 3 },
@@ -43,7 +43,7 @@ export const boulderQualConfig = [
     { name: 'результат', prop: 'score', parserId: 10 },
 ].map((item, i) => ({ ...item, id: `bq-${i}` }));
 
-export const boulderFinalsConfig = [
+export const boulderFinalConfig = [
     { name: 'место', prop: 'rank', parserId: 0 },
     { name: 'ст.#', prop: 'stRank', parserId: 2 },
     { name: NAME_COL, prop: 'name', parserId: 3 },

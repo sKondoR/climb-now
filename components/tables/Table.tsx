@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
-import { NAME_COL, COMMAND_COL } from './tables.configs'
+import { NAME_COL, COMMAND_COL } from '../../shared/tables.configs'
 import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import RefreshTableBtn from './RefreshTableBtn'

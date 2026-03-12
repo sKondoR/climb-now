@@ -1,10 +1,10 @@
 import {
-    leadFinalsConfig,
+    leadFinalConfig,
     leadQualConfig,
     leadQualResultsConfig,
     boulderQualConfig,
-    boulderFinalsConfig,
-} from './tables.configs'
+    boulderFinalConfig,
+} from '../../shared/tables.configs'
 
 import { Results, ResultsItem } from '@/shared/types'
 
@@ -21,12 +21,12 @@ interface getConfigProps {
 export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: getConfigProps) { 
     if (isLead) {
         if (isFinal) {
-            return leadFinalsConfig;
+            return leadFinalConfig;
         }
         return isQualResult ? leadQualResultsConfig : leadQualConfig;
     }
     if (isBoulder) {
-        return (isFinal) ? boulderFinalsConfig : boulderQualConfig;
+        return (isFinal) ? boulderFinalConfig : boulderQualConfig;
     }
     return leadQualConfig;
 }
