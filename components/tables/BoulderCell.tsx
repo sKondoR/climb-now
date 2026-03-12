@@ -7,7 +7,7 @@ interface BoulderCellProps {
 const BoulderCell = memo(({ value }: BoulderCellProps): ReactNode | null => {
   const [val1, val2] = value.split('/');
   return (
-      <div className="bg-gray-200 inset text-center flex flex-col h-full">
+      <div className="bg-gray-200 inset text-center flex flex-col h-full leading-tight text-xs">
         {val1 !== ' ' ?
           <div className={`flex-1 ${val1 !== ' ' ? 'bg-red-300' : ''}`}>{val1}</div> :
           <div className="flex-1 text-white/0">-</div>
