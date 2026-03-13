@@ -15,9 +15,14 @@ export class FormStore {
   setCode(code: string) {
     this.code = code
   }
-  loadCodeFromUrl() {
+  loadFromUrl() {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search)
+      const names = urlParams.get('names')
+      if (names) {
+        this.isNamesFilterEnabled = false
+        this.names = names
+      }
       const code = urlParams.get('code')
       if (code) {
         this.code = code

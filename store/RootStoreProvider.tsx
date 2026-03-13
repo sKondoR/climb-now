@@ -8,7 +8,7 @@ const RootStoreContext = createContext<RootStore | undefined>(undefined)
 export const RootStoreProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     // Load code from URL on client-side mount
-    rootStore.formStore.loadCodeFromUrl()
+    rootStore.formStore.loadFromUrl()
   }, [])
 
   return (

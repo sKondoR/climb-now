@@ -1,4 +1,6 @@
 'use client'
+import { useEffect, useState } from 'react'
+import { useDebounce } from '@/shared/hooks/useDebounce'
 
 interface TextInputProps {
   value: string
@@ -7,6 +9,7 @@ interface TextInputProps {
   label?: string
   labelTitle?: string
   dataLabel?: string
+  debounceDelay?: number
 }
 
 export const TextInput = ({
@@ -16,11 +19,21 @@ export const TextInput = ({
   label = '',
   labelTitle = '',
   dataLabel = '',
+  debounceDelay = 800
 }: TextInputProps) => {
+  const [text, setText] = useState(value)
   
+  const debouncedOnChange = useDebounce(onChange, debounceDelay)
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value)
+    const newValue = e.target.value
+    setText(newValue)
+    debouncedOnChange(newValue)
   }
+
+  useEffect(() => {
+    setText(value)
+  }, [value])
 
   return (
     <div className="w-full md:w-auto relative">
@@ -40,7 +53,7 @@ export const TextInput = ({
         <input
           type="text"
           id={`TextInput-${String(label)}`}
-          value={value}
+          value={text}
           onChange={handleInputChange}
           placeholder={placeholder}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"

@@ -48,7 +48,12 @@ export const BOULDER_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10','1
 
 export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled }: getRowClassesProps) { 
     const isCommandRow = !isNamesFilterEnabled && isCommandMatch(result.command, command)
-    const isNamesRow = isNamesFilterEnabled && names.toLowerCase().replace('  ', '').split(' ').find((a) => result.name.toLowerCase().includes(a))
+    const isNamesRow = isNamesFilterEnabled &&
+        names.toLowerCase()
+            .replace(',', ' ')
+            .replace('  ', ' ')
+            .split(' ')
+            .find((a) => result.name.toLowerCase().includes(a))
     if (isNamesFilterEnabled) {
         console.log('> ', names.toLowerCase(), result.name.toLowerCase());
     }
