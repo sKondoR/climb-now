@@ -24,7 +24,7 @@ interface GroupCardProps {
 export default observer(
 function GroupCard({ group }: GroupCardProps) {
   const [isExpanded, setIsExpanded] = useState(true)
-  const { isCommandFilterEnabled, code, command } = rootStore.formStore
+  const { isCommandFilterEnabled, code, command, isNamesFilterEnabled, names } = rootStore.formStore
 
   const [activeTab, setActiveTab] = useState<string>(() => {
     if (group.subgroups.length === 0) return '0';
@@ -36,7 +36,6 @@ function GroupCard({ group }: GroupCardProps) {
     setIsExpanded(!isExpanded);
   }
 
-  // Sync activeTab with available subgroups
   useEffect(() => {
     if (group.subgroups.length > 0 && !group.subgroups.find(s => s.id === activeTab)) {
       setActiveTab(group.subgroups[0].id)
@@ -109,6 +108,8 @@ function GroupCard({ group }: GroupCardProps) {
             code={code}
             isCommandFilterEnabled={isCommandFilterEnabled}
             command={command}
+            isNamesFilterEnabled={isNamesFilterEnabled}
+            names={names}            
           /> : null}
           </div>
           </LazyLoader>

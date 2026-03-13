@@ -15,6 +15,8 @@ interface TableProps {
   code: string,
   isCommandFilterEnabled: boolean,
   command: string,
+  isNamesFilterEnabled: boolean,
+  names: string,
 }
 
 export default function Table({
@@ -22,6 +24,8 @@ export default function Table({
   code,
   isCommandFilterEnabled,
   command,
+  isNamesFilterEnabled,
+  names,
 }: TableProps) {
     
     const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
@@ -75,7 +79,7 @@ export default function Table({
                 }
                 return <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b border-white transition-colors ${finalBorderClass} ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command })}`}
+                  className={`border-b border-white transition-colors ${finalBorderClass} ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled })}`}
                 >
                   {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];

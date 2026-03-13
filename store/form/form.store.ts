@@ -6,6 +6,8 @@ export class FormStore {
   code: string = ''
   command: string = DEFAULT_TEAM
   isCommandFilterEnabled: boolean = false
+  names: string = ''
+  isNamesFilterEnabled: boolean = false
   isOnlyOnline: boolean = false
   constructor() {
     makeAutoObservable(this)
@@ -28,6 +30,12 @@ export class FormStore {
   setIsCommandFilterEnabled(enabled: boolean) {
     this.isCommandFilterEnabled = enabled
   }
+  setNames(names: string) {
+    this.names = names
+  }
+  setIsNamesFilterEnabled(enabled: boolean) {
+    this.isNamesFilterEnabled = enabled
+  }
   setIsOnlyOnline(enabled: boolean) {
     this.isOnlyOnline = enabled
   }
@@ -35,6 +43,8 @@ export class FormStore {
     this.code = ''
     this.command = DEFAULT_TEAM
     this.isCommandFilterEnabled = false
+    this.names = ''
+    this.isNamesFilterEnabled = false
     this.isOnlyOnline = false
   }
 }

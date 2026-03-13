@@ -4,12 +4,15 @@ import { useCallback, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/store/root.store'
 import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/shared/constants'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUsers, faFlag } from '@fortawesome/free-solid-svg-icons'
 
 import { EventTemplate } from './EventTemplate'
 import { Item } from '@/shared/components/Autocomplete/Autocomplete.types'
 import { Event } from '@/shared/types/events'
 import LinkToEvent from '@/shared/components/LinkToEvent/LinkToEvent'
 import Autocomplete from '../../shared/components/Autocomplete/Autocomplete'
+import TextInput from '@/shared/components/TextInput/TextInput'
 
 export default observer(
 function ResultsForm() {
@@ -18,7 +21,8 @@ function ResultsForm() {
   const disciplinesStore = rootStore.disciplinesStore
   const eventsStore = rootStore.eventsStore
   const command = formStore.command as Item | null
-  const { isCommandFilterEnabled, isOnlyOnline } = formStore
+  const names = formStore.names
+  const { isCommandFilterEnabled, isNamesFilterEnabled, isOnlyOnline } = formStore
 
 
   useEffect(() => {
@@ -43,6 +47,14 @@ function ResultsForm() {
     []
   )
 
+  const handleNamesChange = useCallback(
+    (value: string) => {
+      formStore.setNames(value)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  )
+
   const handleCommandFilterToggle = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const isEnabled = e.target.checked
@@ -61,9 +73,16 @@ function ResultsForm() {
     []
   )
 
+  const handleNamesFilterToggle = useCallback(
+    () => {
+      formStore.setIsNamesFilterEnabled(!isNamesFilterEnabled)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isNamesFilterEnabled]
+  )
   return (
     <div className="flex flex-wrap gap-4">
-      <div className="flex-1 relative">
+      <div className="w-full md:flex-1 md:w-auto relative">
         <Autocomplete
           value={formStore.code}
           onChange={handleUrlChange}
@@ -78,15 +97,31 @@ function ResultsForm() {
         />
         {disciplinesStore.groupsData && <LinkToEvent code={formStore.code as string} />}
       </div>
-      <Autocomplete
-        value={command}
-        onChange={handleCommandChange}
-        placeholder={DEFAULT_TEAM}
-        data={teamsStore.teams as Item[]}
-        label="команда"
-        labelTitle="Скалолазы из команды будут подсвечены"
-        dataLabel={DEFAULT_TEAM}
-      />
+      <div className="w-full md:flex-1 md:w-auto relative">
+        {isNamesFilterEnabled ? (
+          <TextInput
+            value={names}
+            onChange={handleNamesChange}
+            placeholder="Петров Иванов"
+            label="скалолазы"
+            labelTitle="Скалолазы из списка будут подсвечены"
+            dataLabel="Петров Иванов"
+          />
+        ) : (
+          <Autocomplete
+            value={command}
+            onChange={handleCommandChange}
+            placeholder={DEFAULT_TEAM}
+            data={teamsStore.teams as Item[]}
+            label="команда"
+            labelTitle="Скалолазы из команды будут подсвечены"
+            dataLabel={DEFAULT_TEAM}
+          />          
+        )}
+        <div className="absolute top-0 right-0 px-1 text-blue-600 hover:text-blue-800 cursor-pointer" onClick={handleNamesFilterToggle}>
+          <FontAwesomeIcon icon={isNamesFilterEnabled ? faUsers : faFlag} className=""  />
+        </div>
+      </div>
       <div className="w-full md:w-auto">
         <div className="flex flex-start align-center">
           <input
