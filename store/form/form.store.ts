@@ -20,7 +20,7 @@ export class FormStore {
       const urlParams = new URLSearchParams(window.location.search)
       const names = urlParams.get('names')
       if (names) {
-        this.isNamesFilterEnabled = false
+        this.isNamesFilterEnabled = true
         this.names = names
       }
       const code = urlParams.get('code')

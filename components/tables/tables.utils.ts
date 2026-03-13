@@ -8,9 +8,14 @@ import {
 
 import { Results, ResultsItem } from '@/shared/types'
 
-export const isCommandMatch = (command: string, selectedCommand: string) => {
-    return selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
-}
+export const isCommandMatch = (command: string, selectedCommand: string) => 
+    selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
+
+export const isNameMatch = (name: string, names: string) => 
+    names.toLowerCase()
+        .replace('  ', ' ')
+        .split(' ')
+        .find((a) => name.toLowerCase().includes(a))
 
 interface getConfigProps {
     isLead: boolean
@@ -32,6 +37,7 @@ export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: get
 }
 
 interface getRowClassesProps {
+    resultsLength: number
     result: ResultsItem
     isLead: boolean
     isQualResult: boolean
@@ -42,30 +48,39 @@ interface getRowClassesProps {
     isNamesFilterEnabled: boolean
 }
 
-export const PRIZE_PLACES = ['1','2','3'];
-export const LEAD_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10'];
-export const BOULDER_FINAL_PLACES = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+export const PRIZE_PLACES = 3
+export const LEAD_FINAL_PLACES = 10
+export const BOULDER_FINAL_PLACES = 12
+export const PARTICIPANTS_COEF = 0.75
 
-export function getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled }: getRowClassesProps) { 
-    const isCommandRow = !isNamesFilterEnabled && isCommandMatch(result.command, command)
-    const isNamesRow = isNamesFilterEnabled &&
-        names.toLowerCase()
-            .replace(',', ' ')
-            .replace('  ', ' ')
-            .split(' ')
-            .find((a) => result.name.toLowerCase().includes(a))
-    if (isNamesFilterEnabled) {
-        console.log('> ', names.toLowerCase(), result.name.toLowerCase());
+export const getFinalPlaces = (resultsLength: number, standard: number) => {
+    const mathPlaces = Math.ceil(resultsLength * PARTICIPANTS_COEF)
+    if (mathPlaces >= standard) {
+        return standard
     }
-    const isFinalRow = 
-    (isLead && isFinal && PRIZE_PLACES.includes(result['rank'])) || 
-    (isLead && isQualResult && LEAD_FINAL_PLACES.includes(result['rank'])) ||
-    (isBoulder && isFinal && PRIZE_PLACES.includes(result['rank'])) || 
-    (isBoulder && !isFinal && BOULDER_FINAL_PLACES.includes(result['rank']));
-    if (isCommandRow || isNamesRow) {
+    if (mathPlaces >= standard - 2) {
+        return standard - 2
+    }
+    if (mathPlaces >= standard - 4) {
+        return standard - 4
+    }
+    return standard - 6
+}
+
+export function getRowClasses({ resultsLength, result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled }: getRowClassesProps) { 
+    const isSameCommandRow = !isNamesFilterEnabled && isCommandMatch(result.command, command)
+    const isSameNameRow = isNamesFilterEnabled && isNameMatch(result.name, names)
+    const rank = Number.parseInt(result['rank'])
+    const isFinalRow = result['rank'] && (
+        (isLead && isFinal && PRIZE_PLACES >= rank) || 
+        (isLead && isQualResult && getFinalPlaces(resultsLength, LEAD_FINAL_PLACES) >= rank) ||
+        (isBoulder && isFinal && PRIZE_PLACES >= rank) || 
+        (isBoulder && !isFinal && getFinalPlaces(resultsLength, BOULDER_FINAL_PLACES) >= rank)
+    )
+    if (isSameCommandRow || isSameNameRow) {
         return ' bg-blue-200';
     }
-    if (isFinalRow && !isCommandRow) {
+    if (isFinalRow) {
         return ' bg-green-200';
     }
     return '';
@@ -80,11 +95,11 @@ export function getClimbedCount({ results, isLead, isBoulder }: { results: Resul
 }
 
 
-export function getFinalBorderClass({ isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank }:
-    { isFinalBorderDrawed: boolean, isFinal: boolean, isLead: boolean, isQualResult: boolean, isBoulder: boolean, rank: string }) {
+export function getFinalBorderClass({ resultsLength, isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank }:
+    { resultsLength:number, isFinalBorderDrawed: boolean, isFinal: boolean, isLead: boolean, isQualResult: boolean, isBoulder: boolean, rank: string }) {
     const place = Number.parseInt(rank);
-    return (isFinal && !isFinalBorderDrawed && place > PRIZE_PLACES.length ) ||
-           (isLead && isQualResult && place > LEAD_FINAL_PLACES.length) ||
-           (!isFinal && isBoulder && place > BOULDER_FINAL_PLACES.length) ?
+    return (isFinal && !isFinalBorderDrawed && place > PRIZE_PLACES ) ||
+           (isLead && isQualResult && place > getFinalPlaces(resultsLength, LEAD_FINAL_PLACES)) ||
+           (!isFinal && isBoulder && place > getFinalPlaces(resultsLength, BOULDER_FINAL_PLACES)) ?
            'border-t-2 border-t-green-500' : ''
 }

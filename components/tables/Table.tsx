@@ -35,8 +35,9 @@ export default function Table({
     })
     
     if (!subGroup) return null
+    
     const filterResultsByCommand = (results: Results) => {
-      if (!isCommandFilterEnabled || !command) {
+      if (!isCommandFilterEnabled) {
         return results
       }
       const filtered = results.filter((result) => isCommandMatch(result.command, command))
@@ -73,13 +74,15 @@ export default function Table({
             </thead>
             <tbody>
               {filteredResults.map((result, index) => {
-                const finalBorderClass = isFinalBorderDrawed ? '' : getFinalBorderClass({ isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank: result.rank })
+                const finalBorderClass = isFinalBorderDrawed ? '' : getFinalBorderClass({ resultsLength: results.length, isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank: result.rank })
                 if (finalBorderClass) {
                   isFinalBorderDrawed = true
                 }
                 return <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b border-white transition-colors ${finalBorderClass} ${getRowClasses({ result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled })}`}
+                  className={`border-b border-white transition-colors ${finalBorderClass}
+                    ${getRowClasses({ resultsLength: results.length, result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled })}
+                  `}
                 >
                   {config.map((col, index) => {
                     const value = result[col.prop as keyof typeof result];
