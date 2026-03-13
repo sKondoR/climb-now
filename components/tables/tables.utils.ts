@@ -9,10 +9,10 @@ import {
 import { Results, ResultsItem } from '@/shared/types'
 
 export const isCommandMatch = (command: string, selectedCommand: string) => 
-    selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
+    !!selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
 
 export const isNameMatch = (name: string, names: string) => 
-    names.toLowerCase()
+    !!names.toLowerCase()
         .replace('  ', ' ')
         .split(' ')
         .find((a) => name.toLowerCase().includes(a))
@@ -26,14 +26,14 @@ interface getConfigProps {
 export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: getConfigProps) { 
     if (isLead) {
         if (isFinal) {
-            return leadFinalConfig;
+            return leadFinalConfig
         }
-        return isQualResult ? leadQualResultsConfig : leadQualConfig;
+        return isQualResult ? leadQualResultsConfig : leadQualConfig
     }
     if (isBoulder) {
-        return (isFinal) ? boulderFinalConfig : boulderQualConfig;
+        return (isFinal) ? boulderFinalConfig : boulderQualConfig
     }
-    return leadQualConfig;
+    return leadQualConfig
 }
 
 interface getRowClassesProps {
@@ -78,12 +78,12 @@ export function getRowClasses({ resultsLength, result, isFinal, isQualResult, is
         (isBoulder && !isFinal && getFinalPlaces(resultsLength, BOULDER_FINAL_PLACES) >= rank)
     )
     if (isSameCommandRow || isSameNameRow) {
-        return ' bg-blue-200';
+        return ' bg-blue-200'
     }
     if (isFinalRow) {
-        return ' bg-green-200';
+        return ' bg-green-200'
     }
-    return '';
+    return ''
 }
 
 export function getClimbedCount({ results, isLead, isBoulder }: { results: Results, isLead: boolean, isBoulder: boolean }) { 
@@ -91,13 +91,13 @@ export function getClimbedCount({ results, isLead, isBoulder }: { results: Resul
         if (isBoulder) return 'rank' in result && result.rank !== ''
         if (isLead) return 'score' in result ? result.score !== '' : result.score1 !== ''
         return results.length
-    }).length;
+    }).length
 }
 
 
 export function getFinalBorderClass({ resultsLength, isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank }:
     { resultsLength:number, isFinalBorderDrawed: boolean, isFinal: boolean, isLead: boolean, isQualResult: boolean, isBoulder: boolean, rank: string }) {
-    const place = Number.parseInt(rank);
+    const place = Number.parseInt(rank)
     return (isFinal && !isFinalBorderDrawed && place > PRIZE_PLACES ) ||
            (isLead && isQualResult && place > getFinalPlaces(resultsLength, LEAD_FINAL_PLACES)) ||
            (!isFinal && isBoulder && place > getFinalPlaces(resultsLength, BOULDER_FINAL_PLACES)) ?

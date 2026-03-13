@@ -31,6 +31,7 @@ export class RootStore {
     this.teamsStore.reset()
     this.formStore.reset()
     this.disciplinesStore.reset()
+    this.eventsStore.destroy()
     this.queryClient.clear()
   }
 }
