@@ -115,7 +115,7 @@ export default function Table({
           {/* Оверлей для загрузки */}
           {isLoading && (
             <div className="absolute inset-0 bg-white/30 flex items-center justify-center">
-              <div className="flex items-center justify-center space-x-2 text-gray-500">
+              <div className="flex items-center justify-center space-x-2 space-y-2 text-gray-500">
                 <FontAwesomeIcon icon={faSpinner} spin />
                 <span className="text-lg font-medium">Загрузка результатов...</span>
               </div>

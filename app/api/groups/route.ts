@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
     
     // Ensure timeout is cleared even if there's an error
     try {
+      // toDo: Add random delay between 50-150ms to avoid rate limiting
       const response = await axios.get(`${EXTERNAL_API_BASE_URL}${code}/index.html`)
       
       clearTimeout(timeoutId)

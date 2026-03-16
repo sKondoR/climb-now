@@ -1,4 +1,5 @@
 import withBundleAnalyzer from '@next/bundle-analyzer'
+import path from 'path'
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
@@ -7,28 +8,17 @@ const bundleAnalyzer = withBundleAnalyzer({
 
 const nextConfig = {
   reactStrictMode: true,
-  // output: 'standalone',
   compress: true, // Enable compression
+  outputFileTracingRoot: path.join(process.cwd()),
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
     reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
   poweredByHeader: false, // Improve performance
   productionBrowserSourceMaps: false, // Production disable source maps
-  // webpack: (config) => {
-  //   config.resolve.alias = {
-  //     ...config.resolve.alias,
-  //   };
-
-  //   return config;
-  // },
-  experimental: {    
-    // reactCompiler: true, 
+  experimental: {
     // Turbopack for dev (faster)
-    // turbopack: {
-    //   rules: {
-    //   },
-    // },
+    turbopack: {},
     // Webpack memory optimizations
     memoryBasedWorkersCount: true,
     // Static generation improvements

@@ -15,14 +15,14 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Add random delay between 50-150ms to avoid rate limiting
-      const response = await axios.get(`${EXTERNAL_API_BASE_URL}${code}/${subgroup}.html`)
-    
-      if (response.status >= 400) {
-        throw new ApiError(`Failed to fetch results from external API: ${response.statusText}`, response.status)
-      }
+    // toDo: Add random delay between 50-150ms to avoid rate limiting
+    const response = await axios.get(`${EXTERNAL_API_BASE_URL}${code}/${subgroup}.html`)
+  
+    if (response.status >= 400) {
+      throw new ApiError(`Failed to fetch results from external API: ${response.statusText}`, response.status)
+    }
 
-     const html = response.data
+    const html = response.data
     // console.log('HTML received, starting parsing...')
     const parsed = parseResultsTable(html)
     // console.log('Parsing completed, returning results...')
