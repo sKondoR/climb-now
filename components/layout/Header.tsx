@@ -31,7 +31,7 @@ const CollapsibleHeader = () => {
           }`}
         >
           <div className="mx-auto px-4 sm:px-6 lg:px-8 py-5">
-            <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex flex-wrap justify-between items-start gap-4">
               <div className="w-full md:w-auto">
                 <div className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 bg-clip-text text-transparent text-center">
                     ClimbNow

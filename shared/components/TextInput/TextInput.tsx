@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useDebounce } from '@/shared/hooks/useDebounce'
 import ShareNamesBtn from '../ShareNamesBtn/ShareNamesBtn'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDownLeftAndUpRightToCenter, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons'
 
 interface TextInputProps {
   value: string
@@ -17,21 +19,23 @@ interface TextInputProps {
 export const TextInput = ({
   value = '',
   onChange = () => {},
-  placeholder = '',
   label = '',
   labelTitle = '',
   dataLabel = '',
   debounceDelay = 800
 }: TextInputProps) => {
   const [text, setText] = useState(value)
+  const [isOpened, setIsOpened] = useState(false)
   
   const debouncedOnChange = useDebounce(onChange, debounceDelay)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
+  const handleInputChange = (e: React.InputEvent<HTMLDivElement>) => {
+    const newValue = e.currentTarget.textContent || ''
     setText(newValue)
     debouncedOnChange(newValue)
   }
+
+  const handleOpenClick = () => setIsOpened(prev => !prev)
 
   useEffect(() => {
     setText(value)
@@ -47,19 +51,35 @@ export const TextInput = ({
         >
           {label}
           {dataLabel && (
-            <span className="text-xs text-gray-500"> (например {dataLabel})</span>
+            <span className="text-xs text-gray-500"> (например: {dataLabel})</span>
           )}
         </label>
       )}
       <div className="relative">
-        <input
-          type="text"
-          id={`TextInput-${String(label)}`}
-          value={text}
-          onChange={handleInputChange}
-          placeholder={placeholder}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        <div
+          className={`w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500
+            ${isOpened ? '' : ''}
+          `}
+        >
+          <div
+            role="textbox" 
+            contentEditable
+            onInput={handleInputChange}
+            className={`no-scrollbar focus:outline-none
+              ${isOpened ? '' : 'text-nowrap overflow-auto'}
+            `}
+          >
+            {text}
+          </div>          
+        </div>
+        <button
+          type="button"
+          onClick={handleOpenClick}
+          className={`absolute right-0 top-0 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
+          aria-label={`Expand input`}
+        >
+          <FontAwesomeIcon icon={isOpened ? faDownLeftAndUpRightToCenter : faUpRightAndDownLeftFromCenter} />
+        </button>
         <ShareNamesBtn />
       </div>
     </div>

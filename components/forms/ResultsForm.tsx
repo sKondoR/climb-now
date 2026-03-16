@@ -82,7 +82,7 @@ function ResultsForm() {
   )
   return (
     <div className="flex flex-wrap gap-4">
-      <div className="w-full md:flex-1 md:w-auto relative min-w-80">
+      <div className="w-full md:flex-1 md:w-auto relative min-w-80 md:max-w-80">
         <Autocomplete
           value={formStore.code}
           onChange={handleUrlChange}
@@ -97,15 +97,15 @@ function ResultsForm() {
         />
         {disciplinesStore.groupsData && <LinkToEvent code={formStore.code as string} />}
       </div>
-      <div className="w-full md:flex-1 md:w-auto relative min-w-80">
+      <div className="w-full md:flex-1 md:w-auto relative min-w-80 md:max-w-80">
         {isNamesFilterEnabled ? (
           <TextInput
             value={names}
             onChange={handleNamesChange}
-            placeholder="Петров Иванов"
+            placeholder="Петров, Иванов"
             label="скалолазы"
             labelTitle="Скалолазы из списка будут подсвечены"
-            dataLabel="Петров Иванов"
+            dataLabel="Петров, Иванов"
           />
         ) : (
           <Autocomplete

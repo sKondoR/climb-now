@@ -35,9 +35,11 @@ describe('tables.utils', () => {
 
   describe('isNameMatch', () => {
     it('should return true when name contains any of the search terms', () => {
-      expect(isNameMatch('Витя Петров', 'Петров Иванов Федоров')).toBe(true)
-      expect(isNameMatch('Витя Петров', 'петров иванов федоров')).toBe(true)
+      expect(isNameMatch('Витя Петров', 'Петров, Иванов, Федоров')).toBe(true)
+      expect(isNameMatch('Витя Петров', 'Петров,Иванов,Федоров')).toBe(true)
+      expect(isNameMatch('Витя Петров', 'петров,иванов,федоров')).toBe(true)
       expect(isNameMatch('Витя Петров', 'витя петров')).toBe(true)
+      expect(isNameMatch('Витя Петров', 'витя петров,')).toBe(true)
     })
 
     it('should return false when name does not contain any search terms', () => {
@@ -45,7 +47,7 @@ describe('tables.utils', () => {
     })
 
     it('should handle multiple spaces correctly', () => {
-      expect(isNameMatch('Витя  Петров', 'витя петров')).toBe(true)
+      expect(isNameMatch('Витя Петров', 'витя  петров')).toBe(true)
     })
   })
 

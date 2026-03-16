@@ -15,7 +15,7 @@ export default function LinkToEvent({ code }: LinkToEventProps): ReactNode | nul
   return (
     <a
       href={`${EXTERNAL_API_BASE_URL}${sanitizedCode}/index.html`}
-      className="block text-2xl mt-8 absolute top-[2px] right-10 z-20"
+      className="block text-2xl mt-8 absolute top-[2px] right-8 z-20"
       target="_blank"
       title="открыть на сайте федерации скалолазанья"
     >

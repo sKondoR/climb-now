@@ -11,11 +11,14 @@ import { Results, ResultsItem } from '@/shared/types'
 export const isCommandMatch = (command: string, selectedCommand: string) => 
     !!selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
 
+// toDo: refactor!!!!
 export const isNameMatch = (name: string, names: string) => 
     !!names.toLowerCase()
-        .replace('  ', ' ')
-        .split(' ')
-        .find((a) => name.toLowerCase().includes(a))
+        .replaceAll('  ', ' ')
+        .replaceAll(',  ', ',')
+        .replaceAll(';', ',')
+        .split(',')
+        .find((a) => name.trim().toLowerCase().includes(a.trim()))
 
 interface getConfigProps {
     isLead: boolean

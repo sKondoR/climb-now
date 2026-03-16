@@ -118,7 +118,7 @@ export const Autocomplete = <T extends Item = string>({
         >
           {label}
           {dataLabel && (
-            <span className="text-xs text-gray-500"> (например {dataLabel})</span>
+            <span className="text-xs text-gray-500"> (например: {dataLabel})</span>
           )}
         </label>
       )}
@@ -131,13 +131,13 @@ export const Autocomplete = <T extends Item = string>({
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
           placeholder={placeholder}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20"
           disabled={!data?.length}
         />
         <button
           type="button"
           onClick={handleCaretClick}
-          className={`absolute right-0 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none px-3 py-2`}
+          className={`absolute right-0 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
           aria-label={`Open ${String(property)} autocomplete`}
         >
           <FontAwesomeIcon icon={data.length ? faCaretDown : faSpinner} spin={!data.length} />
