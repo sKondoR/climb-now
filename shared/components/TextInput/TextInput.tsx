@@ -64,13 +64,13 @@ export const TextInput = ({
           <div
             role="textbox" 
             contentEditable
+            // toDo: check
+            dangerouslySetInnerHTML={{ __html: text }}
             onInput={handleInputChange}
             className={`no-scrollbar focus:outline-none
               ${isOpened ? '' : 'text-nowrap overflow-auto'}
             `}
-          >
-            {text}
-          </div>          
+          />          
         </div>
         <button
           type="button"
