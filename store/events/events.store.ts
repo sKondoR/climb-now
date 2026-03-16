@@ -1,22 +1,22 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import { QueryClient, QueryObserver } from '@tanstack/react-query'
 
-import { fetchEvents } from '@/shared/api'
-import { Event } from '@/shared/types/events'
+import { fetchEvents } from '@/shared/services'
+import type { EventResponse } from '@/shared/types/api.types'
 
 export class EventsStore {
   private queryClient: QueryClient
-  events: Event[] = []
+  events: EventResponse[] = []
   isEventsLoading: boolean = false
   error: string | null = null
 
-  private EventsQueryObserver: QueryObserver<Event[], unknown>
+  private EventsQueryObserver: QueryObserver<EventResponse[], unknown>
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient
     makeAutoObservable(this)
 
-    this.EventsQueryObserver = new QueryObserver<Event[], unknown>(this.queryClient, {
+    this.EventsQueryObserver = new QueryObserver<EventResponse[], unknown>(this.queryClient, {
       queryKey: ['events'],
       queryFn: fetchEvents,
       staleTime: 1000 * 60 * 60 * 24, // day
@@ -30,7 +30,12 @@ export class EventsStore {
   private setupQuerySubscription() {
     this.EventsQueryObserver.subscribe((result) => {
       runInAction(() => {
-        this.events = result?.data?.sort((a, b) => b.startdate.localeCompare(a.startdate)) || []
+        // Сортируем события по дате начала
+        this.events = result?.data?.sort((a, b) => {
+          const dateA = a.startdate || a.date
+          const dateB = b.startdate || b.date
+          return dateB.localeCompare(dateA)
+        }) || []
         this.isEventsLoading = false
         this.error = result.error instanceof Error ? result.error.message : null
       })

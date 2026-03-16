@@ -17,8 +17,6 @@ const nextConfig = {
   poweredByHeader: false, // Improve performance
   productionBrowserSourceMaps: false, // Production disable source maps
   experimental: {
-    // Turbopack for dev (faster)
-    turbopack: {},
     // Webpack memory optimizations
     memoryBasedWorkersCount: true,
     // Static generation improvements

@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx'
 import { QueryClient, QueryObserver } from '@tanstack/react-query'
 
-import { fetchTeams } from '@/shared/api'
+import { fetchTeams } from '@/shared/services'
 
 export class TeamsStore {
   private queryClient: QueryClient
