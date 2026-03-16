@@ -54,8 +54,9 @@ function GroupCard({ group }: GroupCardProps) {
 
   return (
       <div className={`
-        ${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow min-h-[400px] ' : ' '}
-        ${isOnline ? 'border-green-500' : 'border-gray-200'}`}
+        ${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
+        ${isExpanded && !isCommandFilterEnabled ? 'min-h-[400px] ' : ' '}
+        ${isOnline ? 'border-green-500 ' : 'border-gray-200 '}`}
       >
         <div className={`p-4
           ${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
