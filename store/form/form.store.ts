@@ -22,15 +22,17 @@ export class FormStore {
   }
   loadFromUrl() {
     if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      const names = urlParams.get('names')
+      const url = new URL(window.location.href)
+      const names = url.searchParams.get('names')
+      const code = url.searchParams.get('code')
+      if (code) {
+        this.code = code
+      }
       if (names) {
         this.isNamesFilterEnabled = true
         this.names = names
-      }
-      const code = urlParams.get('code')
-      if (code) {
-        this.code = code
+        url.searchParams.delete('names')
+        window.history.replaceState({}, document.title, url)
       }
     }
   }
