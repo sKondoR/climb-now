@@ -51,13 +51,13 @@ export const TextInput = ({
           )}
         </label>
       )}
-      <div className="relative">
+      <div className="relative text-[0]">
         <textarea
           id={`TextInput-${label}`}
           value={text}
           onChange={handleInputChange}
           rows={isOpened ? 4 : 1}
-          className={`w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none
+          className={`text-base w-full px-3 py-2 pr-20 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none
             ${isOpened ? '' : 'overflow-auto no-scrollbar'}
           `}
           aria-label={label || 'TextInput'}
@@ -65,13 +65,11 @@ export const TextInput = ({
         <button
           type="button"
           onClick={handleOpenClick}
-          className={`absolute right-2 top-0 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
+          className={`text-base absolute right-2 top-0 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
           aria-label={`Expand input`}
         >
           <FontAwesomeIcon icon={isOpened ? faDownLeftAndUpRightToCenter : faUpRightAndDownLeftFromCenter} />
-        </button>
-        <ShareNamesBtn />
-      </div>
+        </button><ShareNamesBtn /></div>
     </div>
   )
 }
