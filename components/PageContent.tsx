@@ -24,12 +24,21 @@ const GroupCard = dynamic(
 export default observer(
 function PageContent() {
   const [activeTab, setActiveTab] = useState<number>(0)
+  const [isMounted, setIsMounted] = useState<boolean>(false)
   const disciplinesStore = rootStore.disciplinesStore
   const formStore= rootStore.formStore
 
   useEffect(() => {
-      setActiveTab(0) 
+      setActiveTab(0)
   }, [formStore.code])
+
+  useEffect(() => {
+      setIsMounted(true)
+  }, [])
+
+  if (!isMounted) {
+    return null
+  }
 
   if (disciplinesStore.isGroupsLoading) {
     return (<div className="text-center py-12">
@@ -75,11 +84,11 @@ function PageContent() {
         setActiveTab={setActiveTab}
         activeTab={activeTab}
       />
-      {!filteredOnline.length && discipline.groups.length ? 
+      {!filteredOnline.length && discipline.groups.length ?
           <div className="text-md text-center">нет онлайн групп</div> : null}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-xs md:text-sm">
         {filteredOnline.map((group: Group) => (
-          <GroupCard 
+          <GroupCard
             key={group.id}
             group={group}
           />
