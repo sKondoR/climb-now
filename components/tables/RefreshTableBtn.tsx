@@ -17,9 +17,9 @@ export default function RefreshTableBtn({
       <FontAwesomeIcon icon={faRefresh}
         className={`cursor-pointer text-sm text-blue-600 rounded hover:text-blue-800 transition-colors ml-2 ${isRefreshing ? 'animate-spin' : ''}`}
         onClick={() => {
-          setIsRefreshing(true);
-          refetch();
-          setTimeout(() => setIsRefreshing(false), 1000);
+          setIsRefreshing(true)
+          refetch()
+          setTimeout(() => setIsRefreshing(false), 700)
         }}
       />
     )

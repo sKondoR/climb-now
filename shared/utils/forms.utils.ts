@@ -8,3 +8,14 @@ export function sanitizeEventCode(code: string | null): string | null {
   // Return null if sanitization removed all characters or changed the value
   return sanitized.length > 0 && sanitized === code ? sanitized : null
 }
+
+export function getShareUrl(names: string): string {
+  const url = new URL(window.location.href)
+  url.searchParams.delete('names')
+  url.searchParams.append('names', names)
+  return url.href
+}
+
+export function copyToClipboard(text: string): void {
+  navigator.clipboard.writeText(text)
+}
