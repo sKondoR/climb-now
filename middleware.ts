@@ -12,14 +12,16 @@ export async function middleware(request: NextRequest) {
     'https://cfr-search.vercel.app',
   ].join(' ')
 
-  const cspHeader = `
+const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval';
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https: http:;
     style-src 'self' 'unsafe-inline';
-    img-src 'self' data:;
+    img-src 'self' blob: data:;
     font-src 'self';
-    connect-src 'self' ${apiDomains};
+    connect-src 'self' ${apiDomains} https:;
     frame-ancestors 'none';
+    base-uri 'self';
+    form-action 'self';
   `.replace(/\s{2,}/g, ' ').trim()
 
   response.headers.set('Content-Security-Policy', cspHeader)
