@@ -1,7 +1,10 @@
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { RootStoreProvider } from '@/store/RootStoreProvider';
-import QueryClientProviderWrapper from '@/shared/query/QueryClientProvider';
+import { Inter } from 'next/font/google'
+
+import { headers } from 'next/headers'
+
+import { RootStoreProvider } from '@/store/RootStoreProvider'
+import QueryClientProviderWrapper from '@/shared/query/QueryClientProvider'
+import './globals.css'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -17,13 +20,18 @@ export const metadata = {
   description: 'Веб-приложение для отображения соревнований с сайта Федерации Скалолазания России https://c-f-r.ru. Приложение позволяет пользователям одновременно просматривать таблицы результатов по различным дисциплинам, фильтровать и подсвечивать скалолазов своей команды.',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const headersList = await headers()
+  const nonce = headersList.get('x-nonce') || ''
   return (
     <html lang="ru">
+    <head>
+        <meta httpEquiv="Content-Security-Policy" content={`script-src 'self' 'nonce-${nonce}' 'unsafe-eval';`} />
+      </head>
       <body className={inter.className}>
         <QueryClientProviderWrapper>
           <RootStoreProvider>

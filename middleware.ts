@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function middleware(request: NextRequest) {
@@ -8,22 +8,25 @@ export async function middleware(request: NextRequest) {
   // Generate nonce for each request
   const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
   
+  // Define API domains properly
   const apiDomains = [
     'https://cfr-search.vercel.app',
   ].join(' ')
 
-const cspHeader = `
+  // Define CSP header properly
+  const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https: http:;
+    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline';
     style-src 'self' 'unsafe-inline';
-    img-src 'self' blob: data:;
+    img-src 'self' data: blob:;
     font-src 'self';
-    connect-src 'self' ${apiDomains} https:;
+    connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/;
     frame-ancestors 'none';
     base-uri 'self';
     form-action 'self';
   `.replace(/\s{2,}/g, ' ').trim()
 
+  // Set security headers
   response.headers.set('Content-Security-Policy', cspHeader)
   response.headers.set('X-Frame-Options', 'DENY')
   response.headers.set('X-Content-Type-Options', 'nosniff')
@@ -34,23 +37,18 @@ const cspHeader = `
   // Pass nonce to Next.js for inline scripts
   response.headers.set('x-nonce', nonce)
 
-  // CORS
-  response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // CORS headers (consider restricting in production)
+  if (process.env.NODE_ENV === 'development') {
+    response.headers.set('Access-Control-Allow-Origin', '*')
+    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  }
 
   return response
 }
 
 export const config = {
   matcher: [
-    /*
-     * Сопоставляем все пути запросов, кроме тех, что начинаются с:
-     * - api (API маршруты)
-     * - _next/static (статические файлы)
-     * - _next/image (изображения)
-     * - favicon.ico (фавикон)
-     */
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
-};
+}
