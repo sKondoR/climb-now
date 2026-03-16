@@ -4,10 +4,20 @@
 
 .no-scrollbar::-webkit-scrollbar {
     display: none;
+    width: 2px;
+    height: 2px;
 }
 .no-scrollbar {
     -ms-overflow-style: none;
     /* IE and Edge */
     scrollbar-width: none;
     /* Firefox */
+}
+
+textarea {
+    /* Толщина: auto | thin | none */
+    scrollbar-width: thin;
+
+    /* Цвета: color thumb color track */
+    scrollbar-color: #ccc transparent;
 }

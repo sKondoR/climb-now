@@ -137,7 +137,7 @@ export const Autocomplete = <T extends Item = string>({
         <button
           type="button"
           onClick={handleCaretClick}
-          className={`absolute right-0 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
+          className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
           aria-label={`Open ${String(property)} autocomplete`}
         >
           <FontAwesomeIcon icon={data.length ? faCaretDown : faSpinner} spin={!data.length} />
