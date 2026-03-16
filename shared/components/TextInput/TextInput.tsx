@@ -53,7 +53,7 @@ export const TextInput = ({
       )}
       <div className="relative">
         <textarea
-          id={label}
+          id={`TextInput-${label}`}
           value={text}
           onChange={handleInputChange}
           rows={isOpened ? 4 : 1}
