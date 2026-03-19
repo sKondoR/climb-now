@@ -47,3 +47,6 @@ drizzle
 
 API_TYPES_README.md
 OPENAPI_TYPES_USAGE.md
+
+.dependency-cruiser.js
+graph.svg

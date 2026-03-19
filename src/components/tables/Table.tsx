@@ -7,8 +7,8 @@ import BoulderCell from './BoulderCell'
 import RefreshTableBtn from './RefreshTableBtn'
 import useFetchResults from './useFetchResults'
 
-import { SPECIAL_STATUSES, STATUSES } from '@/shared/constants'
-import { Subgroup, Results } from '@/shared/types'
+import { SPECIAL_STATUSES, STATUSES } from '@/src/shared/constants'
+import { Subgroup, Results } from '@/src/shared/types'
 
 interface TableProps {
   subGroup: Subgroup | undefined,

@@ -1,5 +1,5 @@
-import PageContent from '@/components/PageContent'
-import Header from '@/components/layout/Header'
+import PageContent from '@/src/components/PageContent'
+import Header from '@/src/components/layout/Header'
 
 export default function HomePage() {
   return (

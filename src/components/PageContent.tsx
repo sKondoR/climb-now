@@ -4,10 +4,10 @@ import { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite'
 import dynamic from 'next/dynamic'
 
-import { rootStore } from '@/store/root.store'
+import { rootStore } from '@/src/store/root.store'
 
-import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
-import { Group } from '@/shared/types'
+import { MIN_URL_CODE_LENGTH } from '@/src/shared/constants'
+import { Group } from '@/src/shared/types'
 
 import { isGroupOnline } from './groups/groups.utils'
 

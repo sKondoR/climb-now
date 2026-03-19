@@ -1,13 +1,13 @@
 'use client'
 
-import { Group } from '@/shared/types'
+import { Group } from '@/src/shared/types'
 import { useState, useEffect } from 'react'
 import StatusIcon from './StatusIcon'
-import { STATUSES } from '@/shared/constants'
+import { STATUSES } from '@/src/shared/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { observer } from 'mobx-react-lite'
-import { rootStore } from '@/store/root.store'
+import { rootStore } from '@/src/store/root.store'
 
 import dynamic from 'next/dynamic'
 import { LazyLoader } from './LazyLoader'

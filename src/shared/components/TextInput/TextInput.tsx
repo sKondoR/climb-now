@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useDebounce } from '@/shared/hooks/useDebounce'
+import { useDebounce } from '@/src/shared/hooks/useDebounce'
 import ShareNamesBtn from '../ShareNamesBtn/ShareNamesBtn'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDownLeftAndUpRightToCenter, faUpRightAndDownLeftFromCenter } from '@fortawesome/free-solid-svg-icons'

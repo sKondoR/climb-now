@@ -2,7 +2,7 @@
 
 import { observer } from 'mobx-react-lite'
 
-import { rootStore } from '@/store/root.store'
+import { rootStore } from '@/src/store/root.store'
 
 export default observer(
 function HeaderFormValues() {

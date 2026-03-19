@@ -2,8 +2,8 @@ import { Inter } from 'next/font/google'
 
 import { headers } from 'next/headers'
 
-import { RootStoreProvider } from '@/store/RootStoreProvider'
-import QueryClientProviderWrapper from '@/shared/query/QueryClientProvider'
+import { RootStoreProvider } from '@/src/store/RootStoreProvider'
+import QueryClientProviderWrapper from '@/src/shared/query/QueryClientProvider'
 import './globals.css'
 
 const inter = Inter({ 

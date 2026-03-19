@@ -38,6 +38,7 @@
     "@vitest/coverage-v8": "^2.0.0",
     "autoprefixer": "^10.4.24",
     "cross-env": "^10.1.0",
+    "dependency-cruiser": "^17.3.9",
     "eslint": "^9.0.0",
     "eslint-config-next": "15.3.5",
     "openapi-typescript": "^7.13.0",

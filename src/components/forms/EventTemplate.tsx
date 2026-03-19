@@ -1,7 +1,7 @@
 
-import { isDateBefore } from '@/shared/utils/date.utils'
-import { Event } from '@/shared/types/events'
-import { Item } from '@/shared/components/Autocomplete/Autocomplete.types'
+import { isDateBefore } from '@/src/shared/utils/date.utils'
+import { Event } from '@/src/shared/types/events'
+import { Item } from '@/src/shared/components/Autocomplete/Autocomplete.types'
 
 export function EventTemplate(item: Event | null, value: Item | null) {
     if (!item?.link) return <>{item}</>

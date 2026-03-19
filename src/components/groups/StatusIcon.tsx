@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
-import { Status } from '@/shared/types'
+import { Status } from '@/src/shared/types'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faCircle } from '@fortawesome/free-solid-svg-icons'
-import { STATUSES } from '@/shared/constants'
+import { STATUSES } from '@/src/shared/constants'
 
 export default function StatusIcon({ status, onlyOnline }: { status: Status, onlyOnline?: boolean }): ReactNode | null {
  if (status === STATUSES.PENDING) return null;

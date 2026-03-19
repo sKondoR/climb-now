@@ -2,17 +2,17 @@
 
 import { useCallback, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
-import { rootStore } from '@/store/root.store'
-import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/shared/constants'
+import { rootStore } from '@/src/store/root.store'
+import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/src/shared/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers, faFlag } from '@fortawesome/free-solid-svg-icons'
 
 import { EventTemplate } from './EventTemplate'
-import { Item } from '@/shared/components/Autocomplete/Autocomplete.types'
-import { Event } from '@/shared/types/events'
-import LinkToEvent from '@/shared/components/LinkToEvent/LinkToEvent'
+import { Item } from '@/src/shared/components/Autocomplete/Autocomplete.types'
+import { Event } from '@/src/shared/types/events'
+import LinkToEvent from '@/src/shared/components/LinkToEvent/LinkToEvent'
 import Autocomplete from '../../shared/components/Autocomplete/Autocomplete'
-import TextInput from '@/shared/components/TextInput/TextInput'
+import TextInput from '@/src/shared/components/TextInput/TextInput'
 
 export default observer(
 function ResultsForm() {

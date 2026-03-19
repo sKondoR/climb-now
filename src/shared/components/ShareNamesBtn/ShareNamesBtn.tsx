@@ -1,8 +1,8 @@
 import { ReactNode, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShareAlt } from '@fortawesome/free-solid-svg-icons'
-import { copyToClipboard, getShareUrl } from '@/shared/utils/forms.utils'
-import { rootStore } from '@/store/root.store'
+import { copyToClipboard, getShareUrl } from '@/src/shared/utils/forms.utils'
+import { rootStore } from '@/src/store/root.store'
 
 export default function ShareNamesBtn(): ReactNode | null {
   const formStore = rootStore.formStore

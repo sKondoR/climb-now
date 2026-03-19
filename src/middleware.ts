@@ -4,27 +4,26 @@ import { NextRequest, NextResponse } from 'next/server'
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next()
 
-  // CSP
-  // Generate nonce for each request
-  const nonce = Buffer.from(crypto.randomUUID()).toString('base64')
+  // Generate a proper nonce using random bytes and base64 encoding
+  const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString('base64')
   
   // Define API domains properly
   const apiDomains = [
     'https://cfr-search.vercel.app',
   ].join(' ')
 
-  // Define CSP header properly
-  const cspHeader = `
-    default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline';
-    style-src 'self' 'unsafe-inline';
-    img-src 'self' data: blob:;
-    font-src 'self';
-    connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/;
-    frame-ancestors 'none';
-    base-uri 'self';
-    form-action 'self';
-  `.replace(/\s{2,}/g, ' ').trim()
+  // Build CSP header with proper nonce interpolation
+  const cspHeader = [
+    "default-src 'self';",
+    `script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https: http: 'unsafe-inline';`,
+    "style-src 'self' 'unsafe-inline';",
+    "img-src 'self' data: blob:;",
+    "font-src 'self';",
+    `connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/ wss:;`,
+    "frame-ancestors 'none';",
+    "base-uri 'self';",
+    "form-action 'self';"
+  ].join(' ')
 
   // Set security headers
   response.headers.set('Content-Security-Policy', cspHeader)

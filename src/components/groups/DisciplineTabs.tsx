@@ -1,5 +1,5 @@
-import { DISCIPLINES } from '@/shared/constants';
-import { Discipline } from '@/shared/types'
+import { DISCIPLINES } from '@/src/shared/constants';
+import { Discipline } from '@/src/shared/types'
 
 interface DisciplineTabsProps {
   disciplines: Discipline[] | null

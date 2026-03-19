@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExternalLinkSquare } from '@fortawesome/free-solid-svg-icons'
 
-import { EXTERNAL_API_BASE_URL } from '@/shared/constants'
-import { sanitizeEventCode } from '@/shared/utils/forms.utils'
+import { EXTERNAL_API_BASE_URL } from '@/src/shared/constants'
+import { sanitizeEventCode } from '@/src/shared/utils/forms.utils'
 
 interface LinkToEventProps {
   code: string | null
