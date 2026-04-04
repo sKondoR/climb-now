@@ -113,21 +113,28 @@ export const parseResultsTable = (html: string): SubGroupData => {
   return result
 }
 
-export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ parserId: number; prop: keyof T }>): T[] => {
+export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ prop: keyof T }>): T[] => {
   const rows = findElementsByTag(document, 'tr')
   const results: T[] = []
   
   rows.forEach((row: Parse5Element, index: number) => {
     if (index === 0) return // Пропускаем заголовок
     const cells = findElementsByTag(row, 'td')
-    if (cells.length < config.length) return
-    const data = config.reduce((acc: Partial<T>, key: { parserId: number; prop: keyof T }) => {
-      const cell = cells[key.parserId]
+    // if (cells.length < config.length) return
+    let boulderCount = 0
+    let boulderResult = false
+    const data = config.reduce((acc: Partial<T>, key: { prop: keyof T }, i: number) => {
+      if (!key.prop || boulderResult) return acc
+      const cell = cells[i]      
       if (hasClass(cell, 'route')) {
-        return ({ ...acc, [key.prop]: parseRouteCell(cell) })
-      } 
+        boulderCount++
+        return ({ ...acc, [`r${boulderCount}`]: parseRouteCell(cell) })
+      } else if (boulderCount > 0) {
+        boulderResult = true
+        return ({ ...acc, score: getTextContent(cell) })
+      }
       return ({ ...acc, [key.prop]: getTextContent(cell) })
-    }, {}) as T 
+    }, {}) as T
     results.push(data)
   })
   
@@ -135,22 +142,23 @@ export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ 
 }
 
 export const parseLeadQual = (document: Parse5DocumentFragment): LeadQualItem[] => {
-  return parseTable<LeadQualItem>(document, leadQualConfig as Array<{ parserId: number; prop: keyof LeadQualItem }>)
+  return parseTable<LeadQualItem>(document, leadQualConfig as Array<{ prop: keyof LeadQualItem }>)
 }
 
 export const parseLeadQualResults = (document: Parse5DocumentFragment): LeadQualResultItem[] => {
-  return parseTable<LeadQualResultItem>(document, leadQualResultsConfig as Array<{ parserId: number; prop: keyof LeadQualResultItem }>)
+  return parseTable<LeadQualResultItem>(document, leadQualResultsConfig as Array<{ prop: keyof LeadQualResultItem }>)
 }
 
 export const parseLeadFinal = (document: Parse5DocumentFragment): LeadFinalsItem[] => {
-  return parseTable<LeadFinalsItem>(document, leadFinalConfig as Array<{ parserId: number; prop: keyof LeadFinalsItem }>)
+  return parseTable<LeadFinalsItem>(document, leadFinalConfig as Array<{ prop: keyof LeadFinalsItem }>)
 }
 
 export const parseBoulderQual = (document: Parse5DocumentFragment): BoulderQualItem[] => {
-  return parseTable<BoulderQualItem>(document, boulderQualConfig as Array<{ parserId: number; prop: keyof BoulderQualItem }>)
+  return parseTable<BoulderQualItem>(document, boulderQualConfig as Array<{ prop: keyof BoulderQualItem }>)
 }
+
 export const parseBoulderFinal = (document: Parse5DocumentFragment): BoulderFinalItem[] => {
-  return parseTable<BoulderFinalItem>(document, boulderFinalConfig as Array<{ parserId: number; prop: keyof BoulderFinalItem }>)
+  return parseTable<BoulderFinalItem>(document, boulderFinalConfig as Array<{ prop: keyof BoulderFinalItem }>)
 }
 
 export const findElementsByTag = (node: Parse5Node | null | undefined, tagName: string): Parse5Element[] => {

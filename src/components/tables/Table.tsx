@@ -8,7 +8,7 @@ import RefreshTableBtn from './RefreshTableBtn'
 import useFetchResults from './useFetchResults'
 
 import { SPECIAL_STATUSES, STATUSES } from '@/src/shared/constants'
-import { Subgroup, Results } from '@/src/shared/types'
+import { Subgroup, Results, LeadQualItem, LeadQualResultItem, LeadFinalsItem, BoulderQualItem, BoulderFinalItem } from '@/src/shared/types'
 
 interface TableProps {
   subGroup: Subgroup | undefined,
@@ -47,7 +47,14 @@ export default function Table({
     const filteredResults: Results = filterResultsByCommand(results as Results)
     const climbedCount = getClimbedCount({ results, isLead, isBoulder });
 
-    const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder })
+    const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder }).filter((col) => {
+      if (!col.prop) return false
+      const firstResult = results?.[0]
+      if (!firstResult) return false
+      return col.prop in firstResult
+    })
+
+    console.log(config)
     
     let isFinalBorderDrawed = false;
     return (
@@ -62,11 +69,11 @@ export default function Table({
           </div>
         </h3>
         <div className="overflow-x-auto relative">
-          <table className="w-full">
+          <table className="w-full leading-none">
             <thead>
               <tr className="border-b">
                 {config.map((col) => (
-                  <th key={col.id} className={`text-left px-2 py-1 ${[NAME_COL, COMMAND_COL].includes(col.name) ? '' : 'w-4'}`}>
+                  <th key={col.id} className={`text-left px-2 py-1 ${[NAME_COL, COMMAND_COL].includes(col.name as string) ? '' : 'w-4'}`}>
                     {col.name}
                   </th>
                 ))}
@@ -85,7 +92,7 @@ export default function Table({
                   `}
                 >
                   {config.map((col, index) => {
-                    const value = result[col.prop as keyof typeof result];
+                    const value = (result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem)[col.prop as keyof typeof result];
                     const isBoulderCell = value.includes('/') && !SPECIAL_STATUSES.includes(value.toLowerCase());
                     if (isBoulderCell) {
                       return <td key={`${col.id}-${index}`} className="text-left font-medium">

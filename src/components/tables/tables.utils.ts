@@ -18,7 +18,7 @@ export const isNameMatch = (name: string, names: string) =>
         .replaceAll(',  ', ',')
         .replaceAll(';', ',')
         .split(',')
-        .find((a) => name.trim().toLowerCase().includes(a.trim()))
+        .find((a) => name.trim().toLowerCase().includes(a.trim().toLowerCase()))
 
 interface getConfigProps {
     isLead: boolean
