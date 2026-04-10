@@ -22,7 +22,7 @@ export default function ShareNamesBtn(): ReactNode | null {
     <button
       type="button"
       onClick={handleShareClick}
-      className={`text-base absolute top-0 text-blue-600 hover:text-blue-800 focus:outline-none px-2 py-2 right-9 z-20`}
+      className={`text-base absolute top-0 text-blue-600 hover:text-blue-800 focus:outline-none px-2 py-2 right-9 z-5`}
       aria-label={`Скопировать ссылку с именами: ${names}`}
     >
       <FontAwesomeIcon icon={faShareAlt}
