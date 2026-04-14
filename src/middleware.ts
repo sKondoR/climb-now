@@ -14,16 +14,18 @@ export async function middleware(request: NextRequest) {
 
   // Build CSP header with proper nonce interpolation
   const cspHeader = [
-    "default-src 'self';",
-    `script-src 'self' 'nonce-${nonce}' 'unsafe-eval' 'unsafe-inline' https: http: 'unsafe-inline';`,
-    "style-src 'self' 'unsafe-inline';",
+    "default-src 'none';",
+    `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https:;`,
+    "style-src 'nonce-${nonce}' 'unsafe-inline';",
     "img-src 'self' data: blob:;",
     "font-src 'self';",
-    `connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/ wss:;`,
+    `connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/;`,
+    "object-src 'none';",
+    "base-uri 'none';",
+    "form-action 'self';",
     "frame-ancestors 'none';",
-    "base-uri 'self';",
-    "form-action 'self';"
-  ].join(' ')
+    "upgrade-insecure-requests;"  // Автоапгрейд HTTP на HTTPS
+  ].join(' ');
 
   // Set security headers
   response.headers.set('Content-Security-Policy', cspHeader)
