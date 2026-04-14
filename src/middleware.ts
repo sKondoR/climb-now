@@ -16,11 +16,11 @@ export async function middleware(request: NextRequest) {
   // Build CSP header with proper nonce interpolation
   const cspHeader = [
     "default-src 'none';",
-    `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https: ${isDev ? "'unsafe-eval'" : ''};`,
+    `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https://climbnow.ru/ ${isDev ? "'unsafe-eval'" : ''};`,
     `style-src 'self' 'unsafe-inline';`,
     "img-src 'self' data: blob:;",
     "font-src 'self';",
-    `connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/;`,
+    `connect-src 'self' ${apiDomains};`,
     "object-src 'none';",
     "base-uri 'none';",
     "form-action 'self';",
@@ -34,7 +34,7 @@ export async function middleware(request: NextRequest) {
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-  response.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()')
+  response.headers.set('Permissions-Policy', 'geolocation=(none), camera=(none), microphone=(none)')
   
   // Pass nonce to Next.js for inline scripts
   response.headers.set('x-nonce', nonce)
