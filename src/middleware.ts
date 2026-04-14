@@ -12,10 +12,11 @@ export async function middleware(request: NextRequest) {
     'https://cfr-search.vercel.app',
   ].join(' ')
 
+  const isDev = process.env.NODE_ENV === 'development'
   // Build CSP header with proper nonce interpolation
   const cspHeader = [
     "default-src 'none';",
-    `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https:;`,
+    `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https: ${isDev ? "'unsafe-eval'" : ''};`,
     `style-src 'self' 'unsafe-inline';`,
     "img-src 'self' data: blob:;",
     "font-src 'self';",
@@ -39,7 +40,7 @@ export async function middleware(request: NextRequest) {
   response.headers.set('x-nonce', nonce)
 
   // CORS headers (consider restricting in production)
-  if (process.env.NODE_ENV === 'development') {
+  if (isDev) {
     response.headers.set('Access-Control-Allow-Origin', '*')
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')

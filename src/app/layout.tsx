@@ -4,7 +4,7 @@ import { headers } from 'next/headers'
 
 import { RootStoreProvider } from '@/src/store/RootStoreProvider'
 import QueryClientProviderWrapper from '@/src/shared/query/QueryClientProvider'
-import './globals.css'
+import '@/src/app/globals.css'
 
 const inter = Inter({ 
   subsets: ['latin'],

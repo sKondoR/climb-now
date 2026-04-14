@@ -53,8 +53,6 @@ export default function Table({
       if (!firstResult) return false
       return col.prop in firstResult
     })
-
-    console.log(config)
     
     let isFinalBorderDrawed = false;
     return (
