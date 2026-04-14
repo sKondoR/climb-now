@@ -1,7 +1,5 @@
 import { Inter } from 'next/font/google'
 
-import { headers } from 'next/headers'
-
 import { RootStoreProvider } from '@/src/store/RootStoreProvider'
 import QueryClientProviderWrapper from '@/src/shared/query/QueryClientProvider'
 import '@/src/app/globals.css'
@@ -25,12 +23,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const headersList = await headers()
-  const nonce = headersList.get('x-nonce') || ''
   return (
     <html lang="ru">
-    <head>
-        <meta httpEquiv="Content-Security-Policy" content={`script-src 'self' 'nonce-${nonce}' 'unsafe-eval';`} />
+      <head>
       </head>
       <body className={inter.className}>
         <QueryClientProviderWrapper>

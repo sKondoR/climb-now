@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
   const cspHeader = [
     "default-src 'none';",
     `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https://climbnow.ru/ ${isDev ? "'unsafe-eval'" : ''};`,
-    `style-src 'self' 'unsafe-inline';`,
+    `style-src 'self' 'nonce-${nonce}';`,
     "img-src 'self' data: blob:;",
     "font-src 'self';",
     `connect-src 'self' ${apiDomains};`,
