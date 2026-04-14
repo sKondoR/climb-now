@@ -16,7 +16,7 @@ export async function middleware(request: NextRequest) {
   const cspHeader = [
     "default-src 'none';",
     `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https:;`,
-    "style-src 'nonce-${nonce}' 'unsafe-inline';",
+    `style-src 'self' 'unsafe-inline';`,
     "img-src 'self' data: blob:;",
     "font-src 'self';",
     `connect-src 'self' ${apiDomains} https://climbnow-skondor.amvera.io/;`,
