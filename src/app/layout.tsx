@@ -18,6 +18,7 @@ export const metadata = {
   description: 'Веб-приложение для отображения соревнований с сайта Федерации Скалолазания России https://c-f-r.ru. Приложение позволяет пользователям одновременно просматривать таблицы результатов по различным дисциплинам, фильтровать и подсвечивать скалолазов своей команды.',
 }
 
+export const dynamic = 'force-dynamic';
 export default async function RootLayout({
   children,
 }: {

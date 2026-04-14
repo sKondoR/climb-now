@@ -15,14 +15,14 @@ export async function middleware(request: NextRequest) {
   const isDev = process.env.NODE_ENV === 'development'
   // Build CSP header with proper nonce interpolation
   const cspHeader = [
-    "default-src 'none';",
-    `script-src 'strict-dynamic' 'nonce-${nonce}' 'unsafe-inline' https://climbnow.ru/ ${isDev ? "'unsafe-eval'" : ''};`,
-    `style-src 'self' 'nonce-${nonce}';`,
+    "default-src 'self';",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};`,
+    "style-src 'self' 'unsafe-inline';", 
     "img-src 'self' data: blob:;",
     "font-src 'self';",
     `connect-src 'self' ${apiDomains};`,
     "object-src 'none';",
-    "base-uri 'none';",
+    "base-uri 'self';",
     "form-action 'self';",
     "frame-ancestors 'none';",
     "upgrade-insecure-requests;"  // Автоапгрейд HTTP на HTTPS
