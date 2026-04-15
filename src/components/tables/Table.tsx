@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import { NAME_COL, COMMAND_COL } from '../../shared/tables.configs'
-import { getClimbedCount, getFinalBorderClass, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
+import { getClimbedCount, getRowClasses, getTableConfig, isCommandMatch } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import RefreshTableBtn from './RefreshTableBtn'
 import useFetchResults from './useFetchResults'
@@ -54,7 +54,7 @@ export default function Table({
       return col.prop in firstResult
     })
     
-    let isFinalBorderDrawed = false;
+    let shouldFinalBorder = false;
     return (
       <div className="mt-2 relative">
         <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between">
@@ -79,18 +79,23 @@ export default function Table({
             </thead>
             <tbody>
               {filteredResults.map((result, index) => {
-                const finalBorderClass = isFinalBorderDrawed ? '' : getFinalBorderClass({ resultsLength: results.length, isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank: result.rank })
-                if (finalBorderClass) {
-                  isFinalBorderDrawed = true
+                let finalBorderClass = ''
+                if (result.isHighlighted) {
+                  shouldFinalBorder = true
                 }
+                if (shouldFinalBorder && !result.isHighlighted) {
+                  finalBorderClass = 'border-t-2 border-t-green-500'
+                  shouldFinalBorder = false
+                }
+
+                const rowClass = getRowClasses({ result, command, names, isNamesFilterEnabled, isFinal })
+
                 return <tr
                   key={`${result.name}-${index}`}
-                  className={`border-b border-white transition-colors ${finalBorderClass}
-                    ${getRowClasses({ resultsLength: results.length, result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled })}
-                  `}
+                  className={`border-b border-white transition-colors ${finalBorderClass} ${rowClass}`}
                 >
                   {config.map((col, index) => {
-                    const value = (result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem)[col.prop as keyof typeof result];
+                    const value = (result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem)[col.prop as Exclude<keyof typeof result, 'isHighlighted'>];
                     const isBoulderCell = value.includes('/') && !SPECIAL_STATUSES.includes(value.toLowerCase());
                     if (isBoulderCell) {
                       return <td key={`${col.id}-${index}`} className="text-left font-medium">

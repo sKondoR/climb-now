@@ -114,11 +114,13 @@ export const parseResultsTable = (html: string): SubGroupData => {
 }
 
 export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ prop: keyof T }>): T[] => {
-  const rows = findElementsByTag(document, 'tr')
+  const tbody = findElementsByTag(document, 'tbody')[0]
+  const rows = findElementsByTag(tbody, 'tr')
+
   const results: T[] = []
   
-  rows.forEach((row: Parse5Element, index: number) => {
-    if (index === 0) return // Пропускаем заголовок
+  rows.forEach((row: Parse5Element) => {
+    const isHighlighted = hasClass(row, 'q')
     const cells = findElementsByTag(row, 'td')
     // if (cells.length < config.length) return
     let boulderCount = 0
@@ -135,7 +137,7 @@ export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ 
       }
       return ({ ...acc, [key.prop]: getTextContent(cell) })
     }, {}) as T
-    results.push(data)
+    results.push(isHighlighted ? { ...data, isHighlighted } : data)
   })
   
   return results

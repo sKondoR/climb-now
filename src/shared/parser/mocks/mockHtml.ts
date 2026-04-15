@@ -93,39 +93,39 @@ export const mockHtmlLeadQualResults = `
             </tr>
         </thead>
     <tbody>
-    <tr class="q">
-        <td class="rank">1</td>
-        <td class="id">116</td>
-        <td class="name">Татищева Ксения</td>
-        <td class="command">КЛНД</td>
-        <td class="res">31+</td>
-        <td class="res">1</td>
-        <td class="res">27+</td>
-        <td class="res">5</td>
-        <td class="res">2,24</td>
-    </tr>
-    <tr class="q">
-        <td class="rank">1</td>
-        <td class="id">245</td>
-        <td class="name">Евдокимова Елена</td>
-        <td class="command">МСК</td>
-        <td class="res">30+</td>
-        <td class="res">2,5</td>
-        <td class="res">31+</td>
-        <td class="res">2</td>
-        <td class="res">2,24</td>
-    </tr>
-    <tr class="q">
-        <td class="rank">3</td>
-        <td class="id">57</td>
-        <td class="name">Доброва Ксения</td>
-        <td class="command">ВРНЖ</td>
-        <td class="res">25+</td>
-        <td class="res">7</td>
-        <td class="res">34</td>
-        <td class="res">1</td>
-        <td class="res">2,65</td>
-    </tr>
+        <tr class="q">
+            <td class="rank">1</td>
+            <td class="id">116</td>
+            <td class="name">Татищева Ксения</td>
+            <td class="command">КЛНД</td>
+            <td class="res">31+</td>
+            <td class="res">1</td>
+            <td class="res">27+</td>
+            <td class="res">5</td>
+            <td class="res">2,24</td>
+        </tr>
+        <tr>
+            <td class="rank">1</td>
+            <td class="id">245</td>
+            <td class="name">Евдокимова Елена</td>
+            <td class="command">МСК</td>
+            <td class="res">30+</td>
+            <td class="res">2,5</td>
+            <td class="res">31+</td>
+            <td class="res">2</td>
+            <td class="res">2,24</td>
+        </tr>
+        <tr>
+            <td class="rank">3</td>
+            <td class="id">57</td>
+            <td class="name">Доброва Ксения</td>
+            <td class="command">ВРНЖ</td>
+            <td class="res">25+</td>
+            <td class="res">7</td>
+            <td class="res">34</td>
+            <td class="res">1</td>
+            <td class="res">2,65</td>
+        </tr>
     </tbody>
     </table>
     </body>

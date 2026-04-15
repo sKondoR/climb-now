@@ -40,15 +40,11 @@ export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: get
 }
 
 interface getRowClassesProps {
-    resultsLength: number
     result: ResultsItem
-    isLead: boolean
-    isQualResult: boolean
-    isBoulder: boolean
-    isFinal: boolean
     command: string
     names: string
     isNamesFilterEnabled: boolean
+    isFinal: boolean
 }
 
 export const PRIZE_PLACES = 3
@@ -70,20 +66,14 @@ export const getFinalPlaces = (resultsLength: number, standard: number) => {
     return standard - 6
 }
 
-export function getRowClasses({ resultsLength, result, isFinal, isQualResult, isLead, isBoulder, command, names, isNamesFilterEnabled }: getRowClassesProps) { 
+export function getRowClasses({ result, command, names, isNamesFilterEnabled, isFinal }: getRowClassesProps) { 
     const isSameCommandRow = !isNamesFilterEnabled && isCommandMatch(result.command, command)
     const isSameNameRow = isNamesFilterEnabled && isNameMatch(result.name, names)
     const rank = Number.parseInt(result['rank'])
-    const isFinalRow = result['rank'] && (
-        (isLead && isFinal && PRIZE_PLACES >= rank) || 
-        (isLead && isQualResult && getFinalPlaces(resultsLength, LEAD_FINAL_PLACES) >= rank) ||
-        (isBoulder && isFinal && PRIZE_PLACES >= rank) || 
-        (isBoulder && !isFinal && getFinalPlaces(resultsLength, BOULDER_FINAL_PLACES) >= rank)
-    )
     if (isSameCommandRow || isSameNameRow) {
         return ' bg-blue-200'
     }
-    if (isFinalRow) {
+    if (result.isHighlighted || (result['rank'] && isFinal && PRIZE_PLACES >= rank)) {
         return ' bg-green-200'
     }
     return ''
@@ -95,14 +85,4 @@ export function getClimbedCount({ results, isLead, isBoulder }: { results: Resul
         if (isLead) return 'score' in result ? result.score !== '' : result.score1 !== ''
         return results.length
     }).length
-}
-
-
-export function getFinalBorderClass({ resultsLength, isFinalBorderDrawed, isLead, isQualResult, isFinal, isBoulder, rank }:
-    { resultsLength:number, isFinalBorderDrawed: boolean, isFinal: boolean, isLead: boolean, isQualResult: boolean, isBoulder: boolean, rank: string }) {
-    const place = Number.parseInt(rank)
-    return (isFinal && !isFinalBorderDrawed && place > PRIZE_PLACES ) ||
-           (isLead && isQualResult && place > getFinalPlaces(resultsLength, LEAD_FINAL_PLACES)) ||
-           (!isFinal && isBoulder && place > getFinalPlaces(resultsLength, BOULDER_FINAL_PLACES)) ?
-           'border-t-2 border-t-green-500' : ''
 }

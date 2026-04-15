@@ -17,6 +17,7 @@ export interface Subgroup {
 export type Results = (LeadQualItem | LeadQualResultItem | LeadFinalsItem)[]
 
 export interface LeadQualItem {
+  isHighlighted?: boolean
   rank: string
   stRank: string
   name: string
@@ -25,6 +26,7 @@ export interface LeadQualItem {
 }
 
 export interface LeadQualResultItem {
+  isHighlighted?: boolean
   rank: string
   name: string
   command: string
@@ -36,6 +38,7 @@ export interface LeadQualResultItem {
 }
 
 export interface LeadFinalsItem {
+  isHighlighted?: boolean
   rank: string
   stRank: string
   name: string
@@ -55,6 +58,7 @@ export interface SubgroupResults {
 }
 
 export interface BoulderQualItem {
+  isHighlighted?: boolean
   rank: string
   stRank: string
   name: string
@@ -68,6 +72,7 @@ export interface BoulderQualItem {
 }
 
 export interface BoulderFinalItem {
+  isHighlighted?: boolean
   rank: string
   stRank: string
   name: string

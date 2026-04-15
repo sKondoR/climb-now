@@ -6,7 +6,6 @@ import {
   getRowClasses,
   getFinalPlaces,
   getClimbedCount,
-  getFinalBorderClass,
 } from './tables.utils'
 import { LeadQualItem } from '@/shared/types'
 
@@ -117,12 +116,8 @@ describe('tables.utils', () => {
 
   describe('getRowClasses', () => {
     const baseProps = {
-      resultsLength: 10,
       result: mockLeadQualItem,
       isFinal: false,
-      isQualResult: false,
-      isLead: true,
-      isBoulder: false,
       command: 'СПБ',
       names: 'Витя Петров',
       isNamesFilterEnabled: false
@@ -145,6 +140,18 @@ describe('tables.utils', () => {
       expect(classes).toBe(' bg-blue-200')
     })
 
+    it('should return bg-green-200 when isHighlighted is true', () => {
+      const props = {
+        ...baseProps,
+        isNamesFilterEnabled: false,
+        command: 'ВРЖ',
+        names: '',
+        result: { ...mockLeadQualItem, isHighlighted: true },
+      }
+      const classes = getRowClasses(props)
+      expect(classes).toBe(' bg-green-200')
+    })
+
     it('should return bg-green-200 when isFinalRow is true', () => {
       const props = {
         ...baseProps,
@@ -153,7 +160,6 @@ describe('tables.utils', () => {
         names: '',
         result: { ...mockLeadQualItem, rank: '1', name: 'Катя Иванова' },
         isFinal: true,
-        isLead: true
       }
       const classes = getRowClasses(props)
       expect(classes).toBe(' bg-green-200')
@@ -185,34 +191,6 @@ describe('tables.utils', () => {
     it('should return total length when neither lead nor boulder', () => {
       const count = getClimbedCount({ results: mockResults, isLead: false, isBoulder: false })
       expect(count).toBe(3)
-    })
-  })
-
-  describe('getFinalBorderClass', () => {
-    it('should return border class for lead final', () => {
-      const classes = getFinalBorderClass({
-        resultsLength: 10,
-        isFinalBorderDrawed: false,
-        isFinal: true,
-        isLead: true,
-        isQualResult: false,
-        isBoulder: false,
-        rank: '4'
-      })
-      expect(classes).toBe('border-t-2 border-t-green-500')
-    })
-
-    it('should return empty string when no condition matches', () => {
-      const classes = getFinalBorderClass({
-        resultsLength: 10,
-        isFinalBorderDrawed: false,
-        isFinal: true,
-        isLead: true,
-        isQualResult: false,
-        isBoulder: false,
-        rank: '2'
-      })
-      expect(classes).toBe('')
     })
   })
 })

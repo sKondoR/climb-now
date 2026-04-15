@@ -137,6 +137,7 @@ describe('parsers', () => {
       expect(result).toStrictEqual([
         {
           command: 'КЛНД',
+          isHighlighted: true,
           mark: '2,24',
           mark1: '1',
           mark2: '5',
@@ -175,6 +176,7 @@ describe('parsers', () => {
       expect(result).toStrictEqual([
         {
           command: 'ВРНЖ',
+          isHighlighted: true,
           name: 'Доброва Ксения',
           qRank: '3',
           rank: '1',
@@ -183,6 +185,7 @@ describe('parsers', () => {
         },
         {
           command: 'СПБ',
+          isHighlighted: true,
           name: 'Зырянова Станислава',
           qRank: '6',
           rank: '2',
@@ -191,6 +194,7 @@ describe('parsers', () => {
         },
         {
           command: 'МСК',
+          isHighlighted: true,
           name: 'Евдокимова Елена',
           qRank: '1',
           rank: '3',
@@ -207,6 +211,7 @@ describe('parsers', () => {
       expect(result).toStrictEqual([
         {
           command: 'КЛНД',
+          isHighlighted: true,
           name: 'Боровков Арсений',
           r1: '2/2',
           r2: '2/2',
@@ -219,6 +224,7 @@ describe('parsers', () => {
         },
         {
           command: 'СВРД',
+          isHighlighted: true,
           name: 'Шулев Гавриил',
           r1: '1/1',
           r2: ' / ',
@@ -231,6 +237,7 @@ describe('parsers', () => {
         },
         {
           command: 'ТЮМН',
+          isHighlighted: true,
           name: 'Асташкин Елисей',
           r1: '2/1',
           r2: '6/3',
@@ -251,6 +258,7 @@ describe('parsers', () => {
       expect(result).toStrictEqual([
         {
           command: 'ЛЕНГ',
+          isHighlighted: true,
           name: 'Нагорничных Яромир',
           qRank: '4',
           r1: '4/4',
@@ -263,6 +271,7 @@ describe('parsers', () => {
         },
         {
           command: 'КЛНД',
+          isHighlighted: true,
           name: 'Боровков Арсений',
           qRank: '1',
           r1: ' / ',
@@ -275,6 +284,7 @@ describe('parsers', () => {
         },
         {
           command: 'ЛЕНГ',
+          isHighlighted: true,
           name: 'Ганичев Максим',
           qRank: '12',
           r1: ' / ',
