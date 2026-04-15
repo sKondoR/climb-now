@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import dynamic from 'next/dynamic'
@@ -33,9 +34,9 @@ const CollapsibleHeader = () => {
           <div className="mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <div className="flex flex-wrap justify-between items-start gap-4">
               <div className="w-full md:w-auto">
-                <div className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 bg-clip-text text-transparent text-center">
+                <Link href="/" className="text-5xl font-bold bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 bg-clip-text text-transparent text-center">
                     ClimbNow
-                </div>
+                </Link>
                 <div className="text text-gray-500 text-center">
                     Соревнования ФСР онлайн
                 </div>
