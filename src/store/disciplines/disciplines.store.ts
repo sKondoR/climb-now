@@ -4,6 +4,25 @@ import { QueryClient } from '@tanstack/react-query'
 import type { Discipline } from '@/shared/types/disciplines'
 import { fetchResults } from '@/shared/services'
 import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
+import { rootStore } from '@/store/root.store'
+
+const getSuffixes = (name?: string) => {
+  const suffixes = ['']
+  if (name === undefined) {
+    return suffixes
+  }
+  const lowercased = name.toLowerCase()
+  if (lowercased.includes('всероссийские')) {
+    suffixes.push('_vs')
+  }
+  if (lowercased.includes('чемпионат')) {
+    suffixes.push('_ch')
+  } 
+  if (lowercased.includes('первенство')) {
+    suffixes.push('_perv')
+  }
+  return suffixes
+}
 
 export class DisciplinesStore {
   private queryClient: QueryClient
@@ -17,7 +36,7 @@ export class DisciplinesStore {
     makeAutoObservable(this)
   }
 
-  async fetchGroups(code: string) {
+  async fetchGroups(code: string, name?: string) {
     const url = new URL(window.location.href)
     this.setGroupsData(null)
     this.setGroupsError(null)
@@ -28,7 +47,7 @@ export class DisciplinesStore {
     }
     this.setIsGroupsLoading(true)
 
-    const suffixes = ['', '_vs', '_perv', '_ch']
+    const suffixes = getSuffixes(name)
     let data = null
     let usedCode = code
 
@@ -50,6 +69,7 @@ export class DisciplinesStore {
       this.setGroupsData(data)
       if (data) {
         url.searchParams.set('code', usedCode)
+        rootStore.formStore.setCode(usedCode)
       } else {
         url.searchParams.delete('code')
       }
@@ -60,7 +80,6 @@ export class DisciplinesStore {
       this.setIsGroupsLoading(false)
     }
   }
-
 
   refetchGroups() {
     this.queryClient.refetchQueries({ queryKey: ['groups'] })

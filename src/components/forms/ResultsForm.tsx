@@ -24,9 +24,9 @@ function ResultsForm() {
   const names = formStore.names
   const { isCommandFilterEnabled, isNamesFilterEnabled, isOnlyOnline } = formStore
 
-
   useEffect(() => {
-    disciplinesStore.fetchGroups(formStore.code)
+    const currentEvent = eventsStore.events?.find((event) => event.link === formStore.code)
+    disciplinesStore.fetchGroups(formStore.code, currentEvent?.name)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formStore.code])
 
