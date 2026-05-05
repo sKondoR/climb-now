@@ -28,11 +28,28 @@ export class DisciplinesStore {
     }
     this.setIsGroupsLoading(true)
 
+    const suffixes = ['', '_vs', '_perv', '_ch']
+    let data = null
+    let usedCode = code
+
     try {
-      const data = await fetchResults(code)
+      for (const suffix of suffixes) {
+        const currentCode = code + suffix
+        try {
+          data = await fetchResults(currentCode)
+          if (data) {
+            usedCode = currentCode
+            break
+          }
+        } catch (error) {
+          console.log(error)
+          continue
+        }
+      }
+
       this.setGroupsData(data)
       if (data) {
-        url.searchParams.set('code', code)
+        url.searchParams.set('code', usedCode)
       } else {
         url.searchParams.delete('code')
       }
