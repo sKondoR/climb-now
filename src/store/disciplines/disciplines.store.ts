@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx'
 import { QueryClient } from '@tanstack/react-query'
 
 import type { Discipline } from '@/shared/types/disciplines'
-import { fetchResults } from '@/shared/services'
+import { fetchResults, patchEvent } from '@/shared/services'
 import { MIN_URL_CODE_LENGTH } from '@/shared/constants'
 import { rootStore } from '@/store/root.store'
 
@@ -69,7 +69,10 @@ export class DisciplinesStore {
       this.setGroupsData(data)
       if (data) {
         url.searchParams.set('code', usedCode)
-        rootStore.formStore.setCode(usedCode)
+        if (usedCode !== code) {
+          rootStore.formStore.setCode(usedCode)
+          patchEvent(code, usedCode)
+        }        
       } else {
         url.searchParams.delete('code')
       }

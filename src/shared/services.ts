@@ -7,6 +7,7 @@ import type {
   BaseResponse,
   FetchEventsOperation
 } from './types/api.types'
+import { rootStore } from '@/src/store/root.store'
 
 /**
  * Получает список команд
@@ -54,6 +55,33 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
     return data.data || []
   } catch (error) {
     console.error('Error fetching events:', error)
+    throw error
+  }
+}
+
+/**
+ * Изменяет code события на новый 
+ * @returns Promise<EventResponse> - возвращает событие после изменения
+ */
+export const patchEvent = async (code: string, newCode: string): Promise<EventResponse> => {
+  try {
+    const event = rootStore.eventsStore.events.find(ev => ev.link === code)
+    if (!event) {
+      throw `No event with link ${code}`
+    }
+    const response = await fetch(`${BACKEND_API_URL}events/${event.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ link: newCode })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
+    }
+
+    const data: EventResponse = await response.json()
+    return data
+  } catch (error) {
+    console.error('Patch event failed:', error)
     throw error
   }
 }
