@@ -71,6 +71,9 @@ export const patchEvent = async (code: string, newCode: string): Promise<EventRe
     }
     const response = await fetch(`${BACKEND_API_URL}events/${event.id}`, {
       method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ link: newCode })
     })
 
