@@ -6,7 +6,7 @@
     "generate:api": "npx openapi-typescript https://cfr-search.vercel.app/openapi.json -o ./shared/types/api.ts",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -p ${PORT:-3000}",
+    "start": "next start",
     "lint": "next lint",
     "analyze": "cross-env ANALYZE=true next build",
     "test": "vitest",
