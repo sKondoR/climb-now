@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const response = NextResponse.next()
 
   // Generate a proper nonce using random bytes and base64 encoding
