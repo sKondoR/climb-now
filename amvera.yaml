@@ -10,3 +10,9 @@ build:
 run:
   command: npm run start
   containerPort: 3000
+
+deploy:
+  ignore:
+    - node_modules/
+    - .next/
+    - .git/
