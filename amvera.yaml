@@ -5,7 +5,7 @@ meta:
     version: 18
 
 build:
-  command: npm ci && npm run build
+  additionalCommands: npm ci && npm run build
 
 run:
   command: npm run start
