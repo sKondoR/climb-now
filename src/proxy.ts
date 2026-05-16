@@ -30,14 +30,10 @@ export async function proxy(request: NextRequest) {
 
   // Set security headers
   response.headers.set('Content-Security-Policy', cspHeader)
-  response.headers.set('X-Frame-Options', 'DENY')
   response.headers.set('X-Content-Type-Options', 'nosniff')
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload')
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
   response.headers.set('Permissions-Policy', 'geolocation=(), camera=(), microphone=()')
-  
-  // Pass nonce to Next.js for inline scripts
-  response.headers.set('x-nonce', nonce)
 
   // CORS headers (consider restricting in production)
   if (isDev) {
