@@ -6,6 +6,7 @@ import { rootStore } from '@/src/store/root.store'
 import { DEFAULT_TEAM, DEFAULT_URL_CODE } from '@/src/shared/constants'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers, faFlag } from '@fortawesome/free-solid-svg-icons'
+import DOMPurify from 'dompurify'
 
 import { EventTemplate } from './EventTemplate'
 import { Item } from '@/src/shared/components/Autocomplete/Autocomplete.types'
@@ -13,6 +14,12 @@ import { Event } from '@/src/shared/types/events'
 import LinkToEvent from '@/src/shared/components/LinkToEvent/LinkToEvent'
 import Autocomplete from '../../shared/components/Autocomplete/Autocomplete'
 import TextInput from '@/src/shared/components/TextInput/TextInput'
+
+
+const SANITALIZE_CONFIG = {
+  ALLOWED_TAGS: [],
+  ALLOWED_ATTR: []
+}
 
 export default observer(
 function ResultsForm() {
@@ -33,7 +40,9 @@ function ResultsForm() {
 
   const handleUrlChange = useCallback(
     (value: Item | null) => {
-      formStore.setCode(typeof value === 'string' ? value : '')
+      const rawValue = typeof value === 'string' ? value : ''
+      const sanitized = DOMPurify.sanitize(rawValue, SANITALIZE_CONFIG)
+      formStore.setCode(sanitized)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -41,7 +50,9 @@ function ResultsForm() {
 
   const handleCommandChange = useCallback(
     (value: Item | null) => {
-      formStore.setCommand(typeof value === 'string' ? value : '')
+      const rawValue = typeof value === 'string' ? value : ''
+      const sanitized = DOMPurify.sanitize(rawValue, SANITALIZE_CONFIG)
+      formStore.setCommand(sanitized)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -49,7 +60,8 @@ function ResultsForm() {
 
   const handleNamesChange = useCallback(
     (value: string) => {
-      formStore.setNames(value)
+      const sanitized = DOMPurify.sanitize(value, SANITALIZE_CONFIG)
+      formStore.setNames(sanitized)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
