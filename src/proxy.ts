@@ -16,11 +16,11 @@ export async function proxy(request: NextRequest) {
   // Build CSP header with proper nonce interpolation
   const cspHeader = [
     "default-src 'self';",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''};`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''} https://mc.yandex.ru;`,
     "style-src 'self' 'unsafe-inline';", 
-    "img-src 'self' data: blob:;",
+    "img-src 'self' data: blob: https://mc.yandex.ru;",
     "font-src 'self';",
-    `connect-src 'self' ${apiDomains};`,
+    `connect-src 'self' ${apiDomains} https://mc.yandex.ru;`,
     "object-src 'none';",
     "base-uri 'self';",
     "form-action 'self';",
