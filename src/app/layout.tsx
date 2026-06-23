@@ -5,7 +5,6 @@ import QueryClientProviderWrapper from '@/src/shared/query/QueryClientProvider'
 import '@/src/app/globals.css'
 
 import YandexMetrika from '@/src/shared/components/YandexMetrika/YandexMetrika'
-import { YandexMetrikaTracker } from '@/src/shared/components/YandexMetrika/YandexMetrikaTracker'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -39,7 +38,6 @@ export default async function RootLayout({
           </RootStoreProvider>
         </QueryClientProviderWrapper>
         {YANDEX_METRIKA_ID && (<>
-          <YandexMetrikaTracker />
           <YandexMetrika counterId={YANDEX_METRIKA_ID} />
         </>)}
       </body>
