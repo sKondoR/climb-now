@@ -4,6 +4,9 @@ import { RootStoreProvider } from '@/src/store/RootStoreProvider'
 import QueryClientProviderWrapper from '@/src/shared/query/QueryClientProvider'
 import '@/src/app/globals.css'
 
+import YandexMetrika from '@/src/shared/components/YandexMetrika/YandexMetrika'
+import { YandexMetrikaTracker } from '@/src/shared/components/YandexMetrika/YandexMetrikaTracker'
+
 const inter = Inter({ 
   subsets: ['latin'],
   weight: '400',
@@ -24,6 +27,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const YANDEX_METRIKA_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID || '';
   return (
     <html lang="ru">
       <head>
@@ -34,6 +38,10 @@ export default async function RootLayout({
             {children}
           </RootStoreProvider>
         </QueryClientProviderWrapper>
+        {YANDEX_METRIKA_ID && (<>
+          <YandexMetrikaTracker />
+          <YandexMetrika counterId={YANDEX_METRIKA_ID} />
+        </>)}
       </body>
     </html>
   )
