@@ -9,22 +9,49 @@ import type {
 } from './types/api.types'
 import { rootStore } from '@/src/store/root.store'
 
+// Кэш для списка команд
+let teamsCache: string[] | null = null
+let teamsCacheTime: number | null = null
+const CACHE_DURATION = 1000 * 60 * 60 * 24 // 24 часа
+const TEAMS_CACHE_DURATION = CACHE_DURATION * 30
+let eventsCache: EventResponse[] | null = null
+let eventsCacheTime: number | null = null
+const EVENTS_CACHE_DURATION = CACHE_DURATION * 3
+
 /**
  * Получает список команд
  * @returns Promise<string[]> - массив названий команд
  */
 export const fetchTeams = async (): Promise<string[]> => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 5000)
+
   try {
-    const response = await fetch(`${BACKEND_API_URL}teams`)
+    const response = await fetch(`${BACKEND_API_URL}teams`, {
+      signal: controller.signal
+    })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
     }
 
     const data = await response.json()
+    teamsCache = data.teams
+    teamsCacheTime = Date.now()
     return data.teams
   } catch (error) {
-    console.error('Error fetching teams:', error)
+    clearTimeout(timeoutId)
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.warn('fetchTeams timed out, using cached value if available')
+      if (teamsCache && teamsCacheTime && (Date.now() - teamsCacheTime < TEAMS_CACHE_DURATION)) {
+        return teamsCache
+      }
+    } else {
+      console.error('Error fetching teams:', error)
+    }
     throw error
   }
 }
@@ -34,27 +61,44 @@ export const fetchTeams = async (): Promise<string[]> => {
  * @returns Promise<EventResponse[]> - массив объектов событий
  */
 export const fetchEvents = async (): Promise<EventResponse[]> => {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 5000)
   try {
     const [startDate, endDate] = getDateRange()
     
-    // Используем тип операции для типизации параметров запроса
     const params: FetchEventsOperation['parameters']['query'] = {
       start: startDate,
       end: endDate
     }
     
     const queryString = new URLSearchParams(params as Record<string, string>).toString()
-    const response = await fetch(`${BACKEND_API_URL}events?${queryString}`)
+    const response = await fetch(`${BACKEND_API_URL}events?${queryString}`, {
+      signal: controller.signal
+    })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
     }
 
-    // Используем типизированный ответ от API
     const data: BaseResponseListEvent = await response.json()
-    return data.data || []
+
+    eventsCache = data.data || []
+    eventsCacheTime = Date.now()
+
+    return eventsCache
   } catch (error) {
-    console.error('Error fetching events:', error)
+        clearTimeout(timeoutId)
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      console.warn('fetchEvents timed out, using cached value if available')
+      if (eventsCache && eventsCacheTime && (Date.now() - eventsCacheTime < EVENTS_CACHE_DURATION)) {
+        return eventsCache
+      }
+    } else {
+      console.error('Error fetching events:', error)
+    }
     throw error
   }
 }
