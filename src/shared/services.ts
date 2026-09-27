@@ -1,5 +1,5 @@
 import { Discipline } from '@/shared/types'
-import { BACKEND_API_URL } from './constants'
+import { BACKEND_API_URL, DEFAULT_TEAMS } from './constants'
 import { getDateRange } from './utils/date.utils'
 import type {
   EventResponse,
@@ -9,11 +9,7 @@ import type {
 } from './types/api.types'
 import { rootStore } from '@/src/store/root.store'
 
-// Кэш для списка команд
-let teamsCache: string[] | null = null
-let teamsCacheTime: number | null = null
 const CACHE_DURATION = 1000 * 60 * 60 * 24 // 24 часа
-const TEAMS_CACHE_DURATION = CACHE_DURATION * 30
 let eventsCache: EventResponse[] | null = null
 let eventsCacheTime: number | null = null
 const EVENTS_CACHE_DURATION = CACHE_DURATION * 3
@@ -38,21 +34,12 @@ export const fetchTeams = async (): Promise<string[]> => {
     }
 
     const data = await response.json()
-    teamsCache = data.teams
-    teamsCacheTime = Date.now()
     return data.teams
   } catch (error) {
     clearTimeout(timeoutId)
-
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.warn('fetchTeams timed out, using cached value if available')
-      if (teamsCache && teamsCacheTime && (Date.now() - teamsCacheTime < TEAMS_CACHE_DURATION)) {
-        return teamsCache
-      }
-    } else {
-      console.error('Error fetching teams:', error)
-    }
-    throw error
+    // Не бросаем ошибку, чтобы react-query не повторял запрос: берём запасной список
+    console.warn('fetchTeams failed, using DEFAULT_TEAMS:', error)
+    return DEFAULT_TEAMS
   }
 }
 

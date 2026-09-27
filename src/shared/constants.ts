@@ -9,6 +9,12 @@ export const EXTERNAL_API_TIMEOUT = 10000
 // Коды соревнований и ссылки на протоколы вида 2602vrn_vs, b_q_f13
 export const SAFE_PATH_SEGMENT = /^[\w-]+$/
 export const BACKEND_API_URL = 'https://cfr-search.vercel.app/api/'
+// Запасной список команд, если бэкенд недоступен
+export const DEFAULT_TEAMS = [
+  'БАШК', 'ВОЛГ', 'ВОЛО', 'ВРНЖ', 'ДНР', 'КИРВ', 'КЛНД', 'КРДР', 'КРСК', 'КУРС',
+  'ЛЕНГ', 'ЛНР', 'МОСК', 'МСК', 'НИЖГ', 'ПЕНЗ', 'ПЕРМ', 'ПРИМ', 'РКАР', 'РОСТ',
+  'РЯЗН', 'САРТ', 'СВРД', 'СВСТ', 'СПБ', 'ТАТ', 'ТУЛС', 'УДМ', 'ХБРК', 'ЧЛБН',
+]
 
 export const DISCIPLINES = {
   LEAD: 'трудность' as const,
