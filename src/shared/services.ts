@@ -27,7 +27,7 @@ export const fetchTeams = async (): Promise<string[]> => {
   const timeoutId = setTimeout(() => controller.abort(), 5000)
 
   try {
-    const response = await fetch(`${BACKEND_API_URL}teams`, {
+    const response = await fetch(`/api/teams`, {
       signal: controller.signal
     })
 
@@ -72,7 +72,7 @@ export const fetchEvents = async (): Promise<EventResponse[]> => {
     }
     
     const queryString = new URLSearchParams(params as Record<string, string>).toString()
-    const response = await fetch(`${BACKEND_API_URL}events?${queryString}`, {
+    const response = await fetch(`/api/events?${queryString}`, {
       signal: controller.signal
     })
 
@@ -113,7 +113,7 @@ export const patchEvent = async (code: string, newCode: string): Promise<EventRe
     if (!event) {
       throw `No event with link ${code}`
     }
-    const response = await fetch(`${BACKEND_API_URL}events/${event.id}`, {
+    const response = await fetch(`/api/events/${event.id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

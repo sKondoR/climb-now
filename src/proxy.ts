@@ -6,11 +6,6 @@ export async function proxy(request: NextRequest) {
 
   // Generate a proper nonce using random bytes and base64 encoding
   const nonce = Buffer.from(crypto.getRandomValues(new Uint8Array(16))).toString('base64')
-  
-  // Define API domains properly
-  const apiDomains = [
-    'https://cfr-search.vercel.app',
-  ].join(' ')
 
   // Yandex Metrika domains: https://yandex.ru/support/metrica/code/install-counter-csp.html
   const metrikaHosts = [
@@ -41,7 +36,7 @@ export async function proxy(request: NextRequest) {
     // https: вместо списка доменов Метрики: заголовки ответа должны влезать в 4 КБ буфера nginx, иначе 502
     "img-src 'self' data: blob: https:;",
     "font-src 'self';",
-    `connect-src 'self' ${apiDomains} ${metrikaDomains} ${metrikaWsDomains};`,
+    `connect-src 'self' ${metrikaDomains} ${metrikaWsDomains};`,
     `frame-src blob: ${metrikaDomains};`,
     "object-src 'none';",
     "base-uri 'self';",
