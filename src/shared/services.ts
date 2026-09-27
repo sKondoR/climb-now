@@ -24,7 +24,7 @@ const EVENTS_CACHE_DURATION = CACHE_DURATION * 3
  */
 export const fetchTeams = async (): Promise<string[]> => {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 5000)
+  const timeoutId = setTimeout(() => controller.abort(), 20000)
 
   try {
     const response = await fetch(`/api/teams`, {
@@ -62,7 +62,7 @@ export const fetchTeams = async (): Promise<string[]> => {
  */
 export const fetchEvents = async (): Promise<EventResponse[]> => {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 5000)
+  const timeoutId = setTimeout(() => controller.abort(), 20000)
   try {
     const [startDate, endDate] = getDateRange()
     
