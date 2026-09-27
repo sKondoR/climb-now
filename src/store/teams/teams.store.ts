@@ -18,6 +18,8 @@ export class TeamsStore {
     this.teamsQueryObserver = new QueryObserver<string[], Error>(this.queryClient, {
       queryKey: ['teams'],
       queryFn: fetchTeams,
+      // rootStore создаётся и при SSR, а fetchTeams ходит на относительный /api/ — только в браузере
+      enabled: typeof window !== 'undefined',
       staleTime: 1000 * 60 * 60 * 24 * 7, // week
       retry: 3,
       retryDelay: 500

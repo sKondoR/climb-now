@@ -19,6 +19,8 @@ export class EventsStore {
     this.EventsQueryObserver = new QueryObserver<EventResponse[], unknown>(this.queryClient, {
       queryKey: ['events'],
       queryFn: fetchEvents,
+      // rootStore создаётся и при SSR, а fetchEvents ходит на относительный /api/ — только в браузере
+      enabled: typeof window !== 'undefined',
       staleTime: 1000 * 60 * 60 * 24, // day
       retry: 3,
       retryDelay: 500
