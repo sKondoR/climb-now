@@ -16,6 +16,19 @@ export function getShareUrl(names: string): string {
   return url.href
 }
 
-export function copyToClipboard(text: string): void {
-  navigator.clipboard.writeText(text)
+// Буфер обмена может отказать (нет разрешения, вкладка не в фокусе, старый браузер) — сообщаем об этом, а не роняем промис
+export async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text)
+    return true
+  } catch {
+    return false
+  }
+}
+
+// Подпись поля предлагает взять код из адреса — вставляют всю ссылку c-f-r.ru, код с пробелами или заглавными
+export function normalizeEventCode(input: string): string {
+  const trimmed = input.trim()
+  const fromUrl = trimmed.match(/\/live\/([\w-]+)/i)
+  return (fromUrl ? fromUrl[1] : trimmed).toLowerCase()
 }

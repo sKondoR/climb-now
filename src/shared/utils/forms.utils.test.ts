@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { copyToClipboard, getShareUrl, sanitizeEventCode } from './forms.utils'
+import { copyToClipboard, getShareUrl, normalizeEventCode, sanitizeEventCode } from './forms.utils'
 
 
 describe('sanitizeEventCode', () => {
@@ -166,23 +166,15 @@ describe('copyToClipboard', () => {
     expect(writeTextMock).toHaveBeenCalledTimes(1)
   })
 
-  it.skip('should handle clipboard API errors', async () => {
-    // Mock clipboard API to throw error
-    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const writeTextMock = vi.fn().mockRejectedValue(new Error('Clipboard error'))
-    
-    Object.assign(navigator, {
-      clipboard: {
-        writeText: writeTextMock
-      }
-    })
+  it('resolves true on success and false when the clipboard refuses', async () => {
+    Object.assign(navigator, { clipboard: { writeText: vi.fn().mockResolvedValue(undefined) } })
+    await expect(copyToClipboard('ok')).resolves.toBe(true)
 
-    const text = 'test text'
-    
-    // The function doesn't handle errors, so it should throw
-    await expect(copyToClipboard(text)).rejects.toThrow('Clipboard error')
-    
-    consoleSpy.mockRestore()
+    Object.assign(navigator, { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('denied')) } })
+    await expect(copyToClipboard('fail')).resolves.toBe(false)
+
+    Object.assign(navigator, { clipboard: undefined })
+    await expect(copyToClipboard('no api')).resolves.toBe(false)
   })
 
   it('should work with empty string', () => {
@@ -195,5 +187,23 @@ describe('copyToClipboard', () => {
 
     copyToClipboard('')
     expect(writeTextMock).toHaveBeenCalledWith('')
+  })
+})
+
+describe('normalizeEventCode', () => {
+  it('extracts the code from a pasted c-f-r.ru address', () => {
+    expect(normalizeEventCode('https://c-f-r.ru/live/2602vrn/index.html')).toBe('2602vrn')
+    expect(normalizeEventCode('http://c-f-r.ru/live/2602vrn_vs/l_q_f13.html')).toBe('2602vrn_vs')
+    expect(normalizeEventCode('c-f-r.ru/live/2602vrn/')).toBe('2602vrn')
+  })
+
+  it('trims spaces and lowercases', () => {
+    expect(normalizeEventCode('  2602VRN ')).toBe('2602vrn')
+  })
+
+  it('leaves partial input alone while typing', () => {
+    expect(normalizeEventCode('2602')).toBe('2602')
+    expect(normalizeEventCode('https://c-f-r.ru/li')).toBe('https://c-f-r.ru/li')
+    expect(normalizeEventCode('')).toBe('')
   })
 })

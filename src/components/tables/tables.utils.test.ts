@@ -6,6 +6,9 @@ import {
   getRowClasses,
   getFinalPlaces,
   getClimbedCount,
+  getRowKeys,
+  getRowSignature,
+  filterOwnResults,
 } from './tables.utils'
 import { LeadQualItem } from '@/shared/types'
 
@@ -195,6 +198,52 @@ describe('tables.utils', () => {
     it('should return total length when neither lead nor boulder', () => {
       const count = getClimbedCount({ results: mockResults, isLead: false, isBoulder: false })
       expect(count).toBe(3)
+    })
+  })
+
+  describe('getRowKeys', () => {
+    it('keys rows by climber, not by position', () => {
+      const first = { ...mockLeadQualItem, name: 'Аня', command: 'СПБ' }
+      const second = { ...mockLeadQualItem, name: 'Витя Петров', command: 'МСК' }
+      expect(getRowKeys([first, second])).toEqual(getRowKeys([second, first]).reverse())
+    })
+
+    it('keeps keys unique for namesakes from one team', () => {
+      const keys = getRowKeys([mockLeadQualItem, { ...mockLeadQualItem }])
+      expect(new Set(keys).size).toBe(2)
+    })
+  })
+
+  describe('getRowSignature', () => {
+    it('ignores rank changes caused by other climbers', () => {
+      expect(getRowSignature({ ...mockLeadQualItem, rank: '2' })).toBe(getRowSignature(mockLeadQualItem))
+    })
+
+    it('changes when the climber result changes', () => {
+      expect(getRowSignature({ ...mockLeadQualItem, score: '30+' })).not.toBe(getRowSignature(mockLeadQualItem))
+    })
+  })
+
+  describe('filterOwnResults', () => {
+    const results = [
+      { rank: '1', stRank: '1', name: 'Витя Петров', command: 'МСК', score: '100' },
+      { rank: '2', stRank: '2', name: 'Галя Иванова', command: 'ДНР', score: '95' },
+      { rank: '3', stRank: '3', name: 'Федя Павлов', command: 'СПБ', score: '90' },
+    ]
+    const base = { command: 'ДНР', names: '', isNamesFilterEnabled: false }
+
+    it('keeps first place and the selected team', () => {
+      expect(filterOwnResults(results, base).map((r) => r.name)).toEqual(['Витя Петров', 'Галя Иванова'])
+    })
+
+    it('keeps first place and the entered names in names mode, ignoring the team', () => {
+      const filtered = filterOwnResults(results, { ...base, names: 'Павлов', isNamesFilterEnabled: true })
+      expect(filtered.map((r) => r.name)).toEqual(['Витя Петров', 'Федя Павлов'])
+    })
+
+    it('returns nothing when none of yours are in the protocol', () => {
+      expect(filterOwnResults(results, { ...base, command: 'КРДР' })).toEqual([])
+      expect(filterOwnResults(results, { ...base, names: 'Сидоров', isNamesFilterEnabled: true })).toEqual([])
     })
   })
 })

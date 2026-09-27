@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-27T06:18:54.322Z",
+  "title": "Design System: ClimbNow",
+  "extensions": {
+    "colorMeta": {
+      "signal-blue": {
+        "role": "primary",
+        "displayName": "Signal Blue",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "signal-blue-deep": {
+        "role": "primary",
+        "displayName": "Signal Blue Deep",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "signal-blue-ink": {
+        "role": "primary",
+        "displayName": "Signal Blue Ink",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "focus-blue": {
+        "role": "primary",
+        "displayName": "Focus Blue",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "own-team-blue": {
+        "role": "primary",
+        "displayName": "Own-Team Blue",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "badge-blue": {
+        "role": "primary",
+        "displayName": "Badge Blue",
+        "tonalRamp": [
+          "#1e3a8a",
+          "#1e40af",
+          "#1d4ed8",
+          "#2563eb",
+          "#3b82f6",
+          "#93c5fd",
+          "#bfdbfe",
+          "#eff6ff"
+        ]
+      },
+      "live-green": {
+        "role": "secondary",
+        "displayName": "Live Green",
+        "tonalRamp": [
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#16a34a",
+          "#22c55e",
+          "#86efac",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "live-halo": {
+        "role": "secondary",
+        "displayName": "Live Halo",
+        "tonalRamp": [
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#16a34a",
+          "#22c55e",
+          "#86efac",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "live-tint": {
+        "role": "secondary",
+        "displayName": "Live Tint",
+        "tonalRamp": [
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#16a34a",
+          "#22c55e",
+          "#86efac",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "podium-green": {
+        "role": "secondary",
+        "displayName": "Podium Green",
+        "tonalRamp": [
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#16a34a",
+          "#22c55e",
+          "#86efac",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "podium-line": {
+        "role": "secondary",
+        "displayName": "Podium Line",
+        "tonalRamp": [
+          "#14532d",
+          "#166534",
+          "#15803d",
+          "#16a34a",
+          "#22c55e",
+          "#86efac",
+          "#bbf7d0",
+          "#f0fdf4"
+        ]
+      },
+      "update-flash": {
+        "role": "tertiary",
+        "displayName": "Update Flash",
+        "tonalRamp": [
+          "#713f12",
+          "#854d0e",
+          "#a16207",
+          "#ca8a04",
+          "#eab308",
+          "#fde047",
+          "#fef08a",
+          "#fefce8"
+        ]
+      },
+      "attempt-red": {
+        "role": "tertiary",
+        "displayName": "Attempt Red",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "error-red": {
+        "role": "tertiary",
+        "displayName": "Error Red",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "error-red-deep": {
+        "role": "tertiary",
+        "displayName": "Error Red Deep",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "error-surface": {
+        "role": "tertiary",
+        "displayName": "Error Surface",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "error-ink": {
+        "role": "tertiary",
+        "displayName": "Error Ink",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#fca5a5",
+          "#fecaca",
+          "#fef2f2"
+        ]
+      },
+      "stale-amber": {
+        "role": "tertiary",
+        "displayName": "Stale Amber",
+        "tonalRamp": [
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#f59e0b",
+          "#fcd34d",
+          "#fde68a",
+          "#fffbeb"
+        ]
+      },
+      "fsr-teal": {
+        "role": "tertiary",
+        "displayName": "FSR Teal",
+        "tonalRamp": [
+          "#134e4a",
+          "#115e59",
+          "#0f766e",
+          "#0d9488",
+          "#14b8a6",
+          "#5eead4",
+          "#99f6e4",
+          "#f0fdfa"
+        ]
+      },
+      "logo-teal": {
+        "role": "tertiary",
+        "displayName": "Logo Teal",
+        "tonalRamp": [
+          "#134e4a",
+          "#115e59",
+          "#0f766e",
+          "#0d9488",
+          "#14b8a6",
+          "#5eead4",
+          "#99f6e4",
+          "#f0fdfa"
+        ]
+      },
+      "logo-emerald": {
+        "role": "tertiary",
+        "displayName": "Logo Emerald",
+        "tonalRamp": [
+          "#064e3b",
+          "#065f46",
+          "#047857",
+          "#059669",
+          "#10b981",
+          "#6ee7b7",
+          "#a7f3d0",
+          "#ecfdf5"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "gym-floor": {
+        "role": "neutral",
+        "displayName": "Gym Floor",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "chalk": {
+        "role": "neutral",
+        "displayName": "Chalk",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "chalk-line": {
+        "role": "neutral",
+        "displayName": "Chalk Line",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "rule-gray": {
+        "role": "neutral",
+        "displayName": "Rule Gray",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "soft-ink": {
+        "role": "neutral",
+        "displayName": "Soft Ink",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "label-ink": {
+        "role": "neutral",
+        "displayName": "Label Ink",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "tonalRamp": [
+          "#111827",
+          "#1f2937",
+          "#374151",
+          "#4b5563",
+          "#6b7280",
+          "#d1d5db",
+          "#e5e7eb",
+          "#f9fafb"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "ClimbNow wordmark only, gradient-clipped."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Full-page state titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Group card titles."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "Round titles above tables; discipline tabs at md+."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Inputs and state explanations."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Form labels, subgroup tabs, buttons."
+      },
+      "table": {
+        "displayName": "Table",
+        "purpose": "Results cells; 12px on mobile, 14px at md+, tabular numerals."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Badges, collapsed-header values, footer, warnings."
+      }
+    },
+    "shadows": [
+      {
+        "name": "card-rest",
+        "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        "purpose": "Group cards at rest."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)",
+        "purpose": "Group cards on hover; round toggle buttons."
+      },
+      {
+        "name": "dropdown",
+        "value": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+        "purpose": "Autocomplete lists."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 2px #3b82f6",
+        "purpose": "Keyboard focus on every interactive element (.focus-ring)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "row-move",
+        "value": "450ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Row glides to its new rank; skipped under reduced motion."
+      },
+      {
+        "name": "row-flash",
+        "value": "1800ms ease-out",
+        "purpose": "Yellow flash on a changed result; kept under reduced motion."
+      },
+      {
+        "name": "collapse",
+        "value": "300ms ease-in-out",
+        "purpose": "Header and group card collapse (max-height + opacity)."
+      },
+      {
+        "name": "state-color",
+        "value": "150ms",
+        "purpose": "Default transition-colors / transition-shadow on hover."
+      },
+      {
+        "name": "refresh-min-spin",
+        "value": "600ms",
+        "purpose": "Minimum spin of the refresh icon."
+      },
+      {
+        "name": "live-ping",
+        "value": "1s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "purpose": "Halo around the live dot; motion-safe only."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "phone-or-landscape",
+        "value": "(max-width: 767px), (max-height: 500px)"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Main recovery or primary action on state screens.",
+      "html": "<button class=\"ds-btn-primary\">Повторить</button>",
+      "css": ".ds-btn-primary { font-family: Inter, system-ui, arial, sans-serif; background: #2563eb; color: #fff; padding: 8px 16px; border: none; border-radius: 8px; font-weight: 500; font-size: 16px; cursor: pointer; transition: background-color 150ms; } .ds-btn-primary:hover { background: #1d4ed8; } .ds-btn-primary:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3b82f6; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Retry inside a red error panel only.",
+      "html": "<button class=\"ds-btn-danger\">Повторить</button>",
+      "css": ".ds-btn-danger { font-family: Inter, system-ui, arial, sans-serif; background: #dc2626; color: #fff; padding: 6px 16px; border: none; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; transition: background-color 150ms; } .ds-btn-danger:hover { background: #b91c1c; } .ds-btn-danger:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #ef4444; }"
+    },
+    {
+      "name": "Round Toggle",
+      "kind": "button",
+      "refersTo": "button-round-toggle",
+      "description": "Collapses the header or a group card.",
+      "html": "<button class=\"ds-round-toggle\" aria-label=\"Свернуть\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 512 512\" fill=\"currentColor\"><path d=\"M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z\"/></svg></button>",
+      "css": ".ds-round-toggle { width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; background: #fff; color: #4b5563; border: 1px solid #d1d5db; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); cursor: pointer; transition: background-color 200ms; } .ds-round-toggle:hover { background: #f9fafb; } .ds-round-toggle:focus-visible { outline: none; box-shadow: 0 0 0 2px #3b82f6; }"
+    },
+    {
+      "name": "Discipline Tabs",
+      "kind": "nav",
+      "refersTo": "discipline-tab",
+      "description": "Sticky one-row switch between disciplines; speed is disabled.",
+      "html": "<div class=\"ds-dtabs\"><button class=\"ds-dtab ds-dtab-active\">Трудность</button><button class=\"ds-dtab\">Боулдеринг</button><button class=\"ds-dtab\" disabled title=\"Скорость пока не поддерживается\">Скорость</button></div>",
+      "css": ".ds-dtabs { display: flex; gap: 4px; justify-content: center; background: #f9fafb; padding: 4px 0; } .ds-dtab { font-family: Inter, system-ui, arial, sans-serif; padding: 4px 16px; border: none; border-radius: 8px; font-size: 18px; font-weight: 500; background: #e5e7eb; color: #374151; cursor: pointer; transition: background-color 150ms, color 150ms; } .ds-dtab:hover:not(:disabled):not(.ds-dtab-active) { background: #d1d5db; color: #111827; } .ds-dtab-active { background: #2563eb; color: #fff; } .ds-dtab:disabled { background: #f3f4f6; color: #d1d5db; cursor: default; } .ds-dtab:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #3b82f6; } .ds-dtab-active:focus-visible { box-shadow: inset 0 0 0 2px #fff; }"
+    },
+    {
+      "name": "Subgroup Tabs with Status",
+      "kind": "chip",
+      "refersTo": "subgroup-tab",
+      "description": "Round tabs inside a group card; live dot, green check (data exists) or no icon (pending).",
+      "html": "<div class=\"ds-stabs\"><button class=\"ds-stab\"><span class=\"ds-check\">✓</span>Квалификация</button><button class=\"ds-stab ds-stab-active\"><span class=\"ds-live\"><span class=\"ds-live-halo\"></span><span class=\"ds-live-dot\"></span></span>Финал</button><button class=\"ds-stab\">Суперфинал</button></div>",
+      "css": ".ds-stabs { display: flex; flex-wrap: wrap; gap: 4px; } .ds-stab { font-family: Inter, system-ui, arial, sans-serif; display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border: 2px solid #f3f4f6; border-radius: 8px; background: #f3f4f6; color: #374151; font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color 150ms; } .ds-stab:hover { background: #e5e7eb; } .ds-stab-active { border-color: #2563eb; } .ds-stab:focus-visible { outline: none; box-shadow: inset 0 0 0 2px #3b82f6; } .ds-check { color: #16a34a; font-weight: 700; width: 16px; text-align: center; } .ds-live { position: relative; display: inline-flex; width: 10px; height: 10px; margin: 0 3px; } .ds-live-halo { position: absolute; inset: 0; border-radius: 9999px; background: #4ade80; opacity: .75; animation: ds-ping 1s cubic-bezier(0,0,.2,1) infinite; } .ds-live-dot { position: relative; width: 10px; height: 10px; border-radius: 9999px; background: #16a34a; } @keyframes ds-ping { 75%, 100% { transform: scale(2); opacity: 0; } } @media (prefers-reduced-motion: reduce) { .ds-live-halo { animation: none; } }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Code / team field with label, example hint and inline icon slot.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">команда <span class=\"ds-hint\">(например: Москва)</span></span><input class=\"ds-input\" placeholder=\"Москва\"></label>",
+      "css": ".ds-field { font-family: Inter, system-ui, arial, sans-serif; display: block; width: 320px; } .ds-label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px; } .ds-hint { font-size: 12px; font-weight: 400; color: #6b7280; } .ds-input { font-family: Inter, system-ui, arial, sans-serif; width: 100%; padding: 8px 80px 8px 12px; font-size: 16px; color: #111827; background: #fff; border: 1px solid #d1d5db; border-radius: 6px; } .ds-input:focus { outline: none; box-shadow: 0 0 0 2px #3b82f6; }"
+    },
+    {
+      "name": "Group Card",
+      "kind": "card",
+      "refersTo": "group-card",
+      "description": "White near-flat card per group; green border when any round is live.",
+      "html": "<div class=\"ds-card ds-card-live\"><h2 class=\"ds-card-title\">Юниоры 18–19</h2><p class=\"ds-card-sub\">Финал <span class=\"ds-badge\">6 / 8 пролезло</span></p></div>",
+      "css": ".ds-card { font-family: Inter, system-ui, arial, sans-serif; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: box-shadow 150ms; width: 360px; } .ds-card:hover { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); } .ds-card-live { border-color: #16a34a; } .ds-card-title { margin: 0 0 8px; font-size: 20px; font-weight: 700; color: #111827; } .ds-card-sub { margin: 0; display: flex; justify-content: space-between; font-size: 18px; font-weight: 600; color: #111827; } .ds-badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 9999px; background: #dbeafe; color: #1e40af; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Results Table",
+      "kind": "custom",
+      "refersTo": "row-own-team",
+      "description": "Dense live protocol: team rows blue, podium rows green, changed rows flash yellow.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Место</th><th>Фамилия, Имя</th><th>Команда</th><th>Рез.</th></tr></thead><tbody><tr class=\"ds-podium\"><td>1</td><td>Иванов Пётр</td><td>Москва</td><td>TOP</td></tr><tr class=\"ds-podium ds-flash\"><td>2</td><td>Сидоров Илья</td><td>Пермь</td><td>41+</td></tr><tr class=\"ds-own ds-after\"><td>4</td><td>Петров Олег</td><td>Воронеж</td><td>38</td></tr><tr><td>5</td><td>Смирнов Иван</td><td>Тюмень</td><td>35+</td></tr></tbody></table>",
+      "css": ".ds-table { font-family: Inter, system-ui, arial, sans-serif; width: 420px; border-collapse: collapse; line-height: 1; font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 500; } .ds-table th { text-align: left; padding: 4px 8px; background: #fff; border-bottom: 1px solid #e5e7eb; } .ds-table td { padding: 4px 8px; } .ds-table tbody tr { background: #fff; border-bottom: 1px solid #fff; } .ds-table tr.ds-podium { background: #bbf7d0; } .ds-table tr.ds-own { background: #bfdbfe; } .ds-table tr.ds-after { border-top: 2px solid #22c55e; } .ds-table tr.ds-flash { animation: ds-flash 1.8s ease-out infinite; } @keyframes ds-flash { from { background: #fef08a; } to { background: #bbf7d0; } }"
+    },
+    {
+      "name": "Error Panel",
+      "kind": "card",
+      "refersTo": "error-panel",
+      "description": "Shown when a protocol failed to load and nothing is cached.",
+      "html": "<div class=\"ds-error\" role=\"alert\"><h3>Не удалось загрузить протокол</h3><p>Сайт ФСР не отвечает.</p><button class=\"ds-err-btn\">Повторить</button></div>",
+      "css": ".ds-error { font-family: Inter, system-ui, arial, sans-serif; background: #fef2f2; color: #991b1b; border-radius: 8px; padding: 24px 16px; text-align: center; width: 360px; } .ds-error h3 { margin: 0 0 4px; font-size: 18px; font-weight: 600; } .ds-error p { margin: 0 0 16px; } .ds-err-btn { font-family: Inter, system-ui, arial, sans-serif; background: #dc2626; color: #fff; border: none; border-radius: 8px; padding: 6px 16px; font-size: 14px; font-weight: 500; cursor: pointer; } .ds-err-btn:hover { background: #b91c1c; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Annotated Scoreboard",
+    "overview": "ClimbNow is the scoreboard at the foot of the wall, carried in a coach's pocket. Two people use the same screen: the fan in the stands who wants to see who is climbing right now and how the order just shifted, and the coach or parent who needs to find their own climbers among dozens of groups without reading every row. The design serves both by treating the results table as the product and everything else as annotation on it: a live dot on what is happening now, a blue band on your people, a green band on the podium, a brief yellow flash when a result changes.\n\nThe mood is utilitarian and calm. The surface is a neutral white-on-light-gray field; blue is reserved for things you act on and for \"yours\"; green is reserved for \"live\" and \"top places\". Data density wins over decoration: tables are tight (`leading-none`, 12–14px, tabular numerals), cards are near-flat, and there is exactly one decorative flourish in the whole system, the teal→emerald→blue gradient on the ClimbNow wordmark. The interface is in Russian and must render Cyrillic with real Inter glyphs, never a fallback.\n\nMotion carries meaning, not flair. Rows that change position glide to their new place; rows whose result changed flash. On a phone in a noisy gym, those two signals replace reading the table twice.",
+    "keyCharacteristics": [
+      "Results tables are the hero; chrome stays gray and quiet around them.",
+      "Color is semantic, never decorative: blue = action / your team, green = live / podium / data exists, yellow = just changed, red = boulder attempts or errors.",
+      "Near-flat depth: white cards on `#f9fafb`, `shadow-sm` at rest, `shadow-md` on hover.",
+      "Mobile-first density: sticky discipline tabs, sticky climber-name column, collapsible header.",
+      "One brand gesture: the gradient wordmark. Nothing else gets a gradient."
+    ],
+    "rules": [
+      {
+        "name": "The Semantic Color Rule",
+        "body": "Every non-gray color in a table means exactly one thing: blue is yours, green is live or podium, yellow just changed, red is a boulder attempt. Never reuse these hues for decoration or for a different meaning.",
+        "section": "colors"
+      },
+      {
+        "name": "The Green Check Rule",
+        "body": "The green check on a subgroup tab means \"results data exists\" (in progress or finished), not \"finished\". It stays green; do not gray it out or recolor it for completed rounds.",
+        "section": "colors"
+      },
+      {
+        "name": "The One Gradient Rule",
+        "body": "The teal→emerald→blue gradient belongs to the ClimbNow wordmark and nothing else.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Numbers Rule",
+        "body": "Any number that can change during a live round (rank, score, attempts, counters) is set in tabular numerals so columns do not jitter on update.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat at rest. Only cards (`shadow-sm` → `shadow-md` on hover), floating dropdowns and the round toggle buttons cast shadows. Don't add shadows to tabs, tables, badges or panels.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep the results table as the visual center; new UI around it stays gray, white and small.",
+      "**Do** use Signal Blue (#2563eb) for actions and Own-Team Blue (#bfdbfe) for \"your climbers\", and nothing else.",
+      "**Do** use Live Green (#16a34a) for live state and the \"data exists\" check, and keep that check green for finished rounds.",
+      "**Do** set every changing number in tabular numerals.",
+      "**Do** use `.focus-ring` (2px Focus Blue) on every new interactive element; add `ring-inset` inside overflow containers and `ring-offset-2` on filled buttons.",
+      "**Do** enlarge small icon hit areas with an invisible `::before` inset rather than extra visible padding.",
+      "**Do** keep meaningful feedback (flash, live dot) under reduced motion and drop only movement (row glide, ping, spin).",
+      "**Do** write UI copy in Russian and check it with Cyrillic glyphs in Inter.",
+      "**Do** show an explicit state (loading, error with \"Повторить\", not found, no protocols yet, welcome) instead of an empty area."
+    ],
+    "donts": [
+      "**Don't** introduce new hues for decoration; the color set above is already fully assigned to meanings.",
+      "**Don't** use the wordmark gradient on buttons, headings or backgrounds.",
+      "**Don't** add shadows beyond card rest/hover, dropdowns and round toggles.",
+      "**Don't** loosen table density (line-height, padding) to \"breathe\"; coaches scan dozens of rows on a phone.",
+      "**Don't** hide already loaded results on a failed refresh; show the Stale Amber note above the table instead.",
+      "**Don't** rely on hover for anything essential; hover is disabled on touch devices."
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect, ReactNode } from 'react'
+import { useState, useRef, useEffect, useId, ReactNode } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretDown, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
@@ -20,6 +20,7 @@ interface AutocompleteProps<T extends Item = string | Record<string, unknown>> {
   property?: keyof T | string
   renderItem?: RenderItem<T>
   dropdownWidth?: number
+  isLoading?: boolean
 }
 
 export const Autocomplete = <T extends Item = string>({
@@ -33,11 +34,17 @@ export const Autocomplete = <T extends Item = string>({
   property = '',
   renderItem,
   dropdownWidth,
+  isLoading = false,
 }: AutocompleteProps<T>) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [filteredData, setFilteredData] = useState<T[]>([])
+  // true после клика по стрелке — показываем все варианты без фильтра до следующего ввода/выбора
+  const [showAll, setShowAll] = useState(false)
+  // Вариант, подсвеченный стрелками: фокус остаётся в поле, список только отмечает активный пункт (паттерн combobox)
+  const [activeIndex, setActiveIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const listId = useId()
+  const getOptionId = (index: number) => `${listId}-option-${index}`
 
   const getValue = (item: T, prop: keyof T | string): string | T => {
     if (prop && typeof item === 'object' && prop in item) {
@@ -48,19 +55,22 @@ export const Autocomplete = <T extends Item = string>({
 
   const getTemplate = (item: T) => renderItem ? renderItem(item, value!) : BaseTemplate(item as string, value as string)
 
-  useEffect(() => {
-    if (!value) {
-      setFilteredData([])
-      return
-    }
+  const getFilteredData = (): T[] => {
+    if (showAll) return data
+    if (!value) return []
     const textValue = String(getValue(value, property)).toLowerCase()
-    const filtered = data?.filter((item) => {
+    return data?.filter((item) => {
       const itemValue = String(getValue(item, property)).toLowerCase()
       return itemValue.includes(textValue)
     }) || []
-    setFilteredData(filtered)
+  }
+  const filteredData = getFilteredData()
+  const isListOpen = isOpen && filteredData.length > 0
+
+  useEffect(() => {
+    if (activeIndex >= 0) document.getElementById(getOptionId(activeIndex))?.scrollIntoView({ block: 'nearest' })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value, data, property])
+  }, [activeIndex])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,12 +99,15 @@ export const Autocomplete = <T extends Item = string>({
           : textValue)
       : textValue
     onChange(newValue as T)
+    setShowAll(false)
     setIsOpen(true)
+    setActiveIndex(-1)
   }
 
   const handleCaretClick = () => {
-    setFilteredData(data)
+    setShowAll(true)
     setIsOpen(true)
+    setActiveIndex(-1)
   }
 
   const handleSelect = (item: T) => {
@@ -103,13 +116,44 @@ export const Autocomplete = <T extends Item = string>({
       : item
     onChange(newValue as T)
     setIsOpen(false)
-    setFilteredData([])
+    setShowAll(false)
+    setActiveIndex(-1)
+  }
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      // Пустое поле: стрелка открывает весь список, как клик по треугольнику
+      if (!isListOpen) {
+        if (!filteredData.length) setShowAll(true)
+        setIsOpen(true)
+        setActiveIndex(e.key === 'ArrowDown' ? 0 : (filteredData.length || data.length) - 1)
+        return
+      }
+      const step = e.key === 'ArrowDown' ? 1 : -1
+      setActiveIndex((index) => (index + step + filteredData.length) % filteredData.length)
+    } else if (e.key === 'Enter' && isListOpen && filteredData[activeIndex] !== undefined) {
+      e.preventDefault()
+      handleSelect(filteredData[activeIndex])
+    }
   }
 
   const visibleValue = getValue(value!, property)
 
   return (
-    <div className="w-full md:w-auto relative">
+    <div
+      className="w-full md:w-auto relative"
+      // Фокус ушёл из поля и списка (Tab дальше) — список закрываем, иначе соседние выпадашки открыты одновременно и перекрывают друг друга
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setIsOpen(false)
+      }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape' && isOpen) {
+          setIsOpen(false)
+          inputRef.current?.focus()
+        }
+      }}
+    >
       {label && (
         <label
           htmlFor={`autocomplete-${String(property)}`}
@@ -130,38 +174,60 @@ export const Autocomplete = <T extends Item = string>({
           value={String(visibleValue)}
           onChange={handleInputChange}
           onFocus={() => setIsOpen(true)}
+          onKeyDown={handleInputKeyDown}
+          role="combobox"
+          aria-expanded={isListOpen}
+          aria-controls={listId}
+          aria-autocomplete="list"
+          aria-activedescendant={isListOpen && activeIndex >= 0 ? getOptionId(activeIndex) : undefined}
           placeholder={placeholder}
+          // Иначе на телефоне поверх нашего списка всплывает автозаполнение браузера, а клавиатура правит коды
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-20"
-          disabled={!data?.length}
         />
         <button
           type="button"
           onClick={handleCaretClick}
-          className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
-          aria-label={`Open ${String(property)} autocomplete`}
+          className={`absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 rounded focus-ring px-2 py-2`}
+          aria-label={label ? `Показать варианты: ${label}` : 'Показать варианты'}
+          disabled={!data.length}
         >
-          <FontAwesomeIcon icon={data.length ? faCaretDown : faSpinner} spin={!data.length} />
+          <FontAwesomeIcon icon={isLoading ? faSpinner : faCaretDown} spin={isLoading} />
         </button>
       </div>
 
-      {isOpen && filteredData.length > 0 && (
+      {isListOpen && (
         <div
           ref={dropdownRef}
-          className={`text-sm absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[500px] overflow-y-auto
+          id={listId}
+          role="listbox"
+          aria-label={label || undefined}
+          // Фокус остаётся в поле: Safari не фокусирует кнопки по клику, и blur закрыл бы список раньше выбора
+          onMouseDown={(e) => e.preventDefault()}
+          className={`text-sm absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[min(500px,50dvh)] overflow-y-auto overscroll-contain
           `}
-          style={{ minWidth: dropdownWidth ? `${dropdownWidth}px` : undefined }}
+          // Не шире экрана телефона и не под экранной клавиатурой
+          style={{ minWidth: dropdownWidth ? `min(${dropdownWidth}px, calc(100vw - 1.5rem))` : undefined }}
         >
-        {filteredData.map((item) => {
+        {filteredData.map((item, index) => {
           const itemValue = getTemplate(item)
+          const isActive = index === activeIndex
           return (
-            <button
+            // Не кнопка: внутри combobox пункты не получают фокус, выбор — клик или Enter из поля
+            <div
               key={typeof item === 'object' ? JSON.stringify(item) : item}
-              type="button"
+              id={getOptionId(index)}
+              role="option"
+              aria-selected={isActive}
               onClick={() => handleSelect(item)}
-              className="w-full text-left text-sm text-gray-700 border-b border-b-gray-200 border-r border-r-gray-200"
+              onMouseEnter={() => setActiveIndex(index)}
+              // Контур рисуется поверх фона шаблона пункта (фон текущего соревнования, выбранного значения)
+              className={`w-full cursor-pointer text-left text-sm text-gray-700 border-b border-b-gray-200 border-r border-r-gray-200 ${isActive ? 'outline outline-2 -outline-offset-2 outline-blue-500' : ''}`}
             >
               {itemValue}
-            </button>
+            </div>
           )
         })}
         </div>

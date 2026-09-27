@@ -2,7 +2,7 @@
 
 declare global {
   interface Window {
-    ym?: (...args: any[]) => void;
+    ym?: (...args: unknown[]) => void;
   }
 }
 

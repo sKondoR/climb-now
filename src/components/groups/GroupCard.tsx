@@ -9,13 +9,10 @@ import { faChevronUp, faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { observer } from 'mobx-react-lite'
 import { rootStore } from '@/src/store/root.store'
 
-import dynamic from 'next/dynamic'
 import { LazyLoader } from './LazyLoader'
-
-const Table = dynamic(
-  () => import('../tables/Table'),
-  { ssr: false }
-)
+// Статический импорт: ленивый чанк таблицы (~4 КБ) добавлял отдельный запрос перед загрузкой результатов
+import Table from '../tables/Table'
+import ErrorBoundary from '@/src/shared/components/ErrorBoundary/ErrorBoundary'
 
 interface GroupCardProps {
   group: Group
@@ -56,20 +53,21 @@ function GroupCard({ group }: GroupCardProps) {
       <div className={`
         ${isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
         ${isExpanded && !isCommandFilterEnabled ? 'min-h-[400px] ' : ' '}
-        ${isOnline ? 'border-green-500 ' : 'border-gray-200 '}`}
+        ${isOnline ? 'border-live ' : 'border-gray-200 '}`}
       >
-        <div className={`p-4
+        <div className={`p-3 md:p-4
           ${!isExpanded ? 'bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow ' : ' '}
-          ${isOnline ? 'border-green-500' : 'border-gray-200'}`}
+          ${isOnline ? 'border-live' : 'border-gray-200'}`}
         >
-          <div className="w-full flex flex-start items-center relative cursor-pointer" onClick={toggleHeader}>
-            <h2 className="text-xl font-bold text-gray-900 mr-2">
+          <div className="w-full flex items-center relative cursor-pointer pr-10" onClick={toggleHeader}>
+            <h2 className="text-xl font-bold text-gray-900 mr-2 min-w-0 break-words">
               {group.title} 
             </h2>
             <StatusIcon status={isOnline} onlyOnline />
             <button
-                className="absolute bottom-0 right-0 transform bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors duration-200 focus:outline-none"
-                aria-label={isExpanded ? "Свернуть шапку" : "Развернуть шапку"}
+                className="absolute bottom-0 right-0 transform before:absolute before:content-[''] before:-inset-1.5 bg-white border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors duration-200 focus-ring"
+                aria-label={isExpanded ? "Свернуть группу" : "Развернуть группу"}
+                aria-expanded={isExpanded}
               >
                 <FontAwesomeIcon 
                   icon={isExpanded ? faChevronUp : faChevronDown} 
@@ -78,20 +76,22 @@ function GroupCard({ group }: GroupCardProps) {
             </button>
           </div>
           <LazyLoader>
-          <div 
+          <div
+            inert={!isExpanded}
             className={`overflow-hidden transition-all duration-300 ease-in-out  ${
-              isExpanded ? 'opacommand-100' : 'max-h-0 opacommand-0'
+              isExpanded ? 'opacity-100' : 'max-h-0 opacity-0'
             }`}
           >
           {/* Табы */}
-          <div className="flex flex-wrap space-x-1 mb-1 mt-2">
+          <div className="flex flex-wrap gap-x-1 mb-1 mt-2" role="group" aria-label={`Протоколы: ${group.title}`}>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
+                aria-pressed={activeTab === tab.id}
                 onClick={() => {
                   setActiveTab(tab.id)
                 }}
-                className={`flex border-2 px-2 py-1 mb-1 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200 ${
+                className={`flex items-center border-2 px-2 py-2 md:py-1 mb-1 rounded-lg text-sm font-medium transition-colors focus-ring focus-visible:ring-inset bg-gray-100 text-gray-700 hover:bg-gray-200 ${
                   activeTab === tab.id
                     ? 'border-blue-600'
                     : 'border-gray-100'
@@ -104,6 +104,7 @@ function GroupCard({ group }: GroupCardProps) {
           </div>
           
           {isExpanded ?
+          <ErrorBoundary resetKey={`${code}/${activeTab}`}>
           <Table
             subGroup={group.subgroups.find(s => s.id === activeTab)}
             code={code}
@@ -111,7 +112,8 @@ function GroupCard({ group }: GroupCardProps) {
             command={command}
             isNamesFilterEnabled={isNamesFilterEnabled}
             names={names}            
-          /> : null}
+          />
+          </ErrorBoundary> : null}
           </div>
           </LazyLoader>
         </div>

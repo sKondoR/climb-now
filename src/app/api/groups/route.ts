@@ -1,43 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server'
 import axios from 'axios'
 import { parseResults } from '@/shared/parser/parsers'
-import { EXTERNAL_API_BASE_URL } from '@/shared/constants'
-import { ApiError, handleApiError } from '@/shared/errorHandler'
+import { EXTERNAL_API_BASE_URL, EXTERNAL_API_TIMEOUT, SAFE_PATH_SEGMENT } from '@/shared/constants'
+import { handleApiError } from '@/shared/errorHandler'
+import { cached } from '@/shared/upstreamCache'
 
 export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
-  
+
   if (!code) {
     return NextResponse.json(null)
   }
 
+  if (!SAFE_PATH_SEGMENT.test(code)) {
+    return NextResponse.json({ error: 'Invalid code parameter' }, { status: 400 })
+  }
+
   try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => {
-      controller.abort()
-    }, 10000)
-    
-    // Ensure timeout is cleared even if there's an error
-    try {
-      // toDo: Add random delay between 50-150ms to avoid rate limiting
-      const response = await axios.get(`${EXTERNAL_API_BASE_URL}${code}/index.html`)
-      
-      clearTimeout(timeoutId)
-      
-      if (response.status >= 400) {
-        throw new ApiError(`Failed to fetch results from external API: ${response.statusText}`, response.status)
-      }
+    // toDo: Add random delay between 50-150ms to avoid rate limiting
+    const url = `${EXTERNAL_API_BASE_URL}${code}/index.html`
+    const parsedResults = await cached(url, async () => {
+      const response = await axios.get(url, { timeout: EXTERNAL_API_TIMEOUT })
+      return parseResults(response.data)
+    })
 
-      const html = response.data
-      const parsedResults = parseResults(html)
-
-      return NextResponse.json(parsedResults)
-    } catch (error) {
-      clearTimeout(timeoutId)
-      throw error
-    }
+    return NextResponse.json(parsedResults)
   } catch (error) {
     return handleApiError(error)
   }

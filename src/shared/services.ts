@@ -156,35 +156,20 @@ export const healthCheck = async (): Promise<BaseResponse> => {
 /**
  * Получает результаты для указанной группы
  * @param code - код группы
- * @returns Promise<Discipline[] | null> - массив дисциплин или null в случае ошибки
+ * @returns Promise<Discipline[] | null> - массив дисциплин или null, если соревнование не найдено
+ * @throws Error - если сайт ФСР или сеть недоступны
  */
 export const fetchResults = async (code: string): Promise<Discipline[] | null> => {
-  let lastError: Error | null = null
+  const response = await fetch(`/api/groups?code=${encodeURIComponent(code)}`)
 
-    try {
-      console.log(`Fetching results for code: ${code}`)
-      const response = await fetch(`/api/groups?code=${code}`)
-
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      console.log(`Successfully fetched results for code: ${code}`)
-      return data as Discipline[]
-
-    } catch (error) {
-      lastError = error as Error
-      console.error(`Error fetching results:`, error)
-    }
-
-  // Обрабатываем специфические ошибки
-  if (lastError) {
-    if (lastError.name === 'AbortError') {
-      console.error('Fetch request timed out for code:', code)
-    } else if (lastError.name === 'TypeError' && lastError.message.includes('fetch failed')) {
-      console.error('Network error occurred for code:', code, lastError.message)
-    }
+  // 400 — код с недопустимыми символами (например, набран в русской раскладке): такого соревнования нет, сайт ФСР тут ни при чём
+  if (response.status === 400) {
+    return null
   }
-  return null
+
+  if (!response.ok) {
+    throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
+  }
+
+  return await response.json() as Discipline[] | null
 }

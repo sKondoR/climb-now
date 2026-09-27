@@ -15,11 +15,13 @@ export default function LinkToEvent({ code }: LinkToEventProps): ReactNode | nul
   return (
     <a
       href={`${EXTERNAL_API_BASE_URL}${sanitizedCode}/index.html`}
-      className="block text-2xl mt-8 absolute top-[2px] right-9 z-5"
+      className="block text-2xl mt-8 absolute top-[2px] right-9 z-[5] rounded before:absolute before:content-[''] before:-inset-2.5 focus-ring"
       target="_blank"
-      title="открыть на сайте федерации скалолазанья"
+      rel="noopener noreferrer"
+      title="Открыть соревнование на сайте ФСР"
+      aria-label="Открыть соревнование на сайте ФСР"
     >
-      <FontAwesomeIcon icon={faExternalLinkSquare} className={`text-teal-500 hover:text-blue-700 cursor-pointer`}  />
+      <FontAwesomeIcon icon={faExternalLinkSquare} className={`text-teal-600 hover:text-blue-700 cursor-pointer`}  />
     </a>
   )
 }

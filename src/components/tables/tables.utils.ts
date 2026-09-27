@@ -69,16 +69,40 @@ export const getFinalPlaces = (resultsLength: number, standard: number) => {
     return standard - 6
 }
 
-export function getRowClasses({ result, command, names, isNamesFilterEnabled, isFinal }: getRowClassesProps) { 
-    const isSameCommandRow = !isNamesFilterEnabled && isCommandMatch(result.command, command)
-    const isSameNameRow = isNamesFilterEnabled && isNameMatch(result.name, names)
+// own — своя команда или скалолаз из списка, podium — призёр финала, qualified — проходит дальше (класс q в протоколе ФСР)
+export type RowHighlight = 'own' | 'podium' | 'qualified' | null
+
+type OwnRowProps = Pick<getRowClassesProps, 'command' | 'names' | 'isNamesFilterEnabled'>
+
+// «Свои» — выбранная команда, а в режиме фамилий — введённые скалолазы (тоже команда). Одно правило для подсветки и фильтра
+export const isOwnRow = (result: ResultsItem, { command, names, isNamesFilterEnabled }: OwnRowProps) =>
+    isNamesFilterEnabled ? isNameMatch(result.name, names) : isCommandMatch(result.command, command)
+
+// Флажок «только команда»: свои плюс первое место для ориентира; если своих нет — пусто
+export function filterOwnResults<T extends ResultsItem>(results: T[], props: OwnRowProps): T[] {
+    if (!results.some((result) => isOwnRow(result, props))) return []
+    return results.filter((result) => result.rank === '1' || isOwnRow(result, props))
+}
+
+export function getRowHighlight({ result, command, names, isNamesFilterEnabled, isFinal }: getRowClassesProps): RowHighlight {
     const rank = Number.parseInt(result['rank'])
-    if (isSameCommandRow || isSameNameRow) {
-        return ' bg-blue-200'
-    }
-    if (result.isHighlighted || (result['rank'] && isFinal && PRIZE_PLACES >= rank)) {
-        return ' bg-green-200'
-    }
+    if (isOwnRow(result, { command, names, isNamesFilterEnabled })) return 'own'
+    if (result['rank'] && isFinal && PRIZE_PLACES >= rank) return 'podium'
+    if (result.isHighlighted) return 'qualified'
+    return null
+}
+
+// Цвет строки — не единственный признак: экранный чтец слышит эту приписку после имени
+export const ROW_HIGHLIGHT_LABELS: Record<Exclude<RowHighlight, null>, string> = {
+    own: 'ваш скалолаз',
+    podium: 'призёр',
+    qualified: 'проходит дальше',
+}
+
+export function getRowClasses(props: getRowClassesProps) {
+    const highlight = getRowHighlight(props)
+    if (highlight === 'own') return ' bg-blue-200'
+    if (highlight) return ' bg-green-200'
     return ''
 }
 
@@ -89,3 +113,18 @@ export function getClimbedCount({ results, isLead, isBoulder }: { results: Resul
         return results.length
     }).length
 }
+
+// Ключ строки — сам скалолаз, а не позиция: после пересортировки React переиспользует ту же строку, и её можно довести до нового места
+export function getRowKeys(results: ResultsItem[]) {
+    const seen = new Map<string, number>()
+    return results.map((result) => {
+        const base = `${result.name}|${result.command}`
+        const count = seen.get(base) ?? 0
+        seen.set(base, count + 1)
+        return count ? `${base}|${count}` : base
+    })
+}
+
+// Место меняется у всех, кого обогнали, поэтому в подпись не входит: подсвечиваем только тех, у кого изменился собственный результат
+export const getRowSignature = (result: ResultsItem) =>
+    JSON.stringify(Object.entries(result).filter(([key]) => key !== 'rank' && key !== 'isHighlighted'))

@@ -1,7 +1,6 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 .vscode
-.kilocode
 
 # dependencies
 /node_modules
@@ -39,16 +38,8 @@ next-env.d.ts
 #drizzle
 drizzle
 
-.agents
-.ai-factory
-.serena
-.ai-factory.json
-.qwen
 
 API_TYPES_README.md
 OPENAPI_TYPES_USAGE.md
 
-.dependency-cruiser.js
-graph.svg
 
-/climb-now/

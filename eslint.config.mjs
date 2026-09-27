@@ -1,17 +1,11 @@
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
-import { FlatCompat } from '@eslint/eslintrc'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals'),
-  ...compat.extends('next/typescript'),
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'coverage/**', 'next-env.d.ts', 'climb-now/**']),
   {
     rules: {
       // Дополнительные правила для максимизации Score в Lighthouse
@@ -20,6 +14,6 @@ const eslintConfig = [
       "@next/next/no-sync-scripts": "error"   // Запрет синхронных скриптов
     },
   },
-];
+]);
 
 export default eslintConfig

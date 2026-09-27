@@ -12,11 +12,12 @@ const Footer = () => {
   });
 
   return (
-    <footer className="absolute bottom-0 py-2 flex justify-between items-center">
-      <div className="text-center text-xs text-gray-500">
+    // В потоке, а не absolute: на узком экране строка переносится и наезжала на последнюю карточку
+    <footer className="mt-auto pt-8 pb-2 flex flex-wrap gap-x-5 gap-y-1 items-center">
+      <div className="text-xs text-gray-500">
         Версия: {formattedTime}
       </div>
-      <div className="text-xs text-gray-500 ml-5">
+      <div className="text-xs text-gray-500">
         <span>Контакты: </span>
         <a href="https://t.me/sergeykondrashin" target="_blank" rel="noopener noreferrer" className="inline-block">
           <Image

@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    /* Единое кольцо фокуса с клавиатуры для кнопок и ссылок. Варианты — модификаторами: focus-visible:ring-inset (табы в контейнерах с overflow), focus-visible:ring-offset-2 (залитые кнопки) */
+    .focus-ring {
+        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500;
+    }
+}
+
 .no-scrollbar::-webkit-scrollbar {
     display: none;
     width: 2px;

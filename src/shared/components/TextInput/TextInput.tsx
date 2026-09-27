@@ -65,7 +65,7 @@ export const TextInput = ({
         <button
           type="button"
           onClick={handleOpenClick}
-          className={`text-base absolute right-2 top-0 text-gray-500 hover:text-gray-700 focus:outline-none px-2 py-2`}
+          className={`text-base absolute right-2 top-0 text-gray-500 hover:text-gray-700 rounded focus-ring px-2 py-2`}
           aria-label={`Expand input`}
         >
           <FontAwesomeIcon icon={isOpened ? faDownLeftAndUpRightToCenter : faUpRightAndDownLeftFromCenter} />

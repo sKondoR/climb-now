@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import axios from 'axios';
 
 export class ApiError extends Error {
   constructor(
@@ -11,7 +12,21 @@ export class ApiError extends Error {
   }
 }
 
-export const handleApiError = (error: unknown): NextResponse => {
+// Ошибки axios от c-f-r.ru переводим в ApiError, чтобы клиент отличал таймаут и недоступность сайта
+const toApiError = (error: unknown): unknown => {
+  if (!axios.isAxiosError(error)) return error;
+  if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
+    return createTimeoutError('External API timeout');
+  }
+  if (error.response) {
+    const status = error.response.status;
+    return new ApiError(`External API responded with ${status}`, status >= 500 ? 502 : status);
+  }
+  return createNetworkError('External API unavailable');
+};
+
+export const handleApiError = (rawError: unknown): NextResponse => {
+  const error = toApiError(rawError);
   if (error instanceof ApiError) {
     console.error('API Error:', error.message, 'Status:', error.statusCode);
     

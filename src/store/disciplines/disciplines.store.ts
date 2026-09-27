@@ -30,6 +30,9 @@ export class DisciplinesStore {
   groupsData: Discipline[] | null = null
   isGroupsLoading: boolean = false
   groupsError: string | null = null
+  // Защита от гонки: при наборе кода запросы уходят на каждый символ, учитываем только последний
+  private requestId = 0
+  private lastRequest: { code: string, name?: string } | null = null
 
   constructor(queryClient: QueryClient) {
     this.queryClient = queryClient
@@ -37,6 +40,8 @@ export class DisciplinesStore {
   }
 
   async fetchGroups(code: string, name?: string) {
+    const requestId = ++this.requestId
+    this.lastRequest = { code, name }
     const url = new URL(window.location.href)
     this.setGroupsData(null)
     this.setGroupsError(null)
@@ -50,20 +55,30 @@ export class DisciplinesStore {
     const suffixes = getSuffixes(name)
     let data = null
     let usedCode = code
+    let fetchError: unknown = null
 
     try {
       for (const suffix of suffixes) {
         const currentCode = code + suffix
         try {
           data = await fetchResults(currentCode)
+          if (requestId !== this.requestId) return
           if (data) {
             usedCode = currentCode
             break
           }
         } catch (error) {
-          console.log(error)
+          if (requestId !== this.requestId) return
+          console.error(error)
+          fetchError = error
           continue
         }
+      }
+
+      // Код, который не удалось проверить из-за сети, не считаем «не найденным»
+      if (!data && fetchError) {
+        this.setGroupsError('Сайт ФСР не отвечает')
+        return
       }
 
       this.setGroupsData(data)
@@ -71,8 +86,8 @@ export class DisciplinesStore {
         url.searchParams.set('code', usedCode)
         if (usedCode !== code) {
           rootStore.formStore.setCode(usedCode)
-          patchEvent(code, usedCode)
-        }        
+          patchEvent(code, usedCode).catch(() => undefined)
+        }
       } else {
         url.searchParams.delete('code')
       }
@@ -80,7 +95,20 @@ export class DisciplinesStore {
     } catch (error) {
       this.setGroupsError(error instanceof Error ? error.message : 'Unknown error')
     } finally {
-      this.setIsGroupsLoading(false)
+      if (requestId === this.requestId) {
+        this.setIsGroupsLoading(false)
+      }
+    }
+  }
+
+  // Код последнего запроса: пока он не совпал с кодом из формы, запрос ещё не ушёл и «не найдено» показывать рано
+  get requestedCode() {
+    return this.lastRequest?.code ?? null
+  }
+
+  retryFetchGroups() {
+    if (this.lastRequest) {
+      this.fetchGroups(this.lastRequest.code, this.lastRequest.name)
     }
   }
 

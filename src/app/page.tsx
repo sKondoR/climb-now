@@ -4,11 +4,13 @@ import Header from '@/src/components/layout/Header'
 
 export default function HomePage() {
   return (
-    <div id="page-scroll" className="flex flex-col h-screen min-h-screen bg-gray-50 overflow-auto">
+    // relative: абсолютные элементы внутри (sr-only подписи, иконки) позиционируются от прокручиваемого блока, а не от документа — иначе они растягивали body и появлялась вторая полоса прокрутки
+    <div id="page-scroll" className="relative flex flex-col h-screen supports-[height:100dvh]:h-dvh bg-gray-50 overflow-auto">
       <Header />  
-      <main className="w-full flex-1 mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-8 md:py-8 relative">
-        <PageContent />
-        <Footer />
+      <main className="w-full flex-1 mx-auto px-3 sm:px-6 lg:px-8 pt-3 md:pt-8 flex flex-col">
+        {/* Заголовок страницы для экранного чтеца: логотип живёт в сворачиваемой (inert) части шапки */}
+        <h1 className="sr-only">ClimbNow — результаты соревнований ФСР онлайн</h1>
+        <PageContent footer={<Footer />} />
       </main>
     </div>
   )
