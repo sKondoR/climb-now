@@ -38,7 +38,8 @@ export async function proxy(request: NextRequest) {
     "default-src 'self';",
     `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' ${isDev ? "'unsafe-eval'" : ''} ${metrikaDomains};`,
     "style-src 'self' 'unsafe-inline';",
-    `img-src 'self' data: blob: ${metrikaDomains} https://yandex.ru;`,
+    // https: вместо списка доменов Метрики: заголовки ответа должны влезать в 4 КБ буфера nginx, иначе 502
+    "img-src 'self' data: blob: https:;",
     "font-src 'self';",
     `connect-src 'self' ${apiDomains} ${metrikaDomains} ${metrikaWsDomains};`,
     `frame-src blob: ${metrikaDomains};`,
