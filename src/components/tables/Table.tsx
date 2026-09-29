@@ -24,6 +24,9 @@ interface TableProps {
 
 // Имя закреплено слева: на телефоне широкие таблицы (боулдеринг) прокручиваются, а строку всё равно видно, чья она
 const STICKY_NAME_CLASS = 'sticky left-0 z-[1] bg-inherit max-md:shadow-[1px_0_0_theme(colors.gray.200)]'
+// Второстепенные колонки — приглушённым цветом, чтобы взгляд шёл к месту, имени и результату.
+// На подсвеченных строках (свои, лидеры) — на ступень темнее, чтобы на цветном фоне хватало контраста
+const SECONDARY_PROPS = ['stRank', 'command', 'qRank']
 
 export default function Table({
   subGroup,
@@ -109,7 +112,7 @@ export default function Table({
                       </td>
                     }
                     return (
-                      <td key={`${col.id}-${index}`} className={`px-1 md:px-2 py-1 text-left ${col.name === NAME_COL ? STICKY_NAME_CLASS : ''} ${col.name === NAME_COL && highlight === 'own' ? 'font-bold' : 'font-medium'}`}>
+                      <td key={`${col.id}-${index}`} className={`px-1 md:px-2 py-1 text-left ${col.name === NAME_COL ? STICKY_NAME_CLASS : ''} ${col.name === NAME_COL && highlight === 'own' ? 'font-bold' : 'font-medium'} ${SECONDARY_PROPS.includes(col.prop as string) ? (rowClass ? 'text-gray-600' : 'text-gray-500') : ''}`}>
                         {value}
                         {/* Своих видно не только по цвету: имя жирное, а экранный чтец слышит приписку */}
                         {col.name === NAME_COL && highlight && <span className="sr-only">, {ROW_HIGHLIGHT_LABELS[highlight]}</span>}
