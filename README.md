@@ -54,11 +54,20 @@ http://localhost:3000
 
 ## API
 
-Приложение использует внешнее API [https://c-f-r.ru/live/2602vrn/index.html](https://c-f-r.ru/live/2602vrn/index.html) для получения данных о результатах соревнований.
+Собственной базы данных нет: все данные парсятся на сервере из HTML двух сайтов ФСР — протоколов [c-f-r.ru/live](https://c-f-r.ru/live/2602vrn/index.html) и календаря [rusclimbing.ru/competitions](https://www.rusclimbing.ru/competitions/).
 
-Основные эндпоинты:
+| Метод | Эндпоинт | Описание |
+|---|---|---|
+| GET | `/api/groups?code=2602vrn` | Дисциплины → группы → подгруппы соревнования со статусами (online/passed/pending). `null`, если соревнования нет |
+| GET | `/api/results?code=2602vrn&subgroup=l_q_f13` | Таблица результатов подгруппы (квалификация/финал, трудность/боулдеринг) |
+| GET | `/api/events?start=2025-01-01&end=2026-10-29` | Список соревнований из календаря за период: `{ success, data: EventResponse[] }` |
+| PATCH | `/api/events/{id}` | Тело `{ "link": "2602vrn_vs" }` — исправленный код соревнования на c-f-r.ru. Принимается только исходный код с суффиксом `_vs`/`_ch`/`_perv`, если такое соревнование существует; хранится в памяти до рестарта |
+| GET | `/api/teams` | Список команд: `{ teams: string[] }` |
 
-- `/api/groups` - получение списка групп соревнований
-- `/api/results` - получение результатов по дисциплинам
+Ответы кешируются в памяти сервера: протоколы c-f-r.ru — 10 секунд, календарь — 24 часа (при недоступности сайта отдаётся последний удачный ответ).
+
+### Бывший бэкенд (отключён)
+
+Раньше списки соревнований и команд отдавал отдельный бэкенд на Python (FastAPI, проект `cfr-search-fastapi`) с базой PostgreSQL, оба развёрнуты на Vercel (`cfr-search.vercel.app`). Сейчас они отключены, а их функции перенесены в эндпоинты `/api/events` и `/api/teams` этого приложения. Причина: Доступность из РФ — `*.vercel.app` из России периодически недоступен, из-за чего пропадал список соревнований и команд и холодный запуск.
 
 [ССЫЛКА ПОШАРИТЬ КОМАНДУ](https://climbnow.ru/?code=2603perm_perv&names=%D1%8F%D1%80%D0%BE%D1%81%D0%BB%D0%B0%D0%B2%D1%86%D0%B5%D0%B2%2C%D0%BC%D0%B0%D1%80%D1%82%D1%8C%D1%8F%D0%BD%D0%BE%D0%B2%D0%B0%2C%D0%BA%D0%BE%D0%BD%D0%B4%D1%80%D0%B0%D1%88%D0%B8%D0%BD%2C%D1%80%D1%83%D0%B4%D0%BE%D0%B2%2C%D1%80%D1%83%D0%B4%D0%BD%D0%B5%D0%B2%2C%D1%87%D0%B5%D1%80%D0%B2%D0%BE%D0%BD%D1%86%D0%B5%D0%B2%D0%B0%2C%D0%BE%D0%B4%D0%BD%D0%BE%D0%B4%D0%B2%D0%BE%D1%80%D1%86%D0%B5%D0%B2%2C+%D1%82%D0%B0%D1%80%D0%B0%D1%81%D0%B5%D0%BD%D0%BA%D0%BE%2C%D1%82%D0%B0%D1%80%D0%B0%D0%BD%D0%B5%D0%BD%D0%BA%D0%BE%2C%D0%BC%D0%B0%D0%B6%D0%B0%D1%80%D0%B0%2C%D0%B5%D1%84%D0%B8%D0%BC%D0%BE%D0%B2%D0%B0%2C%D0%B2%D0%BE%D1%80%D0%BE%D0%BD%D0%BE%D0%B2%D0%B0%2C%D0%BC%D0%BE%D0%BA%D1%80%D1%83%D1%88%D0%B0%2C%D0%B7%D1%8B%D1%80%D1%8F%D0%BD%D0%BE%D0%B2%D0%B0%2C%D0%B8%D0%B2%D0%B0%D0%BD%D0%B5%D0%BD%D0%BA%D0%BE%2C+%D0%BF%D0%B0%D0%BD%D0%BA%D0%BE%D0%B2%D0%B0%2C%D0%B0%D0%B3%D0%B5%D0%B5%D0%B2%D0%B0%2C%D0%94%D0%B0%D1%88%D0%BA%D0%B5%D0%B2%D0%B8%D1%87%2C+%D0%B5%D1%80%D0%B5%D0%BC%D0%B8%D0%BD%2C%D0%BD%D0%B0%D0%B7%D0%B0%D1%80%D0%BE%D0%B2%2C%D0%BC%D1%83%D0%BD%D0%B8%D0%BD%2C%D0%BD%D0%B0%D0%B7%D0%B0%D1%80%D0%BE%D0%B2%2C%D0%BC%D0%B0%D0%BA%D0%BE%D0%B2%D0%BA%D0%B8%D0%BD%D0%B0%2C%D0%BF%D0%BE%D0%BF%D0%BE%D0%B2%D0%B0%2C%D1%87%D0%B8%D1%81%D1%82%D0%BE%D0%B2%D0%B0%2C%D0%B1%D1%80%D0%B8%D0%BB%D0%BB%D0%B8%D0%B0%D0%BD%D1%82%D0%BE%D0%B2%D0%B0%2C%D0%B4%D1%8C%D1%8F%D1%87%D0%BA%D0%BE%D0%B2%D0%B0%2C%D0%B1%D0%BE%D1%87%D0%BA%D0%BE%D0%B2%D0%B0)

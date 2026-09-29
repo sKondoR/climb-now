@@ -19,7 +19,6 @@ npm run test               # run vitest once
 npm run test:watch         # vitest watch mode
 npm run test:coverage      # vitest with v8 coverage
 npm run analyze             # production build with bundle analyzer
-npm run generate:api        # regenerate src/shared/types/api.ts from the OpenAPI spec at https://cfr-search.vercel.app/openapi.json
 ```
 
 Run a single test file or case with vitest directly, e.g.:
@@ -40,7 +39,10 @@ The external site (c-f-r.ru) is a legacy HTML site with no JSON API. All data co
 - Both routes wrap the upstream fetch + parse in `cached()` from `src/shared/upstreamCache.ts`: an in-memory 10s TTL cache keyed by upstream URL that also collapses concurrent requests into one, so many viewers polling the same live table cost one c-f-r.ru request per TTL. Failures are not cached. Served data can therefore be up to 10s older than c-f-r.ru.
 - All HTML parsing lives in `src/shared/parser/parsers.ts`, built on `parse5` with hand-rolled DOM helpers (`findElementsByTag`, `getTextContent`, `hasClass`) since there's no DOM in the Node runtime. Table column layout per result type is declared in `src/shared/tables.configs.ts` and driven through the generic `parseTable<T>()`. Boulder route cells (`r_0`/`r_1`/`r_2` classes) get special-cased parsing in `parseRouteCell`.
 - Parser behavior is pinned down with fixture-based tests in `src/shared/parser/parsers.test.ts` against mock HTML in `src/shared/parser/mocks/mockHtml.ts` — when the external site's markup changes, update the mocks and configs here rather than guessing.
-- A second, unrelated backend (`https://cfr-search.vercel.app`, aliased as `BACKEND_API_URL`) serves competition **events** and **teams** lists (not scraped results) — see `src/shared/services.ts`. Its response types are generated into `src/shared/types/api.ts` via `npm run generate:api` and re-exported through `src/shared/types/api.types.ts` (`EventResponse` is the raw API shape, `Event` is the local UI shape).
+- The competition **events** list comes from a second scraped site, the FSR calendar at `https://www.rusclimbing.ru/competitions/` (`EVENTS_SOURCE_URL`). `src/shared/eventsSource.ts` fetches it, parses it with `parseEvents()` from `src/shared/parser/events.parser.ts`, and caches it via `cachedWithFallback()` (`src/shared/backendCache.ts`: 24 h TTL, serves the last good response when the site is down). There is no database: event `id`s are an FNV-1a hash of the event's original code, so they stay stable across reloads.
+- `PATCH /api/events/{id}` stores a corrected code (e.g. `2602vrn` → `2602vrn_vs`, found by the client's suffix retry in `disciplinesStore.fetchGroups`) in an in-memory map on `globalThis`, which `GET /api/events` applies on top of the parsed list. The server accepts only the original code plus `_vs`/`_ch`/`_perv`, and only when c-f-r.ru actually has that competition. The map is lost on restart and refills itself as clients hit 404s again.
+- `/api/teams` returns the static `DEFAULT_TEAMS` list from `src/shared/constants.ts`; update it by hand when the season changes.
+- Event types live in `src/shared/types/api.ts` (originally generated from the retired `cfr-search` FastAPI backend's OpenAPI spec, now maintained by hand) and are re-exported through `src/shared/types/api.types.ts` (`EventResponse` is the API shape, `Event` is the local UI shape).
 
 ### State management: MobX stores + React Query
 

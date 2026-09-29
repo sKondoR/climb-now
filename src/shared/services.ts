@@ -1,10 +1,9 @@
 import { Discipline } from '@/shared/types'
-import { BACKEND_API_URL, DEFAULT_TEAMS } from './constants'
+import { DEFAULT_TEAMS } from './constants'
 import { getDateRange } from './utils/date.utils'
 import type {
   EventResponse,
   BaseResponseListEvent,
-  BaseResponse,
   FetchEventsOperation
 } from './types/api.types'
 import { rootStore } from '@/src/store/root.store'
@@ -116,26 +115,6 @@ export const patchEvent = async (code: string, newCode: string): Promise<EventRe
     return data
   } catch (error) {
     console.error('Patch event failed:', error)
-    throw error
-  }
-}
-
-/**
- * Проверяет здоровье API
- * @returns Promise<BaseResponse> - ответ с информацией о состоянии
- */
-export const healthCheck = async (): Promise<BaseResponse> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}health`)
-
-    if (!response.ok) {
-      throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`)
-    }
-
-    const data: BaseResponse = await response.json()
-    return data
-  } catch (error) {
-    console.error('Health check failed:', error)
     throw error
   }
 }
