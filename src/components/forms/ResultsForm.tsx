@@ -96,7 +96,7 @@ function ResultsForm() {
           placeholder="2602vrn"
           data={eventsStore.events.filter((event) => event.link) as unknown as Item[]}
           isLoading={!eventsStore.events.length && !eventsStore.error}
-          label="код соревнований"
+          label="код соревнования"
           labelTitle="Код из адреса страницы соревнования на c-f-r.ru — можно вставить ссылку целиком"
           dataLabel={DEFAULT_URL_CODE}
           property="link"
