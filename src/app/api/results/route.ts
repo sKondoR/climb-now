@@ -36,15 +36,32 @@ const fetchParsed = (code: string, subgroup: string) => {
   })
 }
 
-// В сетке финалов скорости нет команд: берём их из квалификации той же группы (e16_f_m → e_q_m).
-// Без квалификации отдаём сетку как есть — подсветка по фамилиям всё равно работает
+// В сетке финалов скорости нет команд: берём их из квалификации той же группы (e16_f_m → e_q_m, s8_4f_f10 → s_q_f10).
+// В сетке на блоках div имена сокращены («Шепелева С.») — подставляем полные, чтобы работал поиск по фамилиям.
+// Без квалификации отдаём сетку как есть
 const withSpeedCommands = async (parsed: SubGroupData, code: string, subgroup: string): Promise<SubGroupData> => {
-  const qualSubgroup = subgroup.replace(/^e\d+_f_/, 'e_q_')
+  const qualSubgroup = subgroup.replace(/^([es])\d+_\d*f_/, '$1_q_')
   if (qualSubgroup === subgroup) return parsed
   try {
     const qual = await fetchParsed(code, qualSubgroup)
-    const commands = new Map(qual.data.map((item) => [item.name, item.command]))
-    return { ...parsed, data: parsed.data.map((item) => ({ ...item, command: commands.get(item.name) ?? '' })) }
+    const climbers = new Map<string, { name: string, command: string } | null>()
+    qual.data.forEach(({ name, command }) => {
+      climbers.set(name, { name, command })
+      const [surname, firstName] = name.split(' ')
+      if (!firstName) return
+      // Длинные фамилии в сетке идут вовсе без инициала («Могильникова»).
+      // Неоднозначное сокращение (однофамильцы) не раскрываем
+      for (const short of [`${surname} ${firstName[0]}.`, surname]) {
+        climbers.set(short, climbers.has(short) ? null : { name, command })
+      }
+    })
+    return {
+      ...parsed,
+      data: parsed.data.map((item) => {
+        const climber = climbers.get(item.name)
+        return climber ? { ...item, ...climber } : { ...item, command: '' }
+      }),
+    }
   } catch {
     return parsed
   }

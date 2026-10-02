@@ -75,3 +75,15 @@ export const speedQualConfig = [
     { name: 'тр.2', prop: 'score2' },
     { name: 'результат', prop: 'score' },
 ].map((item, i) => ({ ...item, id: `sq-${i}` }));
+
+// Классическая скорость: сумма двух трасс, второго стартового номера нет. Таблица показывает те же колонки, что и обычная скорость
+export const speedClassicQualConfig = [
+    { name: 'место', prop: 'rank' },
+    {},
+    { name: 'ст.#', prop: 'stRank' },
+    { name: NAME_COL, prop: 'name' },
+    { name: COMMAND_COL, prop: 'command' },
+    { name: 'тр.1', prop: 'score1' },
+    { name: 'тр.2', prop: 'score2' },
+    { name: 'результат', prop: 'score' },
+].map((item, i) => ({ ...item, id: `scq-${i}` }));

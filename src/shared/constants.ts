@@ -20,6 +20,8 @@ export const DEFAULT_TEAMS = [
 export const DISCIPLINES = {
   LEAD: 'трудность' as const,
   SPEED: 'скорость' as const,
+  // «ЛАЗАНИЕ НА СКОРОСТЬ (К)» — классическая скорость, свои протоколы s_*
+  SPEED_CLASSIC: 'скорость (кл)' as const,
   BOULRER: 'боулдеринг' as const,
 } as const
 

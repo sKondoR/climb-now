@@ -91,7 +91,8 @@ export interface SpeedQualItem {
   name: string
   command: string
   score1: string
-  stRank2: string
+  // Только в обычной скорости: в классической (К) второго стартового номера нет
+  stRank2?: string
   score2: string
   score: string
 }

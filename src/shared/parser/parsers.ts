@@ -1,6 +1,6 @@
 import { parse } from 'parse5'
 
-import { leadQualConfig, leadQualResultsConfig, leadFinalConfig, boulderQualConfig, boulderFinalConfig, speedQualConfig } from '@/shared/tables.configs'
+import { leadQualConfig, leadQualResultsConfig, leadFinalConfig, boulderQualConfig, boulderFinalConfig, speedQualConfig, speedClassicQualConfig } from '@/shared/tables.configs'
 
 import type { Parse5Document, Parse5Element, Parse5Node, Parse5DocumentFragment, Parse5ChildNode } from './parsers.types'
 
@@ -68,7 +68,7 @@ export const parseResults = (html: string): Discipline[] | null => {
       }
       data.push({
         discipline,
-        groups: discipline === DISCIPLINES.SPEED ? groups.map(mergeSpeedFinals) : groups,
+        groups: discipline === DISCIPLINES.SPEED || discipline === DISCIPLINES.SPEED_CLASSIC ? groups.map(mergeSpeedFinals) : groups,
       })
     })
     
@@ -113,7 +113,7 @@ export const parseResultsTable = (html: string): SubGroupData => {
     result.data = parseBoulderFinal(document)
   }
   if (isSpeed && !isFinal) {
-    result.data = parseSpeedQual(document)
+    result.data = documentTitle.includes('(к)') ? parseSpeedClassicQual(document) : parseSpeedQual(document)
   }
   if (isSpeed && isFinal) {
     result.data = parseSpeedFinal(document)
@@ -175,6 +175,10 @@ export const parseSpeedQual = (document: Parse5DocumentFragment): SpeedQualItem[
   return parseTable<SpeedQualItem>(document, speedQualConfig as Array<{ prop: keyof SpeedQualItem }>)
 }
 
+export const parseSpeedClassicQual = (document: Parse5DocumentFragment): SpeedQualItem[] => {
+  return parseTable<SpeedQualItem>(document, speedClassicQualConfig as Array<{ prop: keyof SpeedQualItem }>)
+}
+
 // 1/8, 1/4, полуфинал и финал скорости ведут на одну и ту же сетку: оставляем один таб «Финал»
 export const mergeSpeedFinals = (group: Group): Group => {
   const finals = group.subgroups.filter((subgroup) => subgroup.title.toLowerCase().includes('финал'))
@@ -191,44 +195,82 @@ export const mergeSpeedFinals = (group: Group): Group => {
   }
 }
 
-const getSpeedRoundName = (heats: number, isLast: boolean) => {
-  if (isLast) return 'Финал'
-  if (heats === 2) return 'Полуфинал'
-  return `1/${heats} финала`
+// Раунд называем по удалённости от финала: 0 — финал, 1 — полуфинал, 2 — 1/4, 3 — 1/8
+const getSpeedRoundName = (stepsToFinal: number) => {
+  if (stepsToFinal === 0) return 'Финал'
+  if (stepsToFinal === 1) return 'Полуфинал'
+  return `1/${2 ** stepsToFinal} финала`
 }
 
-// Сетка финальной части: каждый раунд — своя пара колонок «имя, время», забеги идут парами сверху вниз.
-// В последней колонке — победители забегов за I и III место (рядом с именем ячейка .rank), их пропускаем
-export const parseSpeedFinal = (document: Parse5DocumentFragment): SpeedFinalItem[] => {
-  const tbody = findElementsByTag(document, 'tbody')[0]
-  const entries: Array<{ col: number, name: string, score: string, isWinner: boolean }> = []
+// pos — колонка раунда в сетке; isMedal — колонка победителей забегов за I и III место после финала.
+// Пустые места (у группы меньше участников, чем мест в сетке) остаются с пустым именем: по ним считаются забеги
+type SpeedBracketEntry = { pos: number, name: string, score: string, isWinner: boolean, isMedal: boolean }
+
+// Таблица: каждый раунд — своя пара колонок «имя, время», забеги идут парами сверху вниз.
+// В колонке медалей рядом с именем стоит ячейка .rank («I», «III»)
+const getTableBracketEntries = (tbody: Parse5Element): SpeedBracketEntry[] => {
+  const entries: SpeedBracketEntry[] = []
   findElementsByTag(tbody, 'tr').forEach((row) => {
     const cells = findElementsByTag(row, 'td')
-    cells.forEach((cell, col) => {
-      if (!hasClass(cell, 'name') || hasClass(cells[col + 1], 'rank')) return
-      entries.push({ col, name: getTextContent(cell), score: getTextContent(cells[col + 1]), isWinner: hasClass(cell, 'win') })
+    cells.forEach((cell, pos) => {
+      if (!hasClass(cell, 'name')) return
+      entries.push({ pos, name: getTextContent(cell), score: getTextContent(cells[pos + 1]), isWinner: hasClass(cell, 'win'), isMedal: hasClass(cells[pos + 1], 'rank') })
     })
   })
+  return entries
+}
+
+// Блоки div: имя .p, время .r, раунд в классе pc1, pc2…, строка в r1, r2…
+// В колонке медалей вместо времени «I», «III». Колонки ранних раундов у маленьких групп нет совсем
+const getDivBracketEntries = (document: Parse5DocumentFragment): SpeedBracketEntry[] => {
+  const getNumber = (el: Parse5Element, prefix: string) => {
+    const className = el.attrs.find((a) => a.name === 'class')?.value.split(' ').find((c) => c.startsWith(prefix) && /^\d+$/.test(c.slice(prefix.length)))
+    return className ? Number(className.slice(prefix.length)) : NaN
+  }
+  const divs = findElementsByTag(document, 'div')
+  return divs
+    .filter((div) => hasClass(div, 'p'))
+    .map((div) => {
+      const row = getNumber(div, 'r')
+      const score = getTextContent(divs.find((d) => hasClass(d, 'r') && hasClass(d, `r${row}`)))
+      return { row, pos: getNumber(div, 'pc'), name: getTextContent(div), score, isWinner: hasClass(div, 'win'), isMedal: /^I{1,3}$/.test(score) }
+    })
+    .sort((a, b) => a.row - b.row)
+    .map(({ pos, name, score, isWinner, isMedal }) => ({ pos, name, score, isWinner, isMedal }))
+}
+
+// Колонки раундов по порядку и сколько шагов от каждой до финала.
+// Финал — колонка перед медалями. Пока медалей в сетке нет, число раундов считаем по размеру первого раунда
+const getSpeedRounds = (entries: SpeedBracketEntry[]) => {
+  const positions = [...new Set(entries.filter((entry) => !entry.isMedal).map((entry) => entry.pos))].sort((a, b) => a - b)
+  const medalPositions = entries.filter((entry) => entry.isMedal).map((entry) => entry.pos)
+  if (medalPositions.length) {
+    const roundPositions = positions.filter((pos) => pos < Math.min(...medalPositions))
+    return roundPositions.map((pos, i) => ({ pos, stepsToFinal: roundPositions.length - 1 - i }))
+  }
+  const roundsCount = Math.round(Math.log2(entries.filter((entry) => entry.pos === positions[0]).length))
+  return positions.slice(0, roundsCount).map((pos, i) => ({ pos, stepsToFinal: roundsCount - 1 - i }))
+}
+
+export const parseSpeedFinal = (document: Parse5DocumentFragment): SpeedFinalItem[] => {
+  const tbody = findElementsByTag(document, 'tbody')[0]
+  const entries = tbody ? getTableBracketEntries(tbody) : getDivBracketEntries(document)
   if (!entries.length) return []
 
-  const firstCol = Math.min(...entries.map((entry) => entry.col))
-  const firstRoundSize = entries.filter((entry) => entry.col === firstCol).length
-  const roundsCount = Math.round(Math.log2(firstRoundSize))
-
   const results: SpeedFinalItem[] = []
-  for (let round = 0; round < roundsCount; round++) {
-    const isLast = round === roundsCount - 1
-    const roundEntries = entries.filter((entry) => entry.col === firstCol + round * 2)
-    const roundName = getSpeedRoundName(firstRoundSize / 2 ** (round + 1), isLast)
+  getSpeedRounds(entries).forEach(({ pos, stepsToFinal }) => {
+    const isLast = stepsToFinal === 0
+    const roundEntries = entries.filter((entry) => entry.pos === pos)
     roundEntries.forEach((entry, i) => {
+      if (!entry.name) return
       const heat = Math.floor(i / 2)
       const isHeatDone = roundEntries.slice(heat * 2, heat * 2 + 2).some((e) => e.isWinner)
       // Забег за I место первый, за III — второй: победитель получает 1 или 3, проигравший 2 или 4
       const rank = isLast && heat < 2 && isHeatDone ? String(heat * 2 + (entry.isWinner ? 1 : 2)) : ''
-      const item: SpeedFinalItem = { rank, name: entry.name, command: '', score: entry.score, round: roundName, heat }
+      const item: SpeedFinalItem = { rank, name: entry.name, command: '', score: entry.score, round: getSpeedRoundName(stepsToFinal), heat }
       results.push(entry.isWinner ? { ...item, isHighlighted: true } : item)
     })
-  }
+  })
   return results
 }
 
@@ -283,6 +325,7 @@ export const getDisciplines = (document: Parse5DocumentFragment) => {
         current = value
       }
     })
+    if (current === DISCIPLINES.SPEED && getTextContent(th).toLowerCase().includes('(к)')) return DISCIPLINES.SPEED_CLASSIC
     return current || getTextContent(th).toLowerCase()
   })
 }

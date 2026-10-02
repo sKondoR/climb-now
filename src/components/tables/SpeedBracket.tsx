@@ -24,7 +24,7 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
         const heats = [...new Set(roundResults.map((result) => result.heat))]
         return (
           <section key={round}>
-            <h4 className="px-1 md:px-2 text-base font-semibold text-gray-900 mb-1">{round}</h4>
+            <h4 className="px-1 md:px-2 text-base font-semibold text-blue-800 mb-1">{round}</h4>
             {/* Одна ширина у всех раундов: на телефоне во всю карточку, в один столбец на широком экране не растягиваем */}
             <table className="w-full max-w-md table-fixed leading-none tabular-nums">
               <thead>

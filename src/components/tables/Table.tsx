@@ -73,7 +73,7 @@ export default function Table({
 
     return (
       <div className="mt-2 relative">
-        <h3 className="text-lg font-semibold text-gray-900 mb-3 flex justify-between gap-2">
+        <h3 className="text-lg font-semibold text-blue-800 mb-3 flex justify-between gap-2">
           <span className="min-w-0 break-words">{subGroup.title}</span>
           <div className="shrink-0 whitespace-nowrap">
             {/* Ширина с запасом на «100 / 120»: пока протокол грузится, «0 / 0» уже, и счётчик сдвигал заголовок */}

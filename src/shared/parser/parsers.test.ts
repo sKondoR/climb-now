@@ -27,6 +27,8 @@ import {
   mockParsedSpeedQual,
   mockHtmlSpeedFinal,
   mockParsedSpeedFinal,
+  mockHtmlSpeedClassicQual,
+  mockParsedSpeedClassicFinal,
 } from './mocks/mockHtml'
 
 describe('parsers', () => {
@@ -147,6 +149,21 @@ describe('parsers', () => {
     })
   })
 
+  describe('parseSpeedClassicQual', () => {
+    it('should parse classic speed qualification without second start number', () => {
+      expect(parseResultsTable(mockHtmlSpeedClassicQual).data).toStrictEqual([{
+        rank: '1',
+        stRank: '25',
+        name: 'Шепелева Софья',
+        command: 'ПЕРМ',
+        score1: '09,340',
+        score2: '09,490',
+        score: '18,830',
+        isHighlighted: true,
+      }])
+    })
+  })
+
   describe('parseSpeedFinal', () => {
     it('should detect speed final part', () => {
       const result = parseResultsTable(mockHtmlSpeedFinal)
@@ -167,6 +184,68 @@ describe('parsers', () => {
         { ...final, heat: 0, rank: '1', name: 'Колдомов Кирилл', score: '05,030', isHighlighted: true },
         { ...final, heat: 1, rank: '4', name: 'Мороз Михаил', score: '07,112' },
         { ...final, heat: 1, rank: '3', name: 'Варик Денис', score: '05,161', isHighlighted: true },
+      ])
+    })
+
+    it('should parse classic speed bracket built from divs', () => {
+      const semi = { round: 'Полуфинал', rank: '', command: '' }
+      const final = { round: 'Финал', command: '' }
+      expect(parseSpeedFinal(mockParsedSpeedClassicFinal)).toStrictEqual([
+        { ...semi, heat: 0, name: 'Барях Ю.', score: '17,120', isHighlighted: true },
+        { ...semi, heat: 0, name: 'Прокофьева К.', score: '21,030' },
+        { ...semi, heat: 1, name: 'Черных А.', score: '18,190', isHighlighted: true },
+        { ...semi, heat: 1, name: 'Шепелева С.', score: '20,950' },
+        { ...final, heat: 0, rank: '2', name: 'Барях Ю.', score: '18,010' },
+        { ...final, heat: 0, rank: '1', name: 'Черных А.', score: '17,570', isHighlighted: true },
+        { ...final, heat: 1, rank: '4', name: 'Шепелева С.', score: 'срыв' },
+        { ...final, heat: 1, rank: '3', name: 'Прокофьева К.', score: '21,450', isHighlighted: true },
+      ])
+    })
+
+    it('should name rounds from the medal column when bracket starts at semifinal', () => {
+      // Юниоры 19-20: колонки 1/4 (pc1) в сетке нет
+      const html = `<h1>ЛАЗАНИЕ НА СКОРОСТЬ - Финальная часть</h1>
+        <div class="p pc2 r9 win">Андреев Д.</div><div class="r rc2 r9 win">06,861</div>
+        <div class="p pc2 r10">Бельченко Г.</div><div class="r rc2 r10">09,984</div>
+        <div class="p pc2 r11 win">Коробкин С.</div><div class="r rc2 r11 win">08,178</div>
+        <div class="p pc2 r12">Хамидуллин Д.</div><div class="r rc2 r12">срыв</div>
+        <div class="p pc3 r13 win">Андреев Д.</div><div class="r rc3 r13 win">06,153</div>
+        <div class="p pc3 r14">Коробкин С.</div><div class="r rc3 r14">07,062</div>
+        <div class="p pc3 r15">Бельченко Г.</div><div class="r rc3 r15">09,164</div>
+        <div class="p pc3 r16 win">Хамидуллин Д.</div><div class="r rc3 r16 win">05,999</div>
+        <div class="p pc4 r17">Андреев Д.</div><div class="win r rc4 r17">I</div>
+        <div class="p pc4 r18">Хамидуллин Д.</div><div class="win r rc4 r18">III</div>`
+      const result = parseSpeedFinal(parseFragment(html))
+      expect(result.map((item) => `${item.round}|${item.heat}|${item.rank}|${item.name}`)).toStrictEqual([
+        'Полуфинал|0||Андреев Д.',
+        'Полуфинал|0||Бельченко Г.',
+        'Полуфинал|1||Коробкин С.',
+        'Полуфинал|1||Хамидуллин Д.',
+        'Финал|0|1|Андреев Д.',
+        'Финал|0|2|Коробкин С.',
+        'Финал|1|4|Бельченко Г.',
+        'Финал|1|3|Хамидуллин Д.',
+      ])
+    })
+
+    it('should skip empty bracket slots but keep heats in place', () => {
+      // Юниорки 19-20: две участницы, первый полуфинал пустой, в финале соперницы нет
+      const html = `<h1>ЛАЗАНИЕ НА СКОРОСТЬ - Финальная часть</h1>
+        <div class="p pc2 r9">&nbsp;</div><div class="r rc2 r9">&nbsp;</div>
+        <div class="p pc2 r10">&nbsp;</div><div class="r rc2 r10">&nbsp;</div>
+        <div class="p pc2 r11 win">Петрова И.</div><div class="r rc2 r11 win">08,348</div>
+        <div class="p pc2 r12">Набиуллина Э.</div><div class="r rc2 r12">10,641</div>
+        <div class="p pc3 r13">&nbsp;</div><div class="r rc3 r13">&nbsp;</div>
+        <div class="p pc3 r14 win">Петрова И.</div><div class="r rc3 r14 win">08,348</div>
+        <div class="p pc3 r15">&nbsp;</div><div class="r rc3 r15">&nbsp;</div>
+        <div class="p pc3 r16">&nbsp;</div><div class="r rc3 r16">&nbsp;</div>
+        <div class="p pc4 r17">&nbsp;</div><div class="win r rc4 r17">I</div>
+        <div class="p pc4 r18">&nbsp;</div><div class="win r rc4 r18">III</div>`
+      const result = parseSpeedFinal(parseFragment(html))
+      expect(result.map((item) => `${item.round}|${item.heat}|${item.rank}|${item.name}`)).toStrictEqual([
+        'Полуфинал|1||Петрова И.',
+        'Полуфинал|1||Набиуллина Э.',
+        'Финал|0|1|Петрова И.',
       ])
     })
 
@@ -532,6 +611,16 @@ describe('parsers', () => {
       expect(result[0]).toBe('трудность')
       expect(result[1]).toBe('боулдеринг')
       expect(result[2]).toBe('скорость')
+    })
+
+    it('should tell classic speed «(К)» from speed', () => {
+      const fragment = parseFragment(`
+        <table><thead><tr>
+          <th>ЛАЗАНИЕ НА СКОРОСТЬ (К)</th>
+          <th>ЛАЗАНИЕ НА СКОРОСТЬ</th>
+        </tr></thead></table>
+      `)
+      expect(getDisciplines(fragment)).toStrictEqual(['скорость (кл)', 'скорость'])
     })
 
     it('should return empty array when no disciplines found', () => {

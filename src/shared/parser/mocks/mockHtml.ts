@@ -441,3 +441,64 @@ export const mockHtmlSpeedFinal = `
 </html>
 `
 export const mockParsedSpeedFinal = parseFragment(mockHtmlSpeedFinal)
+
+export const mockHtmlSpeedClassicQual = `
+    <!DOCTYPE html>
+    <html>
+    <body>
+    <div id="title">
+        <h1>Девушки 10-12 лет - ЛАЗАНИЕ НА СКОРОСТЬ (К) - Квалификация</h1>
+    </div>
+    <table style="margin: auto;">
+    <thead>
+    <tr>
+        <th>Место</th>
+        <th>ИН</th>
+        <th>Ст. N</th>
+        <th>Фамилия, имя</th>
+        <th>Команда</th>
+        <th>Трасса 1</th>
+        <th>Трасса 2</th>
+        <th>Результат</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="q">
+        <td class="rank">1</td>
+        <td class="id">158</td>
+        <td class="st">25</td>
+        <td class="name">Шепелева Софья</td>
+        <td class="command">ПЕРМ</td>
+        <td class="res">09,340</td>
+        <td class="res">09,490</td>
+        <td class="res">18,830</td>
+    </tbody>
+    </table>
+    </body>
+</html>
+`
+
+// Сетка классической скорости на четверых: блоки div, раунд в классе pc1/pc2, строка в r1…r6, pc3 — победители за I и III место
+export const mockHtmlSpeedClassicFinal = `
+    <!DOCTYPE html>
+    <html>
+    <body>
+    <div id="title">
+        <h1>Девушки 10-12 лет - ЛАЗАНИЕ НА СКОРОСТЬ (К) - Финальная часть</h1>
+    </div>
+    <div class="p pc1 r1 win">Барях Ю.</div><div class="r rc1 r1 win">17,120</div><div class="fl fc1 r1 win">92</div>
+    <div class="p pc1 r2">Прокофьева К.</div><div class="r rc1 r2">21,030</div><div class="fl fc1 r2">140</div>
+    <div class="p pc1 r3 win">Черных А.</div><div class="r rc1 r3 win">18,190</div><div class="fl fc1 r3 win">157</div>
+    <div class="p pc1 r4">Шепелева С.</div><div class="r rc1 r4">20,950</div><div class="fl fc1 r4">158</div>
+    <div class="p pc2 r5">Барях Ю.</div><div class="r rc2 r5">18,010</div><div class="fl fc2 r5">92</div>
+    <div class="p pc2 r6 win">Черных А.</div><div class="r rc2 r6 win">17,570</div><div class="fl fc2 r6 win">157</div>
+    <div class="p pc2 r7">Шепелева С.</div><div class="r rc2 r7">срыв</div><div class="fl fc2 r7">158</div>
+    <div class="p pc2 r8 win">Прокофьева К.</div><div class="r rc2 r8 win">21,450</div><div class="fl fc2 r8 win">140</div>
+    <div class="p pc3 r9">Черных А.</div><div class="win r rc3 r9">I</div><div class="fl fc3 r9">157</div>
+    <div class="p pc3 r10">Прокофьева К.</div><div class="win r rc3 r10">III</div><div class="fl fc3 r10">140</div>
+    <div class="medal gold">забег за I место</div>
+    <div class="medal bronze">забег за III место</div>
+    </body>
+</html>
+`
+export const mockParsedSpeedClassicFinal = parseFragment(mockHtmlSpeedClassicFinal)
