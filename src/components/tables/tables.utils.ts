@@ -4,9 +4,10 @@ import {
     leadQualResultsConfig,
     boulderQualConfig,
     boulderFinalConfig,
+    speedQualConfig,
 } from '../../shared/tables.configs'
 
-import { Results, ResultsItem } from '@/shared/types'
+import { Results, ResultsItem, SpeedFinalItem } from '@/shared/types'
 
 export const isCommandMatch = (command: string, selectedCommand: string) => 
     !!selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
@@ -26,10 +27,11 @@ export const isNameMatch = (name: string, names: string) => {
 interface getConfigProps {
     isLead: boolean
     isBoulder: boolean
+    isSpeed?: boolean
     isQualResult: boolean
     isFinal: boolean
 }
-export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: getConfigProps) { 
+export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }: getConfigProps) { 
     if (isLead) {
         if (isFinal) {
             return leadFinalConfig
@@ -38,6 +40,9 @@ export function getTableConfig({ isFinal, isQualResult, isLead, isBoulder }: get
     }
     if (isBoulder) {
         return (isFinal) ? boulderFinalConfig : boulderQualConfig
+    }
+    if (isSpeed && !isFinal) {
+        return speedQualConfig
     }
     return leadQualConfig
 }
@@ -84,6 +89,12 @@ export function filterOwnResults<T extends ResultsItem>(results: T[], props: Own
     return results.filter((result) => result.rank === '1' || isOwnRow(result, props))
 }
 
+// В финалах скорости соперник важен не меньше своего: оставляем забеги со своими целиком
+export function filterOwnHeats(results: SpeedFinalItem[], props: OwnRowProps): SpeedFinalItem[] {
+    const ownHeats = new Set(results.filter((result) => isOwnRow(result, props)).map((result) => `${result.round}|${result.heat}`))
+    return results.filter((result) => ownHeats.has(`${result.round}|${result.heat}`))
+}
+
 export function getRowHighlight({ result, command, names, isNamesFilterEnabled, isFinal }: getRowClassesProps): RowHighlight {
     const rank = Number.parseInt(result['rank'])
     if (isOwnRow(result, { command, names, isNamesFilterEnabled })) return 'own'
@@ -106,10 +117,10 @@ export function getRowClasses(props: getRowClassesProps) {
     return ''
 }
 
-export function getClimbedCount({ results, isLead, isBoulder }: { results: Results, isLead: boolean, isBoulder: boolean }) { 
+export function getClimbedCount({ results, isLead, isBoulder, isSpeed }: { results: Results, isLead: boolean, isBoulder: boolean, isSpeed?: boolean }) { 
     return results.filter((result) => {
         if (isBoulder) return 'rank' in result && result.rank !== ''
-        if (isLead) return 'score' in result ? result.score !== '' : result.score1 !== ''
+        if (isLead || isSpeed) return 'score' in result ? result.score !== '' : result.score1 !== ''
         return results.length
     }).length
 }

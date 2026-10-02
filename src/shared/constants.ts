@@ -29,4 +29,4 @@ export const STATUSES = {
   PASSED: 'passed' as const,
 } as const
 
-export const SPECIAL_STATUSES = ['н/я', 'в/к']
+export const SPECIAL_STATUSES = ['н/я', 'в/к', 'ф/с']

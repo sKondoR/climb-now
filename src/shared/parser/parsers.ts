@@ -1,10 +1,10 @@
 import { parse } from 'parse5'
 
-import { leadQualConfig, leadQualResultsConfig, leadFinalConfig, boulderQualConfig, boulderFinalConfig } from '@/shared/tables.configs'
+import { leadQualConfig, leadQualResultsConfig, leadFinalConfig, boulderQualConfig, boulderFinalConfig, speedQualConfig } from '@/shared/tables.configs'
 
 import type { Parse5Document, Parse5Element, Parse5Node, Parse5DocumentFragment, Parse5ChildNode } from './parsers.types'
 
-import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, BoulderQualItem, BoulderFinalItem } from '@/shared/types'
+import { Group, LeadQualItem, LeadQualResultItem, SubGroupData, Results, LeadFinalsItem, Discipline, BoulderQualItem, BoulderFinalItem, SpeedQualItem, SpeedFinalItem } from '@/shared/types'
 import { DISCIPLINES, STATUSES } from '../constants'
 
 export const parseFragment = (html: string): Parse5DocumentFragment => {
@@ -68,7 +68,7 @@ export const parseResults = (html: string): Discipline[] | null => {
       }
       data.push({
         discipline,
-        groups,
+        groups: discipline === DISCIPLINES.SPEED ? groups.map(mergeSpeedFinals) : groups,
       })
     })
     
@@ -85,12 +85,14 @@ export const parseResultsTable = (html: string): SubGroupData => {
   const documentTitle = getTextContent(findElementsByTag(document as unknown as Parse5Document, 'h1')[0]).toLowerCase()
   const isLead = documentTitle.includes('трудность')
   const isBoulder = documentTitle.includes('боулдеринг')
+  const isSpeed = documentTitle.includes('скорость')
   const isQualResult = documentTitle.includes('сводный')
   const isFinal = documentTitle.includes('финал')
 
   const result = {
     isLead,
     isBoulder,
+    isSpeed,
     isQualResult,
     isFinal,
     data: [] as Results,
@@ -109,6 +111,12 @@ export const parseResultsTable = (html: string): SubGroupData => {
   }
   if (isBoulder && isFinal) {
     result.data = parseBoulderFinal(document)
+  }
+  if (isSpeed && !isFinal) {
+    result.data = parseSpeedQual(document)
+  }
+  if (isSpeed && isFinal) {
+    result.data = parseSpeedFinal(document)
   }
   return result
 }
@@ -161,6 +169,67 @@ export const parseBoulderQual = (document: Parse5DocumentFragment): BoulderQualI
 
 export const parseBoulderFinal = (document: Parse5DocumentFragment): BoulderFinalItem[] => {
   return parseTable<BoulderFinalItem>(document, boulderFinalConfig as Array<{ prop: keyof BoulderFinalItem }>)
+}
+
+export const parseSpeedQual = (document: Parse5DocumentFragment): SpeedQualItem[] => {
+  return parseTable<SpeedQualItem>(document, speedQualConfig as Array<{ prop: keyof SpeedQualItem }>)
+}
+
+// 1/8, 1/4, полуфинал и финал скорости ведут на одну и ту же сетку: оставляем один таб «Финал»
+export const mergeSpeedFinals = (group: Group): Group => {
+  const finals = group.subgroups.filter((subgroup) => subgroup.title.toLowerCase().includes('финал'))
+  if (finals.length === 0) return group
+  const statuses = finals.map((subgroup) => subgroup.status)
+  const status = statuses.includes(STATUSES.ONLINE)
+    ? STATUSES.ONLINE
+    : (statuses.includes(STATUSES.PASSED) ? STATUSES.PASSED : STATUSES.PENDING)
+  return {
+    ...group,
+    subgroups: group.subgroups
+      .filter((subgroup) => !finals.includes(subgroup) || subgroup === finals[0])
+      .map((subgroup) => subgroup === finals[0] ? { ...subgroup, title: 'Финал', status } : subgroup),
+  }
+}
+
+const getSpeedRoundName = (heats: number, isLast: boolean) => {
+  if (isLast) return 'Финал'
+  if (heats === 2) return 'Полуфинал'
+  return `1/${heats} финала`
+}
+
+// Сетка финальной части: каждый раунд — своя пара колонок «имя, время», забеги идут парами сверху вниз.
+// В последней колонке — победители забегов за I и III место (рядом с именем ячейка .rank), их пропускаем
+export const parseSpeedFinal = (document: Parse5DocumentFragment): SpeedFinalItem[] => {
+  const tbody = findElementsByTag(document, 'tbody')[0]
+  const entries: Array<{ col: number, name: string, score: string, isWinner: boolean }> = []
+  findElementsByTag(tbody, 'tr').forEach((row) => {
+    const cells = findElementsByTag(row, 'td')
+    cells.forEach((cell, col) => {
+      if (!hasClass(cell, 'name') || hasClass(cells[col + 1], 'rank')) return
+      entries.push({ col, name: getTextContent(cell), score: getTextContent(cells[col + 1]), isWinner: hasClass(cell, 'win') })
+    })
+  })
+  if (!entries.length) return []
+
+  const firstCol = Math.min(...entries.map((entry) => entry.col))
+  const firstRoundSize = entries.filter((entry) => entry.col === firstCol).length
+  const roundsCount = Math.round(Math.log2(firstRoundSize))
+
+  const results: SpeedFinalItem[] = []
+  for (let round = 0; round < roundsCount; round++) {
+    const isLast = round === roundsCount - 1
+    const roundEntries = entries.filter((entry) => entry.col === firstCol + round * 2)
+    const roundName = getSpeedRoundName(firstRoundSize / 2 ** (round + 1), isLast)
+    roundEntries.forEach((entry, i) => {
+      const heat = Math.floor(i / 2)
+      const isHeatDone = roundEntries.slice(heat * 2, heat * 2 + 2).some((e) => e.isWinner)
+      // Забег за I место первый, за III — второй: победитель получает 1 или 3, проигравший 2 или 4
+      const rank = isLast && heat < 2 && isHeatDone ? String(heat * 2 + (entry.isWinner ? 1 : 2)) : ''
+      const item: SpeedFinalItem = { rank, name: entry.name, command: '', score: entry.score, round: roundName, heat }
+      results.push(entry.isWinner ? { ...item, isHighlighted: true } : item)
+    })
+  }
+  return results
 }
 
 export const findElementsByTag = (node: Parse5Node | null | undefined, tagName: string): Parse5Element[] => {

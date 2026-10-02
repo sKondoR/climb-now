@@ -15,7 +15,8 @@ export default function LinkToEvent({ code }: LinkToEventProps): ReactNode | nul
   return (
     <a
       href={`${EXTERNAL_API_BASE_URL}${sanitizedCode}/index.html`}
-      className="block text-2xl mt-8 absolute top-[2px] right-9 z-[5] rounded before:absolute before:content-[''] before:-inset-2.5 focus-ring"
+      // Справа вплотную к стрелке дропдауна: область клика расширена только влево и по вертикали, чтобы не перехватывать стрелку
+      className="block text-2xl mt-8 absolute top-[2px] right-10 z-[5] rounded before:absolute before:content-[''] before:-inset-y-2.5 before:-left-2.5 before:right-0 focus-ring"
       target="_blank"
       rel="noopener noreferrer"
       title="Открыть соревнование на сайте ФСР"

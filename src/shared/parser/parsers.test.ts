@@ -6,6 +6,9 @@ import { parseResults, parseResultsTable,
   parseLeadFinal,
   parseBoulderQual,
   parseBoulderFinal,
+  parseSpeedQual,
+  parseSpeedFinal,
+  mergeSpeedFinals,
   parseRouteCell,
   parseFragment,
   getTextContent,
@@ -20,6 +23,10 @@ import {
   mockParsedLeadFinal,
   mockParsedBoulderQual,
   mockParsedBoulderFinal,
+  mockHtmlSpeedQual,
+  mockParsedSpeedQual,
+  mockHtmlSpeedFinal,
+  mockParsedSpeedFinal,
 } from './mocks/mockHtml'
 
 describe('parsers', () => {
@@ -93,12 +100,100 @@ describe('parsers', () => {
       expect(result.isFinal).toBe(true)
     })
 
+    it('should detect and parse speed qualification', () => {
+      const result = parseResultsTable(mockHtmlSpeedQual)
+      expect(result.isSpeed).toBe(true)
+      expect(result.isLead).toBe(false)
+      expect(result.isBoulder).toBe(false)
+      expect(result.isFinal).toBe(false)
+      expect(result.data).toHaveLength(2)
+    })
+
     it('should handle empty HTML gracefully', () => {
       const result = parseResultsTable('')
       expect(result.isLead).toBe(false)
       expect(result.isBoulder).toBe(false)
       expect(result.isQualResult).toBe(false)
       expect(result.isFinal).toBe(false)
+    })
+  })
+
+  describe('parseSpeedQual', () => {
+    it('should parse speed qualification table', () => {
+      const result = parseSpeedQual(mockParsedSpeedQual)
+      expect(result).toStrictEqual([
+        {
+          rank: '1',
+          stRank: '23',
+          name: 'Земляков Петр',
+          command: 'ТЮМН',
+          score1: '06,854',
+          stRank2: '2',
+          score2: '05,160',
+          score: '05,160',
+          isHighlighted: true,
+        },
+        {
+          rank: '41',
+          stRank: '8',
+          name: 'Бадаев Григорий',
+          command: 'МСК',
+          score1: 'срыв',
+          stRank2: '28',
+          score2: 'срыв',
+          score: 'срыв',
+        },
+      ])
+    })
+  })
+
+  describe('parseSpeedFinal', () => {
+    it('should detect speed final part', () => {
+      const result = parseResultsTable(mockHtmlSpeedFinal)
+      expect(result.isSpeed).toBe(true)
+      expect(result.isFinal).toBe(true)
+      expect(result.data).toHaveLength(8)
+    })
+
+    it('should split the bracket into rounds and heats, skipping medal column', () => {
+      const semi = { round: 'Полуфинал', rank: '', command: '' }
+      const final = { round: 'Финал', command: '' }
+      expect(parseSpeedFinal(mockParsedSpeedFinal)).toStrictEqual([
+        { ...semi, heat: 0, name: 'Земляков Петр', score: '05,300', isHighlighted: true },
+        { ...semi, heat: 0, name: 'Мороз Михаил', score: 'срыв' },
+        { ...semi, heat: 1, name: 'Колдомов Кирилл', score: '05,444', isHighlighted: true },
+        { ...semi, heat: 1, name: 'Варик Денис', score: '06,500' },
+        { ...final, heat: 0, rank: '2', name: 'Земляков Петр', score: '05,121' },
+        { ...final, heat: 0, rank: '1', name: 'Колдомов Кирилл', score: '05,030', isHighlighted: true },
+        { ...final, heat: 1, rank: '4', name: 'Мороз Михаил', score: '07,112' },
+        { ...final, heat: 1, rank: '3', name: 'Варик Денис', score: '05,161', isHighlighted: true },
+      ])
+    })
+
+    it('should return empty list for empty bracket', () => {
+      expect(parseSpeedFinal(parseFragment('<table><tbody></tbody></table>'))).toStrictEqual([])
+    })
+  })
+
+  describe('mergeSpeedFinals', () => {
+    const subgroup = (title: string, link: string, status: 'pending' | 'online' | 'passed') =>
+      ({ id: link, title, link, status, results: [] })
+
+    it('should keep one final tab named «Финал» with merged status', () => {
+      const group = {
+        id: 'g', title: 'Мужчины', isOnline: true,
+        subgroups: [
+          subgroup('Квалификация', 'e_q_m', 'passed'),
+          subgroup('1/8 финала', 'e16_f_m', 'passed'),
+          subgroup('1/4 финала', 'e8_f_m', 'online'),
+          subgroup('Полуфинал', 'e8_f_m', 'pending'),
+          subgroup('Финал', 'e8_f_m', 'pending'),
+        ],
+      }
+      expect(mergeSpeedFinals(group).subgroups).toStrictEqual([
+        subgroup('Квалификация', 'e_q_m', 'passed'),
+        subgroup('Финал', 'e16_f_m', 'online'),
+      ])
     })
   })
 

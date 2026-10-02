@@ -1,4 +1,3 @@
-import { DISCIPLINES } from '@/src/shared/constants';
 import { Discipline } from '@/src/shared/types'
 
 interface DisciplineTabsProps {
@@ -26,10 +25,7 @@ export default function DisciplineTabs({
               onClick={() => {
                 setActiveTab(index)
               }}
-              disabled={discipline === DISCIPLINES.SPEED}
-              title={discipline === DISCIPLINES.SPEED ? 'Скорость пока не поддерживается' : discipline}
               className={`shrink-0 whitespace-nowrap px-4 py-2 md:py-1 mb-1 rounded-lg text-base md:text-lg font-medium transition-colors focus-ring focus-visible:ring-inset
-                disabled:bg-gray-100 disabled:text-gray-300
                 ${
                 activeTab === index
                   ? 'bg-blue-600 text-white focus-visible:ring-white'

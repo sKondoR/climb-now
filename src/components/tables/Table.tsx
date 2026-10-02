@@ -3,15 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import { NAME_COL, COMMAND_COL } from '../../shared/tables.configs'
-import { ROW_HIGHLIGHT_LABELS, getClimbedCount, getRowClasses, getRowHighlight, getRowKeys, getRowSignature, getTableConfig, filterOwnResults } from './tables.utils'
+import { ROW_HIGHLIGHT_LABELS, getClimbedCount, getRowClasses, getRowHighlight, getRowKeys, getRowSignature, getTableConfig, filterOwnResults, filterOwnHeats } from './tables.utils'
 import BoulderCell from './BoulderCell'
+import SpeedBracket from './SpeedBracket'
 import RefreshTableBtn from './RefreshTableBtn'
 import useFetchResults from './useFetchResults'
 import useLiveRowMotion from './useLiveRowMotion'
 import Button from '@/src/shared/components/Button/Button'
 
 import { SPECIAL_STATUSES, STATUSES } from '@/src/shared/constants'
-import { Subgroup, Results, LeadQualItem, LeadQualResultItem, LeadFinalsItem, BoulderQualItem, BoulderFinalItem } from '@/src/shared/types'
+import { Subgroup, Results, LeadQualItem, LeadQualResultItem, LeadFinalsItem, BoulderQualItem, BoulderFinalItem, SpeedQualItem, SpeedFinalItem } from '@/src/shared/types'
 
 interface TableProps {
   subGroup: Subgroup | undefined,
@@ -26,7 +27,7 @@ interface TableProps {
 const STICKY_NAME_CLASS = 'sticky left-0 z-[1] bg-inherit max-md:shadow-[1px_0_0_theme(colors.gray.200)]'
 // Второстепенные колонки — приглушённым цветом, чтобы взгляд шёл к месту, имени и результату.
 // На подсвеченных строках (свои, лидеры) — на ступень темнее, чтобы на цветном фоне хватало контраста
-const SECONDARY_PROPS = ['stRank', 'command', 'qRank']
+const SECONDARY_PROPS = ['stRank', 'stRank2', 'command', 'qRank']
 
 export default function Table({
   subGroup,
@@ -37,7 +38,7 @@ export default function Table({
   names,
 }: TableProps) {
     
-    const { results, isLead, isBoulder, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
+    const { results, isLead, isBoulder, isSpeed, isFinal, isQualResult, isLoading, error, refetch } = useFetchResults({
       code,
       isOnline: subGroup?.status === STATUSES.ONLINE,
       subgroupLink: subGroup?.link
@@ -47,13 +48,23 @@ export default function Table({
     
     if (!subGroup) return null
     
+    const isSpeedFinal = isSpeed && isFinal
+    const ownProps = { command, names, isNamesFilterEnabled }
     const filteredResults = (isCommandFilterEnabled
-      ? filterOwnResults(results as Results, { command, names, isNamesFilterEnabled })
+      ? (isSpeedFinal ? filterOwnHeats(results as SpeedFinalItem[], ownProps) : filterOwnResults(results as Results, ownProps))
       : results) as Results
+    const emptyMessage = !results.length
+      ? 'Результатов пока нет'
+      : (isNamesFilterEnabled ? names.trim() : command)
+        // Без названия команды: «ваши» — это и команда, и скалолазы, введённые по фамилиям
+        ? 'В этом протоколе нет ваших скалолазов'
+        : isNamesFilterEnabled
+          ? 'Введите фамилии, чтобы показать этих скалолазов'
+          : 'Укажите команду, чтобы показать её скалолазов'
     const rowKeys = getRowKeys(filteredResults)
-    const climbedCount = getClimbedCount({ results, isLead, isBoulder });
+    const climbedCount = getClimbedCount({ results, isLead, isBoulder, isSpeed });
 
-    const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder }).filter((col) => {
+    const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }).filter((col) => {
       if (!col.prop) return false
       const firstResult = results?.[0]
       if (!firstResult) return false
@@ -66,9 +77,9 @@ export default function Table({
           <span className="min-w-0 break-words">{subGroup.title}</span>
           <div className="shrink-0 whitespace-nowrap">
             {/* Ширина с запасом на «100 / 120»: пока протокол грузится, «0 / 0» уже, и счётчик сдвигал заголовок */}
-            <span className="ml-2 inline-flex justify-center min-w-[8rem] items-center px-2.5 py-0.5 rounded-full text-xs font-medium tabular-nums bg-blue-100 text-blue-800">
+            {!isSpeedFinal && <span className="ml-2 inline-flex justify-center min-w-[8rem] items-center px-2.5 py-0.5 rounded-full text-xs font-medium tabular-nums bg-blue-100 text-blue-800">
               {climbedCount} / {results.length} пролезло
-            </span>
+            </span>}
             <RefreshTableBtn refetch={refetch} />
           </div>
         </h3>
@@ -79,6 +90,12 @@ export default function Table({
           </p>
         )}
         <div className="overflow-x-auto overscroll-x-contain relative max-md:-mx-1">
+          {isSpeedFinal ? <>
+            <SpeedBracket results={filteredResults as SpeedFinalItem[]} command={command} names={names} isNamesFilterEnabled={isNamesFilterEnabled} />
+            {filteredResults.length === 0 && !isLoading && !error && (
+              <p className="px-2 py-3 text-center text-gray-500">{emptyMessage}</p>
+            )}
+          </> :
           <table className="w-full leading-none tabular-nums">
             <thead>
               <tr className="border-b bg-white">
@@ -104,7 +121,7 @@ export default function Table({
                   className={`border-b border-white transition-colors ${finalBorderClass} ${rowClass || 'bg-white'}`}
                 >
                   {config.map((col, index) => {
-                    const value = String((result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem)[col.prop as Exclude<keyof typeof result, 'isHighlighted'>] ?? '');
+                    const value = String((result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem | SpeedQualItem)[col.prop as Exclude<keyof typeof result, 'isHighlighted'>] ?? '');
                     const isBoulderCell = value.includes('/') && !SPECIAL_STATUSES.includes(value.toLowerCase());
                     if (isBoulderCell) {
                       return <td key={`${col.id}-${index}`} className="text-left font-medium">
@@ -126,19 +143,12 @@ export default function Table({
               {filteredResults.length === 0 && !isLoading && !error && (
                 <tr className="border-b">
                   <td colSpan={config.length || 1} className="px-2 py-3 text-center text-gray-500">
-                    {!results.length
-                      ? 'Результатов пока нет'
-                      : (isNamesFilterEnabled ? names.trim() : command)
-                        // Без названия команды: «ваши» — это и команда, и скалолазы, введённые по фамилиям
-                        ? 'В этом протоколе нет ваших скалолазов'
-                        : isNamesFilterEnabled
-                          ? 'Введите фамилии, чтобы показать этих скалолазов'
-                          : 'Укажите команду, чтобы показать её скалолазов'}
+                    {emptyMessage}
                   </td>
                 </tr>
               )}
             </tbody>
-          </table>
+          </table>}
           
           {/* Оверлей для загрузки */}
           {isLoading && (

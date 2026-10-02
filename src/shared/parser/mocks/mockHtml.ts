@@ -360,3 +360,84 @@ export const mockHtmlBoulderFinal = `
 </html>
 `
 export const mockParsedBoulderFinal = parseFragment(mockHtmlBoulderFinal)
+
+// Строки в протоколе скорости приходят без закрывающего </tr> — как на сайте ФСР
+export const mockHtmlSpeedQual = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>ЛАЗАНИЕ НА СКОРОСТЬ - Квалификация</title>
+    </head>
+    <body>
+    <div id="title">
+        <h3></h3>
+        <h1>Мужчины - ЛАЗАНИЕ НА СКОРОСТЬ - Квалификация</h1>
+    </div>
+    <table style="margin: auto;">
+    <thead>
+    <tr>
+        <th>Место</th>
+        <th>ИН</th>
+        <th>Ст. N</th>
+        <th>Фамилия, имя</th>
+        <th>Команда</th>
+        <th>Трасса 1</th>
+        <th>Ст. N2</th>
+        <th>Трасса 2</th>
+        <th>Результат</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="q">
+        <td class="rank">1</td>
+        <td class="id">106</td>
+        <td class="st">23</td>
+        <td class="name">Земляков Петр</td>
+        <td class="command">ТЮМН</td>
+        <td class="res">06,854</td>
+        <td class="res">2</td>
+        <td class="res">05,160</td>
+        <td class="res">05,160</td>
+    <tr>
+        <td class="rank">41</td>
+        <td class="id">27</td>
+        <td class="st">8</td>
+        <td class="name">Бадаев Григорий</td>
+        <td class="command">МСК</td>
+        <td class="res">срыв</td>
+        <td class="res">28</td>
+        <td class="res">срыв</td>
+        <td class="res">срыв</td>
+    </tbody>
+    </table>
+    </body>
+</html>
+`
+export const mockParsedSpeedQual = parseFragment(mockHtmlSpeedQual)
+
+// Сетка финальной части на четверых: полуфинал (колонка 1), финал (колонка 3), победители забегов за I и III место (колонка 5)
+export const mockHtmlSpeedFinal = `
+    <!DOCTYPE html>
+    <html>
+    <body>
+    <div id="title">
+        <h1>Мужчины - ЛАЗАНИЕ НА СКОРОСТЬ - Финальная часть</h1>
+    </div>
+    <table style="margin: auto;">
+    <tbody>
+        <tr><td class="pre">1</td><td class="name win">Земляков Петр</td><td class="res win">05,300</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td class="right-border"></td><td class="name">Земляков Петр</td><td class="res">05,121</td><td></td><td></td></tr>
+        <tr><td class="pre">4</td><td class="name">Мороз Михаил</td><td class="res right-border">срыв</td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td class="rank">забег за I место</td><td class="right-border"></td><td class="name win">Колдомов Кирилл</td><td class="rank">I</td></tr>
+        <tr><td class="pre">2</td><td class="name win">Колдомов Кирилл</td><td class="res win">05,444</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td class="right-border"></td><td class="name win">Колдомов Кирилл</td><td class="res win">05,030</td><td></td><td></td></tr>
+        <tr><td class="pre">3</td><td class="name">Варик Денис</td><td class="res right-border">06,500</td><td></td><td></td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td class="name">Мороз Михаил</td><td class="res">07,112</td><td></td><td></td></tr>
+        <tr><td></td><td></td><td></td><td class="rank">забег за III место</td><td class="right-border"></td><td class="name win">Варик Денис</td><td class="rank">III</td></tr>
+        <tr><td></td><td></td><td></td><td class="name win">Варик Денис</td><td class="res right-border win">05,161</td><td></td><td></td></tr>
+    </tbody>
+    </table>
+    </body>
+</html>
+`
+export const mockParsedSpeedFinal = parseFragment(mockHtmlSpeedFinal)
