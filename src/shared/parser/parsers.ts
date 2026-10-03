@@ -1,5 +1,6 @@
 import { parse } from 'parse5'
 
+import { getSpeedRoundName } from '@/shared/speedRounds'
 import { leadQualConfig, leadQualResultsConfig, leadFinalConfig, boulderQualConfig, boulderFinalConfig, speedQualConfig, speedClassicQualConfig } from '@/shared/tables.configs'
 
 import type { Parse5Document, Parse5Element, Parse5Node, Parse5DocumentFragment, Parse5ChildNode } from './parsers.types'
@@ -193,13 +194,6 @@ export const mergeSpeedFinals = (group: Group): Group => {
       .filter((subgroup) => !finals.includes(subgroup) || subgroup === finals[0])
       .map((subgroup) => subgroup === finals[0] ? { ...subgroup, title: 'Финал', status } : subgroup),
   }
-}
-
-// Раунд называем по удалённости от финала: 0 — финал, 1 — полуфинал, 2 — 1/4, 3 — 1/8
-const getSpeedRoundName = (stepsToFinal: number) => {
-  if (stepsToFinal === 0) return 'Финал'
-  if (stepsToFinal === 1) return 'Полуфинал'
-  return `1/${2 ** stepsToFinal} финала`
 }
 
 // pos — колонка раунда в сетке; isMedal — колонка победителей забегов за I и III место после финала.

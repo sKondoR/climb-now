@@ -21,7 +21,7 @@ export default function RefreshTableBtn({
         type="button"
         aria-label="Обновить результаты"
         title="Обновить результаты"
-        className="relative ml-2 text-sm text-blue-600 rounded before:absolute before:content-[''] before:-inset-3.5 hover:text-blue-800 transition-colors focus-ring"
+        className="relative ml-3 text-xl text-blue-600 rounded before:absolute before:content-[''] before:-inset-2.5 hover:text-blue-800 transition-colors focus-ring"
         aria-busy={isRefreshing}
         onClick={async () => {
           if (isRefreshing) return

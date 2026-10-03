@@ -1,11 +1,12 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faSpinner, faSitemap, faList } from '@fortawesome/free-solid-svg-icons'
 
 import { NAME_COL, COMMAND_COL } from '../../shared/tables.configs'
 import { ROW_HIGHLIGHT_LABELS, getClimbedCount, getRowClasses, getRowHighlight, getRowKeys, getRowSignature, getTableConfig, filterOwnResults, filterOwnHeats } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import SpeedBracket from './SpeedBracket'
+import SpeedBracketTree from './SpeedBracketTree'
 import RefreshTableBtn from './RefreshTableBtn'
 import useFetchResults from './useFetchResults'
 import useLiveRowMotion from './useLiveRowMotion'
@@ -44,6 +45,8 @@ export default function Table({
       subgroupLink: subGroup?.link
     })
     const tbodyRef = useRef<HTMLTableSectionElement>(null)
+    // Финал скорости — деревом, как на c-f-r.ru, или списком по раундам
+    const [isSpeedTree, setIsSpeedTree] = useState(true)
     useLiveRowMotion(tbodyRef, results, `${code}/${subGroup?.link}`)
     
     if (!subGroup) return null
@@ -73,9 +76,27 @@ export default function Table({
 
     return (
       <div className="mt-2 relative">
-        <h3 className="text-lg font-semibold text-blue-800 mb-3 flex justify-between gap-2">
+        <h3 className="text-lg font-semibold text-blue-800 mb-3 flex items-center justify-between gap-2">
           <span className="min-w-0 break-words">{subGroup.title}</span>
-          <div className="shrink-0 whitespace-nowrap">
+          <div className="shrink-0 whitespace-nowrap flex items-center">
+            {isSpeedFinal && (
+              <span className="inline-flex rounded-full bg-blue-100 p-0.5 text-base" role="group" aria-label="Вид финала">
+                {/* Сетка-дерево сходится слева направо: значок «sitemap» повёрнут корнем вправо */}
+                {[{ label: 'Сетка', icon: faSitemap, iconClass: 'rotate-90', isTree: true, roundClass: 'rounded-l-full' }, { label: 'Список', icon: faList, iconClass: '', isTree: false, roundClass: 'rounded-r-full' }].map(({ label, icon, iconClass, isTree, roundClass }) => (
+                  <button
+                    key={label}
+                    type="button"
+                    aria-label={label}
+                    title={label}
+                    aria-pressed={isSpeedTree === isTree}
+                    onClick={() => setIsSpeedTree(isTree)}
+                    className={`w-10 h-8 inline-flex items-center justify-center ${roundClass} transition-colors focus-ring ${isSpeedTree === isTree ? 'bg-blue-600 text-white' : 'text-blue-800 hover:bg-blue-200'}`}
+                  >
+                    <FontAwesomeIcon icon={icon} className={iconClass} />
+                  </button>
+                ))}
+              </span>
+            )}
             {/* Ширина с запасом на «100 / 120»: пока протокол грузится, «0 / 0» уже, и счётчик сдвигал заголовок */}
             {!isSpeedFinal && <span className="ml-2 inline-flex justify-center min-w-[8rem] items-center px-2.5 py-0.5 rounded-full text-xs font-medium tabular-nums bg-blue-100 text-blue-800">
               {climbedCount} / {results.length} пролезло
@@ -90,7 +111,13 @@ export default function Table({
           </p>
         )}
         <div className="overflow-x-auto overscroll-x-contain relative max-md:-mx-1">
-          {isSpeedFinal ? <>
+          {/* В сетке фильтр «только свои» не прячет забеги: дерево без них разваливается, свои и так подсвечены */}
+          {isSpeedFinal && isSpeedTree ? <>
+            <SpeedBracketTree results={results as SpeedFinalItem[]} command={command} names={names} isNamesFilterEnabled={isNamesFilterEnabled} />
+            {results.length === 0 && !isLoading && !error && (
+              <p className="px-2 py-3 text-center text-gray-500">{emptyMessage}</p>
+            )}
+          </> : isSpeedFinal ? <>
             <SpeedBracket results={filteredResults as SpeedFinalItem[]} command={command} names={names} isNamesFilterEnabled={isNamesFilterEnabled} />
             {filteredResults.length === 0 && !isLoading && !error && (
               <p className="px-2 py-3 text-center text-gray-500">{emptyMessage}</p>

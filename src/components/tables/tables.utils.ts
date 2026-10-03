@@ -8,6 +8,7 @@ import {
 } from '../../shared/tables.configs'
 
 import { Results, ResultsItem, SpeedFinalItem } from '@/shared/types'
+import { getSpeedRoundName, getSpeedStepsToFinal } from '@/shared/speedRounds'
 
 export const isCommandMatch = (command: string, selectedCommand: string) => 
     !!selectedCommand && command.toLowerCase() === selectedCommand.toLowerCase()
@@ -93,6 +94,26 @@ export function filterOwnResults<T extends ResultsItem>(results: T[], props: Own
 export function filterOwnHeats(results: SpeedFinalItem[], props: OwnRowProps): SpeedFinalItem[] {
     const ownHeats = new Set(results.filter((result) => isOwnRow(result, props)).map((result) => `${result.round}|${result.heat}`))
     return results.filter((result) => ownHeats.has(`${result.round}|${result.heat}`))
+}
+
+export interface SpeedBracketRound {
+    name: string
+    // Забеги по порядку сетки; ещё не пройденный забег — пустой массив
+    heats: SpeedFinalItem[][]
+}
+
+// Раскладка сетки-дерева: все раунды от первого до финала, в каждом 2^шагов_до_финала забегов,
+// даже если они ещё не начались. Забег за III место — отдельно: в дереве он ни с чем не связан
+export function getSpeedBracketRounds(results: SpeedFinalItem[]): { rounds: SpeedBracketRound[], bronze: SpeedFinalItem[] | null } {
+    if (!results.length) return { rounds: [], bronze: null }
+    const firstSteps = Math.max(...results.map((result) => getSpeedStepsToFinal(result.round)))
+    const getHeat = (round: string, heat: number) => results.filter((result) => result.round === round && result.heat === heat)
+    const rounds = Array.from({ length: firstSteps + 1 }, (_, i) => {
+        const steps = firstSteps - i
+        const name = getSpeedRoundName(steps)
+        return { name, heats: Array.from({ length: 2 ** steps }, (_, heat) => getHeat(name, heat)) }
+    })
+    return { rounds, bronze: firstSteps > 0 ? getHeat(getSpeedRoundName(0), 1) : null }
 }
 
 export function getRowHighlight({ result, command, names, isNamesFilterEnabled, isFinal }: getRowClassesProps): RowHighlight {

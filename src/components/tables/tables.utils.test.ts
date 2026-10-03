@@ -10,9 +10,10 @@ import {
   getRowSignature,
   filterOwnResults,
   filterOwnHeats,
+  getSpeedBracketRounds,
 } from './tables.utils'
 import { speedQualConfig } from '@/shared/tables.configs'
-import { LeadQualItem } from '@/shared/types'
+import { LeadQualItem, SpeedFinalItem } from '@/shared/types'
 
 // Mock data for testing
 const mockLeadQualItem: LeadQualItem = {
@@ -266,6 +267,33 @@ describe('tables.utils', () => {
     it('returns nothing when none of yours are in the protocol', () => {
       expect(filterOwnResults(results, { ...base, command: 'КРДР' })).toEqual([])
       expect(filterOwnResults(results, { ...base, names: 'Сидоров', isNamesFilterEnabled: true })).toEqual([])
+    })
+  })
+
+  describe('getSpeedBracketRounds', () => {
+    const item = (round: string, heat: number, name: string): SpeedFinalItem => ({ rank: '', name, command: '', score: '', round, heat })
+
+    it('should lay out all rounds down to the final, leaving pending heats empty', () => {
+      const a = item('1/4 финала', 0, 'А'), b = item('1/4 финала', 0, 'Б'), c = item('1/4 финала', 3, 'В')
+      const semi = item('Полуфинал', 0, 'А')
+      const { rounds, bronze } = getSpeedBracketRounds([a, b, c, semi])
+      expect(rounds).toStrictEqual([
+        { name: '1/4 финала', heats: [[a, b], [], [], [c]] },
+        { name: 'Полуфинал', heats: [[semi], []] },
+        { name: 'Финал', heats: [[]] },
+      ])
+      expect(bronze).toStrictEqual([])
+    })
+
+    it('should put the heat for III place aside', () => {
+      const gold = item('Финал', 0, 'А'), third = item('Финал', 1, 'Б')
+      const { rounds, bronze } = getSpeedBracketRounds([item('Полуфинал', 0, 'А'), gold, third])
+      expect(rounds[1]).toStrictEqual({ name: 'Финал', heats: [[gold]] })
+      expect(bronze).toStrictEqual([third])
+    })
+
+    it('should return nothing for empty results', () => {
+      expect(getSpeedBracketRounds([])).toStrictEqual({ rounds: [], bronze: null })
     })
   })
 })
