@@ -6,7 +6,7 @@ import { Item } from '@/src/shared/components/Autocomplete/Autocomplete.types'
 export function EventTemplate(item: Event | null, value: Item | null) {
     // Без кода событие не выбрать, а объект целиком React отрисовать не может — такая запись уронила бы всю страницу
     if (!item?.link) return null
-    const highlightClass = isDateBefore(item.enddate) ? 'bg-live-tint ' : ''
+    const highlightClass = isDateBefore(item.startdate) ? 'bg-live-tint ' : ''
     const activeClass = value === item.link ? 'bg-blue-200' : highlightClass
     return (
       <div className={`px-3 py-2 hover:bg-blue-200 focus:bg-blue-200 focus:outline-none ${activeClass}`}>
