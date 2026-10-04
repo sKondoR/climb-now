@@ -2,7 +2,7 @@ meta:
   environment: node
   toolchain:
     name: npm
-    version: 20
+    version: 24
 
 build:
   additionalCommands: npm ci && npm run build
@@ -10,8 +10,16 @@ build:
 run:
   command: npm run start
   containerPort: 3000
+  # Добавляем проверку готовности
+  readinessProbe:
+    tcpSocket:
+      port: 3000
+    initialDelaySeconds: 5
+    periodSeconds: 5
 
 deploy:
+  # Указываем количество инстансов для отказоустойчивости
+  replicas: 2
   ignore:
     - node_modules/
     - .next/
