@@ -1,10 +1,10 @@
 {
   "name": "climb-now",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=dtS2cuPUtbbrnCqN8uuYwZ06gO+SMlBagoufW2nB29w= next build",
     "start": "next start",
     "lint": "eslint .",
     "analyze": "cross-env ANALYZE=true next build",
