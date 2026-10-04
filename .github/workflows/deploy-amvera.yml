@@ -52,4 +52,4 @@ jobs:
           repo=$(trim "$AMVERA_REPO")
           echo "::add-mask::$pass"
           # --force: репозиторий на Amvera — только зеркало для выкладки, источник истины — GitHub
-          git push --force "https://$user:$pass@${repo#https://}" HEAD:main
+          git push --force "https://$user:$pass@${repo#https://}" HEAD:master
