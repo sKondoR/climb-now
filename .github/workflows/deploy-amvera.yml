@@ -43,6 +43,13 @@ jobs:
           AMVERA_PASSWORD: ${{ secrets.AMVERA_PASSWORD }}
           AMVERA_REPO: ${{ secrets.AMVERA_REPO }}
         run: |
-          auth=$(printf '%s:%s' "$AMVERA_USERNAME" "$AMVERA_PASSWORD" | base64 -w0)
+          # Секрет, вставленный с Enter в конце, тянет за собой перевод строки — и пароль не подходит
+          trim() { printf '%s' "$1" | tr -d '\r\n' | sed 's/^[[:space:]]*//; s/[[:space:]]*$//'; }
+          # Логин и пароль идут в адрес — экранируем символы вроде @ : / #
+          enc() { jq -rn --arg v "$1" '$v|@uri'; }
+          user=$(enc "$(trim "$AMVERA_USERNAME")")
+          pass=$(enc "$(trim "$AMVERA_PASSWORD")")
+          repo=$(trim "$AMVERA_REPO")
+          echo "::add-mask::$pass"
           # --force: репозиторий на Amvera — только зеркало для выкладки, источник истины — GitHub
-          git -c http.extraHeader="Authorization: Basic $auth" push --force "$AMVERA_REPO" HEAD:main
+          git push --force "https://$user:$pass@${repo#https://}" HEAD:main
