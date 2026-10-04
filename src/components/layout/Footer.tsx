@@ -1,5 +1,7 @@
 import Image from 'next/image'
 
+import packageJson from '../../../package.json'
+
 const Footer = () => {
   const now = new Date();
   const formattedTime = now.toLocaleString('ru-RU', {
@@ -15,7 +17,7 @@ const Footer = () => {
     // В потоке, а не absolute: на узком экране строка переносится и наезжала на последнюю карточку
     <footer className="mt-auto pt-8 pb-2 flex flex-wrap gap-x-5 gap-y-1 items-center">
       <div className="text-xs text-gray-500">
-        Версия: {formattedTime}
+        Версия: {packageJson.version} ({formattedTime})
       </div>
       <div className="text-xs text-gray-500">
         <span>Контакты: </span>

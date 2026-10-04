@@ -1,0 +1,48 @@
+# Выкладка на Amvera только при смене version в package.json.
+# Автосборка из GitHub в Amvera должна быть отключена: код туда приходит отсюда, push-ем в git-репозиторий проекта на Amvera.
+# Секреты репозитория: AMVERA_USERNAME, AMVERA_PASSWORD (логин и пароль Amvera),
+# AMVERA_REPO — адрес git-репозитория проекта без логина, например https://git.amvera.ru/<user>/<project>
+name: Deploy to Amvera
+
+on:
+  push:
+    branches: [main]
+    paths: [package.json]
+  # Ручная выкладка из вкладки Actions — без проверки версии
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Полная история: в Amvera пушится вся ветка, а из неглубокого клона git push отказывается
+          fetch-depth: 0
+
+      - name: Check version change
+        id: version
+        run: |
+          current=$(jq -r .version package.json)
+          before='${{ github.event.before }}'
+          if [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Сравниваем с состоянием до push: в одном push может быть несколько коммитов
+          previous=$(git show "$before:package.json" 2>/dev/null | jq -r .version || echo '')
+          echo "previous=$previous current=$current"
+          if [ "$previous" != "$current" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Push to Amvera
+        if: steps.version.outputs.changed == 'true'
+        env:
+          AMVERA_USERNAME: ${{ secrets.AMVERA_USERNAME }}
+          AMVERA_PASSWORD: ${{ secrets.AMVERA_PASSWORD }}
+          AMVERA_REPO: ${{ secrets.AMVERA_REPO }}
+        run: |
+          auth=$(printf '%s:%s' "$AMVERA_USERNAME" "$AMVERA_PASSWORD" | base64 -w0)
+          # --force: репозиторий на Amvera — только зеркало для выкладки, источник истины — GitHub
+          git -c http.extraHeader="Authorization: Basic $auth" push --force "$AMVERA_REPO" HEAD:main
