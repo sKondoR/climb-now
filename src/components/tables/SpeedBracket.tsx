@@ -55,7 +55,6 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
                           {result.isHighlighted && <span className="sr-only">, победитель забега</span>}
                         </td>
                         <td className={`px-1 md:px-2 py-1 font-medium ${rowClass ? 'text-gray-600' : 'text-gray-500'}`}>{result.command}</td>
-                        {/* Победителя забега видно не только по цвету: его время жирное */}
                         <td className={`px-1 md:px-2 py-1 text-right whitespace-nowrap ${result.isHighlighted ? 'font-bold' : 'font-medium'}`}>{result.score}</td>
                       </tr>
                     )
