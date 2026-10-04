@@ -7,7 +7,7 @@ export default function HomePage() {
     // relative: абсолютные элементы внутри (sr-only подписи, иконки) позиционируются от прокручиваемого блока, а не от документа — иначе они растягивали body и появлялась вторая полоса прокрутки
     <div id="page-scroll" className="relative flex flex-col h-screen supports-[height:100dvh]:h-dvh bg-gray-50 overflow-auto">
       <Header />  
-      <main className="w-full flex-1 mx-auto px-3 sm:px-6 lg:px-8 pt-3 md:pt-8 flex flex-col">
+      <main className="w-full flex-1 mx-auto px-3 sm:px-6 lg:px-8 pt-2 flex flex-col">
         {/* Заголовок страницы для экранного чтеца: логотип живёт в сворачиваемой (inert) части шапки */}
         <h1 className="sr-only">ClimbNow — результаты соревнований ФСР онлайн</h1>
         <PageContent footer={<Footer />} />

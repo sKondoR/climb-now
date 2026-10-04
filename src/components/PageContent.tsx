@@ -87,8 +87,7 @@ function PageContent({ footer }: { footer?: ReactNode }) {
   const isSpeedDiscipline = discipline.discipline === DISCIPLINES.SPEED || discipline.discipline === DISCIPLINES.SPEED_CLASSIC
   const filteredOnline = formStore.isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
   return withFooter(<>
-      {/* Дисциплина остаётся на виду при прокрутке длинного списка групп */}
-      <div className="sticky top-0 z-20 -mx-3 px-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 pt-1 mb-2 bg-gray-50">
+      <div className="-mx-3 px-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 pt-1 mb-2 bg-gray-50">
       <DisciplineTabs
         disciplines={disciplinesStore.groupsData}
         setActiveTab={setActiveTab}
