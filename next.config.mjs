@@ -22,6 +22,7 @@ const nextConfig = {
     // Static generation improvements
     staticGenerationRetryCount: 3,
     staticGenerationMaxConcurrency: 8,
+    optimizePackageImports: ['@fortawesome/free-solid-svg-icons'],
   },
   transpilePackages: ['mobx', 'mobx-react-lite'],
   // HTTP headers for better caching
