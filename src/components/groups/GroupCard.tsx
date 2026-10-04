@@ -16,10 +16,11 @@ import ErrorBoundary from '@/src/shared/components/ErrorBoundary/ErrorBoundary'
 
 interface GroupCardProps {
   group: Group
+  isSpeedTree: boolean
 }
 
 export default observer(
-function GroupCard({ group }: GroupCardProps) {
+function GroupCard({ group, isSpeedTree }: GroupCardProps) {
   const [isExpanded, setIsExpanded] = useState(true)
   const { isCommandFilterEnabled, code, command, isNamesFilterEnabled, names } = rootStore.formStore
 
@@ -111,7 +112,8 @@ function GroupCard({ group }: GroupCardProps) {
             isCommandFilterEnabled={isCommandFilterEnabled}
             command={command}
             isNamesFilterEnabled={isNamesFilterEnabled}
-            names={names}            
+            names={names}
+            isSpeedTree={isSpeedTree}
           />
           </ErrorBoundary> : null}
           </div>

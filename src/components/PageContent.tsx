@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite'
 
 import { rootStore } from '@/src/store/root.store'
 
-import { MIN_URL_CODE_LENGTH } from '@/src/shared/constants'
+import { DISCIPLINES, MIN_URL_CODE_LENGTH } from '@/src/shared/constants'
 import { Group } from '@/src/shared/types'
 
 import Button from '@/src/shared/components/Button/Button'
@@ -16,11 +16,13 @@ import { isGroupOnline } from './groups/groups.utils'
 // Серверного рендера всё равно нет — до монтирования компонент возвращает null
 import DisciplineTabs from './groups/DisciplineTabs'
 import GroupCard from './groups/GroupCard'
+import SpeedViewToggle from './tables/SpeedViewToggle'
 
 export default observer(
 function PageContent({ footer }: { footer?: ReactNode }) {
   const [activeTab, setActiveTab] = useState<number>(0)
   const [isMounted, setIsMounted] = useState<boolean>(false)
+  const [isSpeedTree, setIsSpeedTree] = useState<boolean>(true)
   const disciplinesStore = rootStore.disciplinesStore
   const formStore= rootStore.formStore
 
@@ -82,6 +84,7 @@ function PageContent({ footer }: { footer?: ReactNode }) {
     )
   }
 
+  const isSpeedDiscipline = discipline.discipline === DISCIPLINES.SPEED || discipline.discipline === DISCIPLINES.SPEED_CLASSIC
   const filteredOnline = formStore.isOnlyOnline ? discipline.groups.filter(isGroupOnline) : discipline.groups
   return withFooter(<>
       {/* Дисциплина остаётся на виду при прокрутке длинного списка групп */}
@@ -90,7 +93,9 @@ function PageContent({ footer }: { footer?: ReactNode }) {
         disciplines={disciplinesStore.groupsData}
         setActiveTab={setActiveTab}
         activeTab={activeTab}
-      />
+      >
+        {isSpeedDiscipline && <SpeedViewToggle isSpeedTree={isSpeedTree} setIsSpeedTree={setIsSpeedTree} />}
+      </DisciplineTabs>
       </div>
       {!filteredOnline.length && discipline.groups.length ?
           <div className="text-base text-center text-gray-600 py-6 max-w-md mx-auto">Сейчас ни одна группа не выступает. Снимите галочку «только онлайн», чтобы увидеть все.</div> : null}
@@ -99,6 +104,7 @@ function PageContent({ footer }: { footer?: ReactNode }) {
           <GroupCard
             key={group.id}
             group={group}
+            isSpeedTree={isSpeedTree}
           />
         ))}
       </div>

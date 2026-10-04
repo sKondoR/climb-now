@@ -1,15 +1,18 @@
+import { ReactNode } from 'react'
 import { Discipline } from '@/src/shared/types'
 
 interface DisciplineTabsProps {
   disciplines: Discipline[] | null
   setActiveTab: (index: number) => void
   activeTab: number
+  children?: ReactNode
 }
 
 export default function DisciplineTabs({
   disciplines,
   setActiveTab,
   activeTab,
+  children,
 }: DisciplineTabsProps) {
 
   if (!disciplines) return null
@@ -17,6 +20,8 @@ export default function DisciplineTabs({
     // Один ряд: на узком экране прокручивается, на широком стоит по центру
     <div className="overflow-x-auto overscroll-x-contain no-scrollbar">
     <div className="flex gap-x-1 justify-center w-max min-w-full" role="group" aria-label="Дисциплина">
+        {/* Равные поля по краям: появление элемента справа не сдвигает табы с центра. На узком экране места жалко — без полей */}
+        <div className="shrink-0 w-24 max-md:hidden" aria-hidden />
         {disciplines.map(({ discipline }, index: number) => (
             <button
               key={`${discipline}-${index}`}
@@ -35,6 +40,7 @@ export default function DisciplineTabs({
               {discipline}
             </button>
         ))}
+        <div className="shrink-0 md:w-24 flex">{children}</div>
     </div>
     </div>
   )
