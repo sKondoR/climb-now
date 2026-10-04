@@ -36,7 +36,7 @@ function Heat({ heat, isFinal, command, names, isNamesFilterEnabled }: HeatProps
             title={[result.name, result.command].filter(Boolean).join(', ')}
             className={`h-6 px-1.5 flex items-center gap-1 ${i ? 'border-t border-gray-200' : ''} ${rowClass || 'bg-gray-50'}`}
           >
-            {isFinal && result.rank && <span className="w-3 shrink-0 text-gray-600">{result.rank}</span>}
+            {isFinal && result.rank && <span className="w-3 shrink-0 text-gray-600">{Number(result.rank) <= 3 ? result.rank : ''}</span>}
             <span className={`min-w-0 flex-1 truncate ${highlight === 'own' ? 'font-bold' : 'font-medium'}`}>
               {shortName(result.name)}
               <span className="sr-only">{result.name !== shortName(result.name) && ` (${result.name})`}</span>

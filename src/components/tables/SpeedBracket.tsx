@@ -48,7 +48,7 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
                     const highlight = getRowHighlight(rowProps)
                     return (
                       <tr key={result.name} className={`border-b border-white ${rowClass || 'bg-gray-50'}`}>
-                        {isFinal && <td className="px-1 md:px-2 py-1 font-medium">{result.rank}</td>}
+                        {isFinal && <td className="px-1 md:px-2 py-1 font-medium">{Number(result.rank) <= 3 ? result.rank : ''}</td>}
                         <td className={`px-1 md:px-2 py-1 break-words ${highlight === 'own' ? 'font-bold' : 'font-medium'}`}>
                           {result.name}
                           {highlight && <span className="sr-only">, {ROW_HIGHLIGHT_LABELS[highlight]}</span>}
