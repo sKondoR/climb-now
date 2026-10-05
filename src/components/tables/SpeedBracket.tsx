@@ -1,7 +1,10 @@
 import { NAME_COL, COMMAND_COL } from '../../shared/tables.configs'
-import { ROW_HIGHLIGHT_LABELS, getRowClasses, getRowHighlight } from './tables.utils'
+import { ROW_HIGHLIGHT_LABELS, WINNER_STRIPE, getRowClasses, getRowHighlight } from './tables.utils'
 
 import { SpeedFinalItem } from '@/src/shared/types'
+
+// Первая колонка — с запасом слева под полоску победителя забега
+const FIRST_COL_PX = 'pl-2.5 pr-1 md:pl-3 md:pr-2'
 
 interface SpeedBracketProps {
   results: SpeedFinalItem[]
@@ -29,8 +32,8 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
             <table className="w-full max-w-md table-fixed leading-none tabular-nums">
               <thead>
                 <tr className="border-b bg-white">
-                  {isFinal && <th className="text-left px-1 md:px-2 py-1 w-12">место</th>}
-                  <th className="text-left px-1 md:px-2 py-1">{NAME_COL}</th>
+                  {isFinal && <th className={`text-left ${FIRST_COL_PX} py-1 w-12`}>место</th>}
+                  <th className={`text-left ${isFinal ? 'px-1 md:px-2' : FIRST_COL_PX} py-1`}>{NAME_COL}</th>
                   <th className="text-left px-1 md:px-2 py-1 w-16 md:w-20">{COMMAND_COL}</th>
                   <th className="text-right px-1 md:px-2 py-1 w-16">время</th>
                 </tr>
@@ -46,10 +49,12 @@ export default function SpeedBracket({ results, command, isNamesFilterEnabled, n
                     const rowProps = { result: { ...result, isHighlighted: false }, command, names, isNamesFilterEnabled, isFinal }
                     const rowClass = getRowClasses(rowProps)
                     const highlight = getRowHighlight(rowProps)
+                    // Полоска победителя забега — на первой ячейке строки
+                    const stripe = result.isHighlighted ? WINNER_STRIPE : ''
                     return (
                       <tr key={result.name} className={`border-b border-white ${rowClass || 'bg-gray-50'}`}>
-                        {isFinal && <td className="px-1 md:px-2 py-1 font-medium">{Number(result.rank) <= 3 ? result.rank : ''}</td>}
-                        <td className={`px-1 md:px-2 py-1 break-words ${highlight === 'own' ? 'font-bold' : 'font-medium'}`}>
+                        {isFinal && <td className={`${FIRST_COL_PX} py-1 font-medium ${stripe}`}>{Number(result.rank) <= 3 ? result.rank : ''}</td>}
+                        <td className={`${isFinal ? 'px-1 md:px-2' : `${FIRST_COL_PX} ${stripe}`} py-1 break-words ${highlight === 'own' ? 'font-bold' : 'font-medium'}`}>
                           {result.name}
                           {highlight && <span className="sr-only">, {ROW_HIGHLIGHT_LABELS[highlight]}</span>}
                           {result.isHighlighted && <span className="sr-only">, победитель забега</span>}

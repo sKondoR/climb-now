@@ -98,8 +98,9 @@ function GroupCard({ group, isSpeedTree }: GroupCardProps) {
                     : 'border-gray-100'
                 }`}
               > 
-                <StatusIcon status={tab.status} />
+                {tab.status !== STATUSES.ONLINE && <StatusIcon status={tab.status} />}
                 <div>{tab.label}</div>
+                {tab.status === STATUSES.ONLINE && <StatusIcon status={tab.status} />}
               </button>
             ))}
           </div>

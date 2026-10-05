@@ -1,4 +1,4 @@
-import { ROW_HIGHLIGHT_LABELS, getRowClasses, getRowHighlight, getSpeedBracketRounds } from './tables.utils'
+import { ROW_HIGHLIGHT_LABELS, WINNER_STRIPE, getRowClasses, getRowHighlight, getSpeedBracketRounds } from './tables.utils'
 
 import { SpeedFinalItem } from '@/src/shared/types'
 
@@ -26,7 +26,7 @@ function Heat({ heat, isFinal, command, names, isNamesFilterEnabled }: HeatProps
   return (
     <div className={`overflow-hidden rounded border leading-none tabular-nums ${heat.length ? 'border-gray-300' : 'border-dashed border-gray-300'}`}>
       {lanes.map((result, i) => {
-        if (!result) return <div key={i} className={`h-6 px-1.5 flex items-center text-gray-400 ${i ? 'border-t border-gray-200' : ''}`}>—</div>
+        if (!result) return <div key={i} className={`h-6 pl-2.5 pr-1.5 flex items-center text-gray-400 ${i ? 'border-t border-gray-200' : ''}`}>—</div>
         const rowProps = { result: { ...result, isHighlighted: false }, command, names, isNamesFilterEnabled, isFinal }
         const highlight = getRowHighlight(rowProps)
         const rowClass = getRowClasses(rowProps)
@@ -34,7 +34,7 @@ function Heat({ heat, isFinal, command, names, isNamesFilterEnabled }: HeatProps
           <div
             key={result.name}
             title={[result.name, result.command].filter(Boolean).join(', ')}
-            className={`h-6 px-1.5 flex items-center gap-1 ${i ? 'border-t border-gray-200' : ''} ${rowClass || 'bg-gray-50'}`}
+            className={`h-6 pl-2.5 pr-1.5 flex items-center gap-1 ${i ? 'border-t border-gray-200' : ''} ${rowClass || 'bg-gray-50'} ${result.isHighlighted ? WINNER_STRIPE : ''}`}
           >
             {isFinal && result.rank && <span className="w-3 shrink-0 text-gray-600">{Number(result.rank) <= 3 ? result.rank : ''}</span>}
             <span className={`min-w-0 flex-1 truncate ${highlight === 'own' ? 'font-bold' : 'font-medium'}`}>
