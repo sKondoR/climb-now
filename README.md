@@ -59,6 +59,10 @@ npm run dev
 http://localhost:3000
 ```
 
+## Мониторинг ошибок
+
+Ошибки браузера и сервера (включая сбои загрузки протоколов в `/api/results`) отправляются в [Hawk](https://hawk.so): sentry.io из России недоступен. Чтобы включить, задайте переменную окружения `HAWK_TOKEN` (Integration Token проекта в Hawk); без неё отправка выключена. Стектрейсы показываются по исходному коду: `npm run start` перед запуском загружает browser source maps в Hawk и удаляет их с сайта.
+
 ## API
 
 Собственной базы данных нет: все данные парсятся на сервере из HTML двух сайтов ФСР — протоколов [c-f-r.ru/live](https://c-f-r.ru/live/2602vrn/index.html) и календаря [rusclimbing.ru/competitions](https://www.rusclimbing.ru/competitions/).
