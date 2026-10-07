@@ -23,6 +23,8 @@ import {
   mockParsedLeadFinal,
   mockParsedBoulderQual,
   mockParsedBoulderFinal,
+  mockParsedBoulderQualManyRoutes,
+  mockParsedBoulderFinalManyRoutes,
   mockHtmlSpeedQual,
   mockParsedSpeedQual,
   mockHtmlSpeedFinal,
@@ -468,6 +470,50 @@ describe('parsers', () => {
           rank: '3',
           score: '29,3',
           stRank: '1',
+        },
+      ])
+    })
+  })
+
+  describe('boulder with arbitrary routes count', () => {
+    it('should parse all qualification routes and the score after them, start number by its class', () => {
+      expect(parseBoulderQual(mockParsedBoulderQualManyRoutes)).toStrictEqual([
+        {
+          command: 'Рязанская область',
+          isHighlighted: true,
+          name: 'Брит Максим',
+          r1: '1/1',
+          r2: '1/1',
+          r3: '1/1',
+          r4: '1/1',
+          r5: '1/1',
+          r6: '1/1',
+          r7: '1/1',
+          r8: '1/1',
+          r9: ' /3',
+          r10: '4/1',
+          rank: '1',
+          score: '249,7',
+          stRank: '1',
+        },
+      ])
+    })
+
+    it('should parse all final routes and the score after them', () => {
+      expect(parseBoulderFinal(mockParsedBoulderFinalManyRoutes)).toStrictEqual([
+        {
+          command: 'Московская область',
+          name: 'Ващенко Илья',
+          qRank: '1',
+          r1: '1/1',
+          r2: '2/2',
+          r3: ' /1',
+          r4: '7/1',
+          r5: ' / ',
+          r6: '3/2',
+          rank: '1',
+          score: '84,3',
+          stRank: '8',
         },
       ])
     })

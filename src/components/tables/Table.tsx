@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import { NAME_COL, COMMAND_COL } from '../../shared/tables.configs'
-import { ROW_HIGHLIGHT_LABELS, getClimbedCount, getRowClasses, getRowHighlight, getRowKeys, getRowSignature, getTableConfig, filterOwnResults, filterOwnHeats } from './tables.utils'
+import { ROW_HIGHLIGHT_LABELS, getClimbedCount, getRowClasses, getRowHighlight, getRowKeys, getRowSignature, getTableConfig, withRouteColumns, filterOwnResults, filterOwnHeats } from './tables.utils'
 import BoulderCell from './BoulderCell'
 import SpeedBracket from './SpeedBracket'
 import SpeedBracketTree from './SpeedBracketTree'
@@ -67,12 +67,10 @@ export default function Table({
     const rowKeys = getRowKeys(filteredResults)
     const climbedCount = getClimbedCount({ results, isLead, isBoulder, isSpeed });
 
-    const config = getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }).filter((col) => {
-      if (!col.prop) return false
-      const firstResult = results?.[0]
-      if (!firstResult) return false
-      return col.prop in firstResult
-    })
+    const firstResult = results?.[0]
+    const config = firstResult
+      ? withRouteColumns(getTableConfig({ isFinal, isQualResult, isLead, isBoulder, isSpeed }), firstResult).filter((col) => col.prop && col.prop in firstResult)
+      : []
 
     return (
       <div className="mt-2 relative">

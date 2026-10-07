@@ -59,28 +59,23 @@ export interface SubgroupResults {
 
 export interface BoulderQualItem {
   isHighlighted?: boolean
+  // Трассы: r1, r2… — сколько их в протоколе
+  [route: `r${number}`]: string
   rank: string
   stRank: string
   name: string
   command: string
-  r1: string
-  r2: string
-  r3: string
-  r4: string
-  r5: string
   score: string
 }
 
 export interface BoulderFinalItem {
   isHighlighted?: boolean
+  // Трассы: r1, r2… — сколько их в протоколе
+  [route: `r${number}`]: string
   rank: string
   stRank: string
   name: string
   command: string
-  r1: string
-  r2: string
-  r3: string
-  r4: string
   score: string
 }
 

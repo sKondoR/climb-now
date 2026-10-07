@@ -502,3 +502,67 @@ export const mockHtmlSpeedClassicFinal = `
 </html>
 `
 export const mockParsedSpeedClassicFinal = parseFragment(mockHtmlSpeedClassicFinal)
+
+// Неофициальные старты (2610rzn): трасс в квалификации и финале больше, чем на официальных
+export const mockHtmlBoulderQualManyRoutes = `
+<h1>Мужчины - БОУЛДЕРИНГ - Квалификация</h1>
+<table>
+<thead>
+    <tr><th>место</th><th>ст #</th><th></th><th></th><th></th>
+    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th>
+    <th>Результат</th></tr>
+</thead>
+<tbody>
+    <tr class="q">
+    <td class="rank">1</td>
+    <td class="st">1</td>
+    <td class="id">144</td>
+    <td class="name">Брит Максим</td>
+    <td class="command">Рязанская область</td>
+    <!-- td class="route"><div class="r_2">&nbsp;</div></td -->
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_1"><br />3</div></td>
+    <td class="route"><div class="r_2">4<br />1</div></td>
+    <td class="route_sum route-border-left">249,7</td>
+    </tr>
+</tbody>
+</table>
+`
+export const mockParsedBoulderQualManyRoutes = parseFragment(mockHtmlBoulderQualManyRoutes)
+
+export const mockHtmlBoulderFinalManyRoutes = `
+<h1>Мужчины - БОУЛДЕРИНГ - Финал</h1>
+<table>
+<thead>
+    <tr><th>место</th><th>ст #</th><th></th><th></th><th></th>
+    <th>квал.</th>
+    <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+    <th>Результат</th></tr>
+</thead>
+<tbody>
+    <tr>
+    <td class="rank">1</td>
+    <td class="st">8</td>
+    <td class="id">141</td>
+    <td class="name">Ващенко Илья</td>
+    <td class="command">Московская область</td>
+    <td class="pre">1</td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_2">2<br />2</div></td>
+    <td class="route"><div class="r_1"><br />1</div></td>
+    <td class="route"><div class="r_2">7<br />1</div></td>
+    <td class="route"><div class="r_0">&nbsp;</div></td>
+    <td class="route"><div class="r_2">3<br />2</div></td>
+    <td class="route_sum route-border-left">84,3</td>
+    </tr>
+</tbody>
+</table>
+`
+export const mockParsedBoulderFinalManyRoutes = parseFragment(mockHtmlBoulderFinalManyRoutes)

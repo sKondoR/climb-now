@@ -132,21 +132,26 @@ export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ 
     const isHighlighted = hasClass(row, 'q')
     const cells = findElementsByTag(row, 'td')
     // if (cells.length < config.length) return
+    // Трасс в боулдеринге может быть больше, чем в конфиге (неофициальные старты): берём все ячейки .route подряд,
+    // а следующую за ними — как результат
     let boulderCount = 0
-    let boulderResult = false
-    const data = config.reduce((acc: Partial<T>, key: { prop: keyof T }, i: number) => {
-      if (!key.prop || boulderResult) return acc
-      const cell = cells[i]      
+    const data: Partial<Record<string, string>> = {}
+    for (let i = 0; i < Math.max(config.length, cells.length); i++) {
+      const cell = cells[i]
       if (hasClass(cell, 'route')) {
         boulderCount++
-        return ({ ...acc, [`r${boulderCount}`]: parseRouteCell(cell) })
+        data[`r${boulderCount}`] = parseRouteCell(cell)
       } else if (boulderCount > 0) {
-        boulderResult = true
-        return ({ ...acc, score: getTextContent(cell) })
+        data.score = getTextContent(cell)
+        break
+      } else if (hasClass(cell, 'st')) {
+        // Стартовый номер и id участника на разных стартах идут в разном порядке (id, st или st, id): узнаём их по классу
+        data.stRank = getTextContent(cell)
+      } else if (config[i]?.prop && !hasClass(cell, 'id')) {
+        data[config[i].prop as string] = getTextContent(cell)
       }
-      return ({ ...acc, [key.prop]: getTextContent(cell) })
-    }, {}) as T
-    results.push(isHighlighted ? { ...data, isHighlighted } : data)
+    }
+    results.push((isHighlighted ? { ...data, isHighlighted } : data) as T)
   })
   
   return results
