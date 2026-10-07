@@ -144,7 +144,7 @@ export const ROW_HIGHLIGHT_LABELS: Record<Exclude<RowHighlight, null>, string> =
 }
 
 // Полоска победителя забега в сетке скорости. Тенью, а не border: не сдвигает текст, имена соперников стоят ровно
-export const WINNER_STRIPE = 'shadow-[inset_4px_0_0_theme(colors.green.600)]'
+export const WINNER_STRIPE = 'shadow-[inset_4px_0_0_theme(colors.red.600)]'
 
 export function getRowClasses(props: getRowClassesProps) {
     const highlight = getRowHighlight(props)

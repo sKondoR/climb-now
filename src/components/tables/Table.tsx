@@ -131,7 +131,7 @@ export default function Table({
                     const value = String((result as LeadQualItem | LeadQualResultItem | LeadFinalsItem | BoulderQualItem | BoulderFinalItem | SpeedQualItem)[col.prop as Exclude<keyof typeof result, 'isHighlighted'>] ?? '');
                     const isBoulderCell = value.includes('/') && !SPECIAL_STATUSES.includes(value.toLowerCase());
                     if (isBoulderCell) {
-                      return <td key={`${col.id}-${index}`} className="text-left font-medium">
+                      return <td key={`${col.id}-${index}`} className="px-0.5 py-1">
                         <BoulderCell value={value} />
                       </td>
                     }
