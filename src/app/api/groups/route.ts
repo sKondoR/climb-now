@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(parsedResults)
   } catch (error) {
+    // Не в Hawk: 404 здесь штатно приходят, когда клиент подбирает суффикс кода (disciplinesStore.fetchGroups)
     return handleApiError(error)
   }
 }

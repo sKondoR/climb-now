@@ -13,7 +13,7 @@ Live: https://climbnow.ru and https://climbnow-skondor.amvera.io/
 ```bash
 npm run dev              # start dev server (localhost:3000)
 npm run build            # production build
-npm run start             # run production build
+npm run start             # run production build (first uploads browser source maps to Hawk, see "Error tracking")
 npm run lint              # next lint
 npm run test               # run vitest once
 npm run test:watch         # vitest watch mode
@@ -58,6 +58,16 @@ The external site (c-f-r.ru) is a legacy HTML site with no JSON API. All data co
 ### Security headers
 
 `src/proxy.ts` (Next.js middleware, matched against all non-API/static routes) sets CSP, HSTS, and other security headers, including a per-request nonce for script-src. When adding a new external script or connect-src target, it needs to be added to the CSP directives here.
+
+### Error tracking (Hawk)
+
+Errors go to [Hawk.so](https://hawk.so) (sentry.io blocks Russia). Everything is off when the `HAWK_TOKEN` env var is unset.
+
+- **Server**: `sendToHawk()` in `src/shared/hawk.server.ts`. Called from `onRequestError` in `src/instrumentation.ts` (unhandled render/route/proxy errors) and from the `catch` in `/api/results` only — `/api/groups` deliberately doesn't report, since 404s there are the normal outcome of the client's code-suffix probing. The SDK is initialised lazily on first send with `disableGlobalErrorsHandling` (its `uncaughtException` listener would keep a crashed process alive).
+- **Server stack traces**: Next replaces `Error.prepareStackTrace`, so `error.stack` points at minified `.next/server` chunks even with `--enable-source-maps`. `beforeSend` maps frames itself by reading the chunk's `.map` from disk on demand.
+- **Client**: `HawkInit` (rendered by `layout.tsx`, which passes the token read at request time) loads `@hawk.so/browser` lazily and catches `window.onerror`/`unhandledrejection`. Errors caught by error boundaries don't reach `window.onerror`, so `global-error.tsx` and `ErrorBoundary` call `sendToHawk()` from `src/shared/hawk.ts`. CSP allows `wss://*.k1.hawk.so`.
+- **Browser source maps**: `productionBrowserSourceMaps` is on; `npm run start` runs `scripts/hawk-sourcemaps.mjs` before `next start` to upload them under release = `.next/BUILD_ID` and delete them so they aren't served. It runs at start, not build, because Amvera env vars aren't available at build time. Starting the server any other way than `npm run start` leaves the maps publicly served.
+- `package.json` `overrides` pins `@hawk.so/nodejs`'s axios to the project's axios 1.x (its own `^0.21` has known vulnerabilities).
 
 ## Notes
 

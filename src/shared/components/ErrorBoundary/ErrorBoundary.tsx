@@ -2,6 +2,7 @@
 
 import { Component, ReactNode } from 'react'
 import Button from '../Button/Button'
+import { sendToHawk } from '@/src/shared/hawk'
 
 interface ErrorBoundaryProps {
   children: ReactNode
@@ -23,6 +24,7 @@ export default class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBo
 
   componentDidCatch(error: Error) {
     console.error('Results table render error:', error)
+    sendToHawk(error)
   }
 
   componentDidUpdate(prevProps: ErrorBoundaryProps) {

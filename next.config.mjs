@@ -15,7 +15,8 @@ const nextConfig = {
     reactRemoveProperties: process.env.NODE_ENV === 'production',
   },
   poweredByHeader: false, // Improve performance
-  productionBrowserSourceMaps: false, // Production disable source maps
+  // Карты нужны только для загрузки в Hawk: scripts/hawk-sourcemaps.mjs при npm run start отправляет и удаляет их
+  productionBrowserSourceMaps: true,
   experimental: {
     // Webpack memory optimizations
     memoryBasedWorkersCount: true,

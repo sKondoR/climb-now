@@ -3,6 +3,7 @@ import { parseResultsTable } from '@/shared/parser/parsers'
 import axios from 'axios'
 import { EXTERNAL_API_BASE_URL, EXTERNAL_API_TIMEOUT, SAFE_PATH_SEGMENT } from '@/shared/constants'
 import { handleApiError } from '@/shared/errorHandler'
+import { sendToHawk } from '@/shared/hawk.server'
 import { cached } from '@/shared/upstreamCache'
 import { SubGroupData } from '@/shared/types'
 
@@ -24,6 +25,8 @@ export async function GET(request: NextRequest) {
     }
     return NextResponse.json(parsed)
   } catch (error) {
+    // Сбой загрузки протокола зрители видят как пустую таблицу — отправляем в Hawk
+    sendToHawk(error, { code, subgroup })
     return handleApiError(error)
   }
 }

@@ -5,6 +5,8 @@ import QueryClientProviderWrapper from '@/src/shared/query/QueryClientProvider'
 import '@/src/app/globals.css'
 
 import YandexMetrika from '@/src/shared/components/YandexMetrika/YandexMetrika'
+import HawkInit from '@/src/shared/components/HawkInit/HawkInit'
+import { getHawkRelease } from '@/src/shared/hawk.server'
 
 const inter = Inter({ 
   // Интерфейс на русском: без cyrillic буквы рендерятся фолбэком. Вариативный файл без weight — все начертания (500/600/700) настоящие, не синтезированные
@@ -32,11 +34,13 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const YANDEX_METRIKA_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID || '';
+  const HAWK_TOKEN = process.env.HAWK_TOKEN || '';
   return (
     <html lang="ru">
       <head>
       </head>
       <body className={inter.className}>
+        {HAWK_TOKEN && <HawkInit token={HAWK_TOKEN} release={getHawkRelease()} />}
         <QueryClientProviderWrapper>
           <RootStoreProvider>
             {children}

@@ -9,17 +9,17 @@ export async function proxy(_request: NextRequest) {
 
   // Yandex Metrika domains: https://yandex.ru/support/metrica/code/install-counter-csp.html
   const metrikaHosts = [
-    'mc.yandex.ru', 'mc.yandex.az', 'mc.yandex.by', 'mc.yandex.co.il', 'mc.yandex.com',
-    'mc.yandex.com.am', 'mc.yandex.com.ge', 'mc.yandex.com.tr', 'mc.yandex.ee', 'mc.yandex.fr',
-    'mc.yandex.kg', 'mc.yandex.kz', 'mc.yandex.lt', 'mc.yandex.lv', 'mc.yandex.md',
-    'mc.yandex.tj', 'mc.yandex.tm', 'mc.yandex.uz', 'mc.webvisor.com', 'mc.webvisor.org',
+    'mc.yandex.ru', 'mc.yandex.by', 'mc.yandex.co.il', 'mc.yandex.com',
+    'mc.yandex.com.ge', 'mc.yandex.com.tr', 'mc.yandex.ee', 'mc.yandex.fr',
+    'mc.yandex.kz', 'mc.yandex.lt', 'mc.yandex.lv',
+    'mc.webvisor.com', 'mc.webvisor.org',
   ]
   const metrikaDomains = [...metrikaHosts.map((h) => `https://${h}`), 'https://yastatic.net'].join(' ')
   const metrikaWsDomains = metrikaHosts.map((h) => `wss://${h}`).join(' ')
   // Metrika UI embeds the site in an iframe for click/scroll maps
   const metrikaFrameAncestors = [
     'metrika.yandex.ru', 'metrika.yandex.by', 'metrika.yandex.com', 'metrika.yandex.com.tr',
-    'metrika.yandex.kz', 'metrika.yandex.uz', 'metrika.yandex', 'metrika.ya.ru',
+    'metrika.yandex.kz', 'metrika.yandex', 'metrika.ya.ru',
     'metrica.yandex.ru', 'metrica.yandex.by', 'metrica.yandex.com', 'metrica.yandex.com.tr',
     'metrica.yandex.kz', 'metrica.yandex', 'metrica.ya.ru',
     'metr.yandex.ru', 'metr.yandex.by', 'metr.yandex.com', 'metr.yandex.com.tr', 'metr.yandex.kz',
@@ -36,7 +36,8 @@ export async function proxy(_request: NextRequest) {
     // https: вместо списка доменов Метрики: заголовки ответа должны влезать в 4 КБ буфера nginx, иначе 502
     "img-src 'self' data: blob: https:;",
     "font-src 'self';",
-    `connect-src 'self' ${metrikaDomains} ${metrikaWsDomains};`,
+    // Hawk шлёт ошибки из браузера по WebSocket на wss://{integrationId}.k1.hawk.so
+    `connect-src 'self' ${metrikaDomains} ${metrikaWsDomains} wss://*.k1.hawk.so;`,
     `frame-src blob: ${metrikaDomains};`,
     "object-src 'none';",
     "base-uri 'self';",
