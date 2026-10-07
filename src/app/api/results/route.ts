@@ -8,6 +8,10 @@ import { cached } from '@/shared/upstreamCache'
 import { SubGroupData } from '@/shared/types'
 
 export const dynamic = 'force-dynamic'
+
+const UNAVAILABLE_REPORT_INTERVAL = 60 * 60 * 1000
+let lastUnavailableReport = -Infinity
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
   const code = searchParams.get('code')
@@ -26,7 +30,22 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(parsed)
   } catch (error) {
     // Сбой загрузки протокола зрители видят как пустую таблицу — отправляем в Hawk
-    sendToHawk(error, { code, subgroup })
+    if (axios.isAxiosError(error) && !error.response) {
+      // Hawk группирует по тексту ошибки, а в AggregateError IP c-f-r.ru идут в случайном порядке —
+      // каждый сбой становился отдельной группой. Недоступность сайта (таймаут, обрыв, нет маршрута) шлём одним заголовком.
+      // Пока сайт лежит, зрители опрашивают таблицы непрерывно — хватает одного события в час, чтобы не тратить лимит Hawk
+      if (Date.now() - lastUnavailableReport >= UNAVAILABLE_REPORT_INTERVAL) {
+        lastUnavailableReport = Date.now()
+        sendToHawk(new Error('c-f-r.ru unavailable'), {
+          code,
+          subgroup,
+          errorCode: error.code ?? '',
+          errorMessage: error.message.slice(0, 300),
+        })
+      }
+    } else {
+      sendToHawk(error, { code, subgroup })
+    }
     return handleApiError(error)
   }
 }
