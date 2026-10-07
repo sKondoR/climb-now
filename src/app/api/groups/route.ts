@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import axios from 'axios'
-import { parseResults } from '@/shared/parser/parsers'
-import { EXTERNAL_API_BASE_URL, EXTERNAL_API_TIMEOUT, SAFE_PATH_SEGMENT } from '@/shared/constants'
+import { SAFE_PATH_SEGMENT } from '@/shared/constants'
 import { handleApiError } from '@/shared/errorHandler'
-import { cached } from '@/shared/upstreamCache'
+import { loadGroups } from '@/shared/groupsSource'
 
 export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
@@ -20,11 +18,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // toDo: Add random delay between 50-150ms to avoid rate limiting
-    const url = `${EXTERNAL_API_BASE_URL}${code}/index.html`
-    const parsedResults = await cached(url, async () => {
-      const response = await axios.get(url, { timeout: EXTERNAL_API_TIMEOUT })
-      return parseResults(response.data)
-    })
+    const parsedResults = await loadGroups(code)
 
     return NextResponse.json(parsedResults)
   } catch (error) {

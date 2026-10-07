@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 import { cachedWithFallback } from './backendCache'
-import { cached } from './upstreamCache'
+import { loadGroups } from './groupsSource'
 import { ApiError } from './errorHandler'
 import { parseEvents } from './parser/events.parser'
-import { parseResults } from './parser/parsers'
-import { EVENTS_SOURCE_URL, EXTERNAL_API_BASE_URL, EXTERNAL_API_TIMEOUT } from './constants'
+import { EVENTS_SOURCE_URL, EXTERNAL_API_TIMEOUT } from './constants'
 import type { EventResponse } from './types/api.types'
 
 // Суффиксы, с которыми протоколы лежат на c-f-r.ru, когда код с rusclimbing.ru даёт 404
@@ -80,12 +79,8 @@ export const patchEventLink = async (id: number, link: string): Promise<EventRes
     throw new ApiError(`Link ${link} is not a known variant of ${event.link}`, 400)
   }
 
-  // Тот же ключ и загрузчик, что в /api/groups: клиент только что запрашивал этот код, ответ обычно в кеше
-  const url = `${EXTERNAL_API_BASE_URL}${link}/index.html`
-  const results = await cached(url, async () => {
-    const response = await axios.get(url, { timeout: EXTERNAL_API_TIMEOUT })
-    return parseResults(response.data)
-  })
+  // Тот же загрузчик, что в /api/groups: клиент только что запрашивал этот код, ответ обычно в кеше
+  const results = await loadGroups(link)
   if (!results) {
     throw new ApiError(`Competition ${link} not found`, 400)
   }

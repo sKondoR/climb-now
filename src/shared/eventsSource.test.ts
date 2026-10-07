@@ -15,7 +15,7 @@ const mockSites = (competitions: Record<string, string>) => {
   vi.mocked(axios.get).mockImplementation(async (url: string) => {
     if (url.startsWith('https://www.rusclimbing.ru/')) return { data: mockEventsHtml }
     const code = url.match(/live\/([^/]+)\//)?.[1] ?? ''
-    if (code in competitions) return { data: competitions[code] }
+    if (code in competitions) return { data: competitions[code], headers: {} }
     throw new Error('404')
   })
 }

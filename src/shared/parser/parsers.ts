@@ -29,8 +29,19 @@ const matchDiscipline = (text: string): string =>
 // Полуфинал тоже «финал»: «полуфинал», «Semi-Final»
 const isFinalTitle = (title: string) => /финал|final/i.test(title)
 
-export const parseResults = (html: string): Discipline[] | null => {
+const moscowDay = (date: Date) => date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Moscow' })
+
+// ФСР иногда оставляет этап «онлайн» после окончания соревнований. Даты в протоколе нет, поэтому смотрим
+// на Last-Modified страницы: если она не менялась с прошлых суток (по Москве), онлайн-этапов уже нет
+const isStalePage = (lastModified?: string) => {
+  if (!lastModified) return false
+  const modifiedAt = new Date(lastModified)
+  return !isNaN(modifiedAt.getTime()) && moscowDay(modifiedAt) < moscowDay(new Date())
+}
+
+export const parseResults = (html: string, lastModified?: string): Discipline[] | null => {
   try {
+    const onlineStatus = isStalePage(lastModified) ? STATUSES.PASSED : STATUSES.ONLINE
     const document = parseFragment(html)
     
     const documentTitle = getTextContent(findElementsByTag(document, 'h1')[0]).toLowerCase()
@@ -64,7 +75,7 @@ export const parseResults = (html: string): Discipline[] | null => {
             id: `subgroup-${i}`,
             title,
             link: linkEl.attrs.find((a: { name: string; value: string }) => a.name === 'href')?.value.replace('.html', '') || '',
-            status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_run' ? STATUSES.ONLINE : STATUSES.PENDING),
+            status: statusClass === 'l_pas' ? STATUSES.PASSED : (statusClass === 'l_run' ? onlineStatus : STATUSES.PENDING),
             results: [],
           })
         } else if (hasClass(element, 'g_title')) {
@@ -74,7 +85,6 @@ export const parseResults = (html: string): Discipline[] | null => {
           currentGroup = {
             id: `group-${i}`,
             title,
-            isOnline: hasClass(element, 'l_run'),
             subgroups: []
           }
         }

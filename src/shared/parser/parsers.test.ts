@@ -48,6 +48,14 @@ describe('parsers', () => {
       const result = parseResults('')
       expect(result).toStrictEqual([])
     })
+    it('should treat online subgroups as passed when the page was last modified before today', () => {
+      const result = parseResults(mockHtmlEnglishSpeedIndex, 'Sat, 30 May 2026 09:27:00 GMT')
+      expect(result?.[0].groups[0].subgroups.map(({ status }) => status)).toStrictEqual(['passed', 'passed'])
+    })
+    it('should keep online subgroups when the page was modified today', () => {
+      const result = parseResults(mockHtmlEnglishSpeedIndex, new Date().toUTCString())
+      expect(result?.[0].groups[0].subgroups.map(({ status }) => status)).toStrictEqual(['passed', 'online'])
+    })
   })
 
   describe('parseResultsTable', () => {
@@ -267,7 +275,7 @@ describe('parsers', () => {
 
     it('should keep one final tab named «Финал» with merged status', () => {
       const group = {
-        id: 'g', title: 'Мужчины', isOnline: true,
+        id: 'g', title: 'Мужчины',
         subgroups: [
           subgroup('Квалификация', 'e_q_m', 'passed'),
           subgroup('1/8 финала', 'e16_f_m', 'passed'),

@@ -3,7 +3,6 @@ import { Status } from "./status"
 export interface Group {
   id: string
   title: string
-  isOnline: boolean
   subgroups: Subgroup[]
 }
 
