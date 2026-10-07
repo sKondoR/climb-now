@@ -31,6 +31,11 @@ import {
   mockParsedSpeedFinal,
   mockHtmlSpeedClassicQual,
   mockParsedSpeedClassicFinal,
+  mockHtmlEnglishIndex,
+  mockHtmlEnglishLeadSemiFinal,
+  mockHtmlEnglishBoulderSemiFinal,
+  mockHtmlEnglishSpeedIndex,
+  mockHtmlEnglishSpeedQual,
 } from './mocks/mockHtml'
 
 describe('parsers', () => {
@@ -743,6 +748,51 @@ describe('parsers', () => {
       const fragment = parseFragment(html)
       const result = getDisciplines(fragment)
       expect(result).toHaveLength(0)
+    })
+  })
+
+  describe('english protocols', () => {
+    it('should map english discipline headers to the same disciplines', () => {
+      const result = parseResults(mockHtmlEnglishIndex)
+      expect(result?.map((d) => d.discipline)).toStrictEqual(['трудность', 'боулдеринг'])
+      expect(result?.[0].groups[0].title).toBe('Female U17')
+      expect(result?.[0].groups[0].subgroups.map((s) => s.link)).toStrictEqual(['l_2f_f15', 'l_f_f15'])
+    })
+
+    it('should parse lead semi-final without qualification rank column', () => {
+      const result = parseResultsTable(mockHtmlEnglishLeadSemiFinal)
+      expect(result.isLead).toBe(true)
+      expect(result.isFinal).toBe(true)
+      expect(result.data).toStrictEqual([
+        { rank: '1', stRank: '2', name: 'TAN YOUTIAN', command: 'CHN', score: 'TOP', isHighlighted: true },
+      ])
+    })
+
+    it('should parse boulder semi-final without start number column', () => {
+      const result = parseResultsTable(mockHtmlEnglishBoulderSemiFinal)
+      expect(result.isBoulder).toBe(true)
+      expect(result.isFinal).toBe(true)
+      expect(result.data).toStrictEqual([
+        { rank: '1', name: 'TAN YOUTIAN', command: 'CHN', qRank: '0', r1: '1/1', r2: ' /1', score: '84,1', isHighlighted: true },
+      ])
+    })
+
+    it('should merge english speed final rounds into one «Финал» tab', () => {
+      const result = parseResults(mockHtmlEnglishSpeedIndex)
+      expect(result?.[0].discipline).toBe('скорость')
+      expect(result?.[0].groups[0].subgroups.map(({ title, link, status }) => ({ title, link, status }))).toStrictEqual([
+        { title: 'Qualification', link: 'e_q_m15', status: 'passed' },
+        { title: 'Финал', link: 'e8_f_m15', status: 'online' },
+      ])
+    })
+
+    it('should parse speed qualification', () => {
+      const result = parseResultsTable(mockHtmlEnglishSpeedQual)
+      expect(result.isSpeed).toBe(true)
+      expect(result.isFinal).toBe(false)
+      expect(result.data).toStrictEqual([
+        { rank: '1', stRank: '3', name: 'LI HAO', command: 'CHN', score1: '06,854', stRank2: '2', score2: '05,160', score: '05,160', isHighlighted: true },
+      ])
     })
   })
 })

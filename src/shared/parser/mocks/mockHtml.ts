@@ -566,3 +566,98 @@ export const mockHtmlBoulderFinalManyRoutes = `
 </table>
 `
 export const mockParsedBoulderFinalManyRoutes = parseFragment(mockHtmlBoulderFinalManyRoutes)
+
+// Международный старт (2605klnd): протоколы на английском, без колонок ст.# у боулдеринга и кв.свода у трудности
+export const mockHtmlEnglishIndex = `
+<div id="title"><h1>10th Russian-Chinese 2026 Summer Youth Games</h1></div>
+<table class="event_table">
+<thead><tr><th>LEAD</th><th>BOULDER</th></tr></thead>
+<tbody><tr>
+<td>
+<div class="g_title">Female U17</div>
+<div class="p_l"><a href="l_2f_f15.html"><div class="l_pas"></div>Semi-Final</a></div>
+<div class="p_l"><a href="l_f_f15.html"><div class="l_run"></div>Final</a></div>
+</td>
+<td>
+<div class="g_title">Female U17</div>
+<div class="p_l"><a href="b_2f_f15.html"><div class="l_pas"></div>Semi-Final</a></div>
+</td>
+</tr></tbody>
+</table>
+`
+
+export const mockHtmlEnglishLeadSemiFinal = `
+<h3>10th Russian-Chinese 2026 Summer Youth Games</h3>
+<h1>Female U17 - LEAD - Semi-Final</h1>
+<table>
+<thead><tr><th>rank</th><th>bib</th><th>st. #</th><th>Name</th><th>Country</th><th>Result</th></tr></thead>
+<tbody>
+<tr class="q">
+    <td class="rank">1</td>
+    <td class="id">3</td>
+    <td class="st">2</td>
+    <td class="name">TAN YOUTIAN </td>
+    <td class="command"><span class="nation">CHN</span> <img src="../flags/CHN.png" /></td>
+    <!-- td class="pre">0</td -->
+    <td class="res">TOP</td>
+</tbody>
+</table>
+`
+
+export const mockHtmlEnglishBoulderSemiFinal = `
+<h3>10th Russian-Chinese 2026 Summer Youth Games</h3>
+<h1>Female U17 - BOULDER - Semi-Final</h1>
+<table>
+<thead><tr><th>rank</th><th></th><th></th><th></th><th></th><th>1</th><th>2</th><th>result</th></tr></thead>
+<tbody>
+    <tr class="q">
+    <td class="rank">1</td>
+    <!-- td class="st">3</td -->
+    <td class="id">3</td>
+    <td class="name">TAN YOUTIAN </td>
+    <td class="command"><span class="nation">CHN</span> <img src="../flags/CHN.png" /></td>
+    <td class="pre">0</td>
+    <td class="route"><div class="r_2">1<br />1</div></td>
+    <td class="route"><div class="r_1"><br />1</div></td>
+<td class="route_sum route-border-left">84,1</td>
+</tr>
+</tbody>
+</table>
+`
+
+// Скорости на 2605klnd нет: мок собран по образцу английских протоколов трудности и боулдеринга и русской скорости
+export const mockHtmlEnglishSpeedIndex = `
+<div id="title"><h1>10th Russian-Chinese 2026 Summer Youth Games</h1></div>
+<table class="event_table">
+<thead><tr><th>SPEED</th></tr></thead>
+<tbody><tr>
+<td>
+<div class="g_title">Male U17</div>
+<div class="p_l"><a href="e_q_m15.html"><div class="l_pas"></div>Qualification</a></div>
+<div class="p_l"><a href="e8_f_m15.html"><div class="l_pas"></div>1/4-Final</a></div>
+<div class="p_l"><a href="e8_f_m15.html"><div class="l_run"></div>Semi-Final</a></div>
+<div class="p_l"><a href="e8_f_m15.html"><div class="l_fut"></div>Final</a></div>
+</td>
+</tr></tbody>
+</table>
+`
+
+export const mockHtmlEnglishSpeedQual = `
+<h3>10th Russian-Chinese 2026 Summer Youth Games</h3>
+<h1>Male U17 - SPEED - Qualification</h1>
+<table>
+<thead><tr><th>rank</th><th>bib</th><th>st. #</th><th>Name</th><th>Country</th><th>Lane A</th><th>st. #2</th><th>Lane B</th><th>Result</th></tr></thead>
+<tbody>
+<tr class="q">
+    <td class="rank">1</td>
+    <td class="id">12</td>
+    <td class="st">3</td>
+    <td class="name">LI HAO </td>
+    <td class="command"><span class="nation">CHN</span> <img src="../flags/CHN.png" /></td>
+    <td class="res">06,854</td>
+    <td class="res">2</td>
+    <td class="res">05,160</td>
+    <td class="res">05,160</td>
+</tbody>
+</table>
+`

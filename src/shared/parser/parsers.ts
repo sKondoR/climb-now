@@ -13,6 +13,22 @@ export const parseFragment = (html: string): Parse5DocumentFragment => {
   return document as unknown as Parse5DocumentFragment
 }
 
+// Ключевые слова дисциплин в заголовках. Протоколы международных стартов — на английском: «Female U17 - BOULDER - Semi-Final».
+// Классическая скорость — раньше обычной, иначе её перехватит «скорость»
+const DISCIPLINE_KEYWORDS: Array<[string, string[]]> = [
+  [DISCIPLINES.LEAD, [DISCIPLINES.LEAD, 'lead']],
+  [DISCIPLINES.BOULRER, [DISCIPLINES.BOULRER, 'boulder']],
+  [DISCIPLINES.SPEED_CLASSIC, [DISCIPLINES.SPEED_CLASSIC]],
+  [DISCIPLINES.SPEED, [DISCIPLINES.SPEED, 'speed']],
+]
+
+// text — в нижнем регистре
+const matchDiscipline = (text: string): string =>
+  DISCIPLINE_KEYWORDS.find(([, words]) => words.some((word) => text.includes(word)))?.[0] ?? ''
+
+// Полуфинал тоже «финал»: «полуфинал», «Semi-Final»
+const isFinalTitle = (title: string) => /финал|final/i.test(title)
+
 export const parseResults = (html: string): Discipline[] | null => {
   try {
     const document = parseFragment(html)
@@ -84,11 +100,12 @@ export const parseResults = (html: string): Discipline[] | null => {
 export const parseResultsTable = (html: string): SubGroupData => {
   const document = parseFragment(html)
   const documentTitle = getTextContent(findElementsByTag(document as unknown as Parse5Document, 'h1')[0]).toLowerCase()
-  const isLead = documentTitle.includes('трудность')
-  const isBoulder = documentTitle.includes('боулдеринг')
-  const isSpeed = documentTitle.includes('скорость')
+  const discipline = matchDiscipline(documentTitle)
+  const isLead = discipline === DISCIPLINES.LEAD
+  const isBoulder = discipline === DISCIPLINES.BOULRER
+  const isSpeed = discipline === DISCIPLINES.SPEED || discipline === DISCIPLINES.SPEED_CLASSIC
   const isQualResult = documentTitle.includes('сводный')
-  const isFinal = documentTitle.includes('финал')
+  const isFinal = isFinalTitle(documentTitle)
 
   const result = {
     isLead,
@@ -122,33 +139,43 @@ export const parseResultsTable = (html: string): SubGroupData => {
   return result
 }
 
+// Колонки, которые узнаём по классу ячейки, а не по позиции: на разных стартах они идут в разном порядке (id, st или st, id),
+// а часть пропущена (в английских протоколах нет ст.# у боулдеринга и кв.свода у трудности)
+const CLASS_PROPS: Record<string, string> = { rank: 'rank', st: 'stRank', name: 'name', command: 'command', pre: 'qRank' }
+
 export const parseTable = <T>(document: Parse5DocumentFragment, config: Array<{ prop: keyof T }>): T[] => {
   const tbody = findElementsByTag(document, 'tbody')[0]
   const rows = findElementsByTag(tbody, 'tr')
+  const props = config.map((item) => item.prop as string).filter(Boolean)
+  // Остальные колонки (результаты трасс) раскладываем по порядку
+  const positionalProps = props.filter((prop) => !Object.values(CLASS_PROPS).includes(prop))
 
   const results: T[] = []
-  
+
   rows.forEach((row: Parse5Element) => {
     const isHighlighted = hasClass(row, 'q')
     const cells = findElementsByTag(row, 'td')
-    // if (cells.length < config.length) return
     // Трасс в боулдеринге может быть больше, чем в конфиге (неофициальные старты): берём все ячейки .route подряд,
     // а следующую за ними — как результат
     let boulderCount = 0
+    let positionalIndex = 0
     const data: Partial<Record<string, string>> = {}
-    for (let i = 0; i < Math.max(config.length, cells.length); i++) {
-      const cell = cells[i]
+    for (const cell of cells) {
       if (hasClass(cell, 'route')) {
         boulderCount++
         data[`r${boulderCount}`] = parseRouteCell(cell)
-      } else if (boulderCount > 0) {
+        continue
+      }
+      if (boulderCount > 0) {
         data.score = getTextContent(cell)
         break
-      } else if (hasClass(cell, 'st')) {
-        // Стартовый номер и id участника на разных стартах идут в разном порядке (id, st или st, id): узнаём их по классу
-        data.stRank = getTextContent(cell)
-      } else if (config[i]?.prop && !hasClass(cell, 'id')) {
-        data[config[i].prop as string] = getTextContent(cell)
+      }
+      if (hasClass(cell, 'id')) continue
+      const classProp = Object.entries(CLASS_PROPS).find(([className]) => hasClass(cell, className))?.[1]
+      if (classProp) {
+        if (props.includes(classProp)) data[classProp] = getTextContent(cell)
+      } else if (positionalProps[positionalIndex]) {
+        data[positionalProps[positionalIndex++]] = getTextContent(cell)
       }
     }
     results.push((isHighlighted ? { ...data, isHighlighted } : data) as T)
@@ -187,7 +214,7 @@ export const parseSpeedClassicQual = (document: Parse5DocumentFragment): SpeedQu
 
 // 1/8, 1/4, полуфинал и финал скорости ведут на одну и ту же сетку: оставляем один таб «Финал»
 export const mergeSpeedFinals = (group: Group): Group => {
-  const finals = group.subgroups.filter((subgroup) => subgroup.title.toLowerCase().includes('финал'))
+  const finals = group.subgroups.filter((subgroup) => isFinalTitle(subgroup.title))
   if (finals.length === 0) return group
   const statuses = finals.map((subgroup) => subgroup.status)
   const status = statuses.includes(STATUSES.ONLINE)
@@ -318,14 +345,10 @@ export const hasClass = (node: Parse5Node | null | undefined, className: string)
 
 export const getDisciplines = (document: Parse5DocumentFragment) => {
   return findElementsByTag(document as unknown as Parse5Document, 'th').map((th: Parse5Element) => {
-    let current = ''
-    Object.values(DISCIPLINES).forEach((value) => {
-      if(getTextContent(th).toLowerCase().includes(value.toLowerCase())) {
-        current = value
-      }
-    })
-    if (current === DISCIPLINES.SPEED && getTextContent(th).toLowerCase().includes('(к)')) return DISCIPLINES.SPEED_CLASSIC
-    return current || getTextContent(th).toLowerCase()
+    const text = getTextContent(th).toLowerCase()
+    const current = matchDiscipline(text)
+    if (current === DISCIPLINES.SPEED && text.includes('(к)')) return DISCIPLINES.SPEED_CLASSIC
+    return current || text
   })
 }
 
