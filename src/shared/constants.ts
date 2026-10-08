@@ -10,6 +10,8 @@ export const EXTERNAL_API_TIMEOUT = 10000
 export const SAFE_PATH_SEGMENT = /^[\w-]+$/
 // Календарь соревнований ФСР — источник списка событий
 export const EVENTS_SOURCE_URL = 'https://www.rusclimbing.ru/competitions/'
+// Календарь за 3 года сайт отдаёт за 6–9 с — общих 10 с не хватало. Меньше 20 с, после которых fetchEvents обрывает запрос
+export const EVENTS_SOURCE_TIMEOUT = 18000
 // Команды Всероссийских соревнований 13-14 лет 2026 года (отдаются /api/teams и служат запасным списком на клиенте)
 export const DEFAULT_TEAMS = [
   'БАШК', 'ВОЛГ', 'ВОЛО', 'ВРНЖ', 'ДНР', 'КИРВ', 'КЛНД', 'КРДР', 'КРСК', 'КУРС',

@@ -37,6 +37,18 @@ describe('cachedWithFallback', () => {
     await expect(cachedWithFallback('k', () => Promise.reject(new Error('down')))).rejects.toThrow('down')
   })
 
+  it('shares one in-flight load between concurrent callers', async () => {
+    const loader = vi.fn().mockResolvedValue('a')
+    const results = await Promise.all([cachedWithFallback('k', loader), cachedWithFallback('k', loader)])
+    expect(results).toEqual(['a', 'a'])
+    expect(loader).toHaveBeenCalledTimes(1)
+  })
+
+  it('retries after a failed load', async () => {
+    await expect(cachedWithFallback('k', () => Promise.reject(new Error('down')))).rejects.toThrow('down')
+    expect(await cachedWithFallback('k', () => Promise.resolve('a'))).toBe('a')
+  })
+
   it('keeps keys separate', async () => {
     await cachedWithFallback('k1', () => Promise.resolve('a'))
     expect(await cachedWithFallback('k2', () => Promise.resolve('b'))).toBe('b')

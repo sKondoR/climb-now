@@ -6,6 +6,9 @@ export const BACKEND_CACHE_TTL = 24 * 60 * 60_000
 type Entry = { value: unknown, savedAt: number }
 
 const cache = new Map<string, Entry>()
+// Загрузки в процессе: после рестарта кеш пуст, и зрители, открывшие страницу одновременно,
+// ждут один запрос к медленному сайту вместо того, чтобы слать каждый свой
+const pending = new Map<string, Promise<unknown>>()
 
 export async function cachedWithFallback<T>(key: string, loader: () => Promise<T>): Promise<T> {
   const hit = cache.get(key)
@@ -13,6 +16,15 @@ export async function cachedWithFallback<T>(key: string, loader: () => Promise<T
     return hit.value as T
   }
 
+  const inFlight = pending.get(key)
+  if (inFlight) return inFlight as Promise<T>
+
+  const request = load(key, loader, hit).finally(() => pending.delete(key))
+  pending.set(key, request)
+  return request
+}
+
+async function load<T>(key: string, loader: () => Promise<T>, hit: Entry | undefined): Promise<T> {
   try {
     const value = await loader()
     cache.set(key, { value, savedAt: Date.now() })
@@ -28,4 +40,5 @@ export async function cachedWithFallback<T>(key: string, loader: () => Promise<T
 
 export function clearBackendCache() {
   cache.clear()
+  pending.clear()
 }

@@ -4,7 +4,7 @@ import { cachedWithFallback } from './backendCache'
 import { loadGroups } from './groupsSource'
 import { ApiError } from './errorHandler'
 import { parseEvents } from './parser/events.parser'
-import { EVENTS_SOURCE_URL, EXTERNAL_API_TIMEOUT } from './constants'
+import { EVENTS_SOURCE_TIMEOUT, EVENTS_SOURCE_URL } from './constants'
 import type { EventResponse } from './types/api.types'
 
 // Суффиксы, с которыми протоколы лежат на c-f-r.ru, когда код с rusclimbing.ru даёт 404
@@ -42,7 +42,7 @@ const buildSourceUrl = (): string => {
 
 // События с исходными кодами rusclimbing.ru, без исправлений
 const loadEvents = (): Promise<EventResponse[]> => cachedWithFallback('events', async () => {
-  const response = await axios.get<string>(buildSourceUrl(), { timeout: EXTERNAL_API_TIMEOUT })
+  const response = await axios.get<string>(buildSourceUrl(), { timeout: EVENTS_SOURCE_TIMEOUT })
   const loadedAt = new Date().toISOString()
   return parseEvents(response.data).map(event => ({
     ...event,
