@@ -27,6 +27,12 @@ export async function proxy(_request: NextRequest) {
     'analytics.yandex.com.tr', 'analytics.yandex.kz',
   ].map((h) => `https://${h}`).join(' ')
 
+  // РСЯ: https://yandex.ru/support/partner/ru/web/adplatform/csp-configuration
+  // В script-src домены не нужны: context.js грузит Next, а его скрипты разрешены через 'strict-dynamic'
+  const adsConnect = 'blob: yastatic.net *.yandex.net *.adfox.ru *.yandex.ru yandex.ru yandex.com'
+  const adsFrames = 'yandexadexchange.net *.yandexadexchange.net yastatic.net *.yandex.ru *.adfox.ru'
+  const adsMedia = 'yastatic.net *.yandex.net *.yandex.ru *.adfox.ru yandex.ru yandex.com blob: data:'
+
   const isDev = process.env.NODE_ENV === 'development'
   // Build CSP header with proper nonce interpolation
   const cspHeader = [
@@ -35,10 +41,11 @@ export async function proxy(_request: NextRequest) {
     "style-src 'self' 'unsafe-inline';",
     // https: вместо списка доменов Метрики: заголовки ответа должны влезать в 4 КБ буфера nginx, иначе 502
     "img-src 'self' data: blob: https:;",
-    "font-src 'self';",
+    "font-src 'self' yastatic.net data:;",
+    `media-src ${adsMedia};`,
     // Hawk шлёт ошибки из браузера по WebSocket на wss://{integrationId}.k1.hawk.so
-    `connect-src 'self' ${metrikaDomains} ${metrikaWsDomains} wss://*.k1.hawk.so;`,
-    `frame-src blob: ${metrikaDomains};`,
+    `connect-src 'self' ${metrikaDomains} ${metrikaWsDomains} wss://*.k1.hawk.so ${adsConnect};`,
+    `frame-src blob: ${metrikaDomains} ${adsFrames};`,
     "object-src 'none';",
     "base-uri 'self';",
     "form-action 'self';",

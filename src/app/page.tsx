@@ -1,6 +1,7 @@
 import Footer from '@/components/layout/Footer'
 import PageContent from '@/src/components/PageContent'
 import Header from '@/src/components/layout/Header'
+import YandexRtb from '@/src/shared/components/YandexRtb/YandexRtb'
 
 export default function HomePage() {
   return (
@@ -10,7 +11,7 @@ export default function HomePage() {
       <main className="w-full flex-1 mx-auto px-3 sm:px-6 lg:px-8 pt-2 flex flex-col">
         {/* Заголовок страницы для экранного чтеца: логотип живёт в сворачиваемой (inert) части шапки */}
         <h1 className="sr-only">ClimbNow — результаты соревнований ФСР онлайн</h1>
-        <PageContent footer={<Footer />} />
+        <PageContent footer={<><YandexRtb blockId="R-A-20201132-1" /><Footer /></>} />
       </main>
     </div>
   )
